@@ -1,0 +1,76 @@
+{
+  "name": "@infinityloop.labs/event-bus",
+  "version": "1.0.2",
+  "main": "./dist/index.umd.js",
+  "module": "./dist/index.es.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "import": "./dist/index.es.js",
+      "require": "./dist/index.umd.js",
+      "types": "./dist/index.d.ts"
+    }
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "scripts": {
+    "build": "tsc && vite build",
+    "lint": "eslint src --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
+    "preview": "vite preview",
+    "test": "vitest run"
+  },
+  "files": [
+    "package.json",
+    "README",
+    "dist/"
+  ],
+  "keywords": [
+    "react",
+    "hooks",
+    "debounce",
+    "throttle",
+    "portrait",
+    "online",
+    "IndexedDB",
+    "size",
+    "keypress",
+    "interval",
+    "timeout",
+    "focus",
+    "intersection",
+    "effect",
+    "customserviceinjector",
+    "arrayrender",
+    "deepclone",
+    "mergeobjects",
+    "sessionstorage",
+    "localstorage",
+    "microfrontend",
+    "eventtransfer",
+    "subscribe"
+  ],
+  "description": "Frequently used tools for React",
+  "homepage": "https://github.com/Morozzko/React_Blank_App/tree/master/libs/utils",
+  "author": "Morozzko",
+  "license": "ISC",
+  "devDependencies": {
+    "@testing-library/react": "^16.3.0",
+    "@testing-library/user-event": "^14.6.1",
+    "@types/react": "^19.1.8",
+    "@types/react-dom": "^19.1.9",
+    "@types/uuid": "^10.0.0",
+    "@vitejs/plugin-react-swc": "^3.4.0",
+    "jsdom": "^22.1.0",
+    "typescript": "^5.9.2",
+    "vite": "^4.5.0",
+    "vite-plugin-dts": "^3.6.1",
+    "vitest": "^0.34.6"
+  },
+  "peerDependencies": {
+    "react": "19.x.x"
+  },
+  "dependencies": {
+    "tslib": "^2.8.1"
+  }
+}

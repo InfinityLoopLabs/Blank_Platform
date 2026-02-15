@@ -18,7 +18,7 @@ export type DebouncedFunctionType<T extends (...args: any[]) => any> = {
 export function debounce<T extends (...args: any[]) => any>(
   func: T,
   wait: number,
-  options?: DebounceOptionsType
+  options?: DebounceOptionsType,
 ): DebouncedFunctionType<T> {
   let lastArgs: Parameters<T> | undefined
   let lastThis: any

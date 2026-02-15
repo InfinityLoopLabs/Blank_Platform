@@ -13,10 +13,10 @@ import { useEffect, useRef } from 'react'
  */
 export const useInterval = <T extends (...args: any[]) => any>(
   callback: T,
-  delay: number
+  delay: number,
 ) => {
-  const savedCallback = useRef<T>()
-  const id = useRef<NodeJS.Timeout>()
+  const savedCallback = useRef<T | null>(null)
+  const id = useRef<NodeJS.Timeout>(undefined)
   // Remember the latest callback.
   useEffect(() => {
     savedCallback.current = callback

@@ -34,9 +34,9 @@ export const useDebounce = <T extends (...args: any[]) => any>(
   callback: T,
   delay: number,
   deps = [] as any[],
-  options?: OptionsType
+  options?: OptionsType,
 ): IDebounce<T> =>
   useCallback(
     debounce((...args: Parameters<T>) => callback(...args), delay, options),
-    [delay, ...deps]
+    [delay, ...deps],
   )

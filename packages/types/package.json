@@ -1,7 +1,10 @@
 {
-  "name": "@npm.piece/types",
-  "version": "1.0.12",
+  "name": "@infinityloop.labs/types",
+  "version": "1.0.2",
   "types": "global.d.ts",
+  "publishConfig": {
+    "access": "public"
+  },
   "files": [
     "package.json",
     "global.d.ts",
@@ -9,16 +12,13 @@
     "README"
   ],
   "keywords": [
-    "react"
+    "nest.js"
   ],
-  "description": "Frequently used types for React",
-  "homepage": "https://github.com/Morozzko/React_Blank_App/tree/master/packages/types",
+  "description": "Frequently used types for Nest.js",
+  "homepage": "https://github.com/Morozzko/React_Blank_App/tree/master/packages/backend-types",
   "author": "Morozzko",
   "license": "ISC",
   "devDependencies": {
-    "typescript": "^5.5.4"
-  },
-  "peerDependencies": {
-    "react": "16.x.x || 17.x.x || 18.x.x"
+    "typescript": "*"
   }
 }

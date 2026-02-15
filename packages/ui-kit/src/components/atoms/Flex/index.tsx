@@ -1,5 +1,5 @@
 import { forwardRef, HTMLAttributes } from 'react'
-import { clsx } from '@npm.piece/utils'
+import { clsx } from '@infinityloop.labs/utils'
 import type { JustifyContentType, AlignItemsType } from './lib/types'
 import { alignItems, justifyContent } from './lib/types'
 
@@ -22,12 +22,12 @@ export const Flex = forwardRef<HTMLDivElement, OwnPropertyType>(
         props['justify-content'] && justifyContent[props['justify-content']],
         props['align-items'] && alignItems[props['align-items']],
         middle && `${alignItems.center} ${justifyContent.center}`,
-        className
+        className,
       )}
       {...props}>
       {children}
     </div>
-  )
+  ),
 )
 
 Flex.displayName = 'Flex'

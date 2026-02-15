@@ -1,6 +1,5 @@
 import path from 'path'
 import react from '@vitejs/plugin-react-swc'
-import tailwindcss from 'tailwindcss'
 import { defineConfig } from 'vite'
 import dts from 'vite-plugin-dts'
 export default defineConfig({
@@ -18,11 +17,6 @@ export default defineConfig({
       insertTypesEntry: true,
     }),
   ],
-  css: {
-    postcss: {
-      plugins: [tailwindcss],
-    },
-  },
   server: {
     host: '0.0.0.0',
     port: 4002,
@@ -30,18 +24,17 @@ export default defineConfig({
   build: {
     lib: {
       entry: path.resolve(__dirname, 'src/index.ts'),
-      name: '@npm.piece/ui-kit',
+      name: '@infinityloop.labs/ui-kit',
       formats: ['es', 'umd'],
       fileName: format => `index.${format}.js`,
     },
     rollupOptions: {
-      external: ['react', 'react-dom', 'react-table', '@npm.piece/utils'],
+      external: ['react', 'react-dom', '@infinityloop.labs/utils'],
       output: {
         globals: {
           react: 'React',
           'react-dom': 'ReactDOM',
-          'react-table': 'react-table',
-          '@npm.piece/utils': '@npm.piece/utils',
+          '@infinityloop.labs/utils': '@infinityloop.labs/utils',
         },
       },
     },

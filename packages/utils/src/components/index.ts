@@ -1,3 +1,5 @@
 export * from './ArrayRender'
 export * from './ErrorBoundary'
+export * from './Popover'
 export * from './ServiceInjector'
+export * from './LoadDataFromRoot'

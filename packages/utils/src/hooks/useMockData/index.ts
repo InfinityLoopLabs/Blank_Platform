@@ -82,7 +82,7 @@ export const useMockData = <Fields extends FieldsDefinitionType>({
 }: UseMockDataPropsType<Fields>) => {
   // Симуляция загрузки данных: Начало
   const [isLoading, setIsLoading] = useState<boolean>(true)
-  const timeoutId = useRef<NodeJS.Timeout>()
+  const timeoutId = useRef<NodeJS.Timeout>(undefined)
 
   useEffect(() => {
     timeoutId.current = setTimeout(() => {
@@ -146,10 +146,10 @@ export const useMockData = <Fields extends FieldsDefinitionType>({
             Object.entries(item).map(([key, value]) => [
               key,
               value instanceof Date ? value.toISOString() : value,
-            ])
+            ]),
           ),
-        }))
-      )
+        })),
+      ),
     )
   }, [data, storageKey])
 
@@ -166,7 +166,7 @@ export const useMockData = <Fields extends FieldsDefinitionType>({
   // Обработчик изменения элемента данных по id
   const onChangeDataByIdHandler = (
     id: string,
-    updatedItem: Partial<Omit<DataItemType<Fields>, 'id'>>
+    updatedItem: Partial<Omit<DataItemType<Fields>, 'id'>>,
   ) => {
     setData(prevData => {
       const updatedData = prevData.map(item =>
@@ -175,7 +175,7 @@ export const useMockData = <Fields extends FieldsDefinitionType>({
               ...item,
               ...updatedItem,
             }
-          : item
+          : item,
       )
 
       return updatedData
@@ -217,7 +217,7 @@ export const useMockData = <Fields extends FieldsDefinitionType>({
         }
 
         return false
-      })
+      }),
     )
   }, [data, searchText, fields])
 

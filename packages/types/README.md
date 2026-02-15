@@ -3,23 +3,23 @@
 ## Install
 
 ```
-npm i @npm.piece/types -D
+npm i @infinityloop.labs/types -D
 ```
 
 ```
-yarn add @npm.piece/types -D
+yarn add @infinityloop.labs/types -D
 ```
 ## Create .d.ts file in src folder and import types
 ```
-/// <reference types="@npm.piece/types/global" />
+/// <reference types="@infinityloop.labs/types/global" />
 ```
 
 ```
-/// <reference types="@npm.piece/types/frontend" />
+/// <reference types="@infinityloop.labs/types/frontend" />
 ```
 
 ```
-/// <reference types="@npm.piece/types/backend" />
+/// <reference types="@infinityloop.labs/types/backend" />
 ```
 
 ### Global Types:

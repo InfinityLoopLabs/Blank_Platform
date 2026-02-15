@@ -12,7 +12,7 @@ import { MutableRefObject, useCallback, useEffect } from 'react'
  */
 export const useClickOutside = (
   ref: MutableRefObject<Element | null>,
-  callback: Function
+  callback: Function,
 ) => {
   const handleClickOutside = useCallback(
     (event: MouseEvent) => {
@@ -20,7 +20,7 @@ export const useClickOutside = (
         callback(event)
       }
     },
-    [ref?.current, callback]
+    [ref?.current, callback],
   )
 
   useEffect(() => {

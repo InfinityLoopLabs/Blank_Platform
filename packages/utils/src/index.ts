@@ -1,4 +1,5 @@
 export * from './components'
+export * from './formaters'
 export * from './hooks'
 export * from './indexed-db'
 export * from './local-and-session-storage'

@@ -35,12 +35,12 @@ export const useThrottle = <T extends (...args: any[]) => any>(
   callback: T,
   delay: number,
   deps = [] as any[],
-  options?: OptionsType
+  options?: OptionsType,
 ): IThrottle<T> =>
   useCallback(
     throttle((...args: Parameters<T>) => callback(...args), delay, {
       trailing: options?.trailing || false,
       leading: options?.leading || true,
     }),
-    [delay, ...deps]
+    [delay, ...deps],
   )

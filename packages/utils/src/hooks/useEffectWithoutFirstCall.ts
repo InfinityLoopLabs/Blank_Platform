@@ -17,7 +17,7 @@ import { DependencyList, EffectCallback, useEffect, useRef } from 'react'
  */
 export const useEffectWithoutFirstCall = (
   effect: EffectCallback,
-  deps?: DependencyList
+  deps?: DependencyList,
 ) => {
   const isMounted = useRef(false)
 

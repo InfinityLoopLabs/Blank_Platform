@@ -9,5 +9,11 @@
 export const getFromLocalStorage = <T>(key: string) => {
   const localStorageItem = localStorage.getItem(key)
 
-  return localStorageItem ? (JSON.parse(localStorageItem) as T) : null
+  if (localStorageItem) {
+    const decodedItem = atob(localStorageItem)
+
+    return JSON.parse(decodedItem) as T
+  }
+
+  return null
 }

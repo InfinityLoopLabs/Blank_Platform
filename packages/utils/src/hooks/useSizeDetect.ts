@@ -21,10 +21,10 @@ import { useDebounce } from './useDebounce'
  *
  */
 export const useSizeDetect = () => {
-  const getInnerWidth = () => window.innerWidth
-  const getInnerHeight = () => window.innerHeight
-  const getClientWidth = () => document.documentElement.clientWidth
-  const getClientHeight = () => document.documentElement.clientHeight
+  const getInnerWidth = () => (typeof window !== 'undefined' ? window.innerWidth : 0)
+  const getInnerHeight = () => (typeof window !== 'undefined' ? window.innerHeight : 0)
+  const getClientWidth = () => (typeof document !== 'undefined' ? document.documentElement.clientWidth : 0)
+  const getClientHeight = () => (typeof document !== 'undefined' ? document.documentElement.clientHeight : 0)
 
   const [state, setState] = useState({
     clientHeight: getClientHeight(),
@@ -60,9 +60,11 @@ export const useSizeDetect = () => {
   }
 
   useEffect(() => {
-    window.addEventListener('resize', handleResize)
+    if (typeof window !== 'undefined') {
+      window.addEventListener('resize', handleResize)
 
-    return () => window.removeEventListener('resize', handleResize)
+      return () => window.removeEventListener('resize', handleResize)
+    }
   }, [])
 
   return state

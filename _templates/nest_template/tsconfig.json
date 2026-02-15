@@ -8,6 +8,11 @@
     "emitDecoratorMetadata": true,
     "outDir": "dist",
     "rootDir": "src",
+    "baseUrl": "./src",
+    "paths": {
+      "@core/*": ["platform/*"],
+      "@features/*": ["features/*"]
+    },
     "esModuleInterop": true,
     "skipLibCheck": true
   },

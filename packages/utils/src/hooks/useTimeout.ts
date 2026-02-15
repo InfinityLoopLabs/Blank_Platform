@@ -19,8 +19,8 @@ export const useTimeout = <T extends (...args: any[]) => any>(
   callback: T,
   delay: number
 ) => {
-  const savedCallback = useRef<T>()
-  const id = useRef<NodeJS.Timeout>()
+  const savedCallback = useRef<T | null>(null)
+  const id = useRef<NodeJS.Timeout | null>(null)
 
   // Remember the latest callback.
   useEffect(() => {
