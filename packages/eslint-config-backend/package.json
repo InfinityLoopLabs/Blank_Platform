@@ -1,0 +1,20 @@
+{
+  "name": "@infinityloop.labs/eslint-config-backend",
+  "version": "2.0.0",
+  "type": "module",
+  "main": "index.js",
+  "exports": {
+    ".": "./index.js",
+    "./package.json": "./package.json"
+  },
+  "files": [
+    "index.js",
+    "package.json"
+  ],
+  "publishConfig": {
+    "access": "public"
+  },
+  "dependencies": {
+    "@infinityloop.labs/eslint-config-core": "*"
+  }
+}
