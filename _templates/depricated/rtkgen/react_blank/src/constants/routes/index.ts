@@ -1,1 +1,1 @@
-export { RoutesEnum, routes } from '@npm.piece/constants-frontend'
+export { RoutesEnum, routes } from '@infinityloop.labs/constants-frontend'

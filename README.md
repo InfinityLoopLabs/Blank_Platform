@@ -38,7 +38,7 @@
 > ### Сборка библиотеки common
 >
 > ```
-> yarn build --filter=@npm.piece/common-frontend
+> yarn build --filter=@infinityloop.labs/common-frontend
 > ```
 >
 > ### Сборка проекта
@@ -63,7 +63,7 @@
 >
 > ### Пример добавление библиотеки
 > ```
-> yarn workspace @npm.piece/common-frontend add axios -D
+> yarn workspace @infinityloop.labs/common-frontend add axios -D
 > ```
 >
 > ### Публикация пакета

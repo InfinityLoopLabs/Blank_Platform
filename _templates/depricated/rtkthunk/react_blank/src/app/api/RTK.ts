@@ -1,5 +1,5 @@
 import { createApi } from '@reduxjs/toolkit/query/react'
-import { createAxiosBaseQuery } from '@npm.piece/common-frontend'
+import { createAxiosBaseQuery } from '@infinityloop.labs/common-frontend'
 import { instance } from '@app/api/axios'
 
 const baseQuery = createAxiosBaseQuery(instance)

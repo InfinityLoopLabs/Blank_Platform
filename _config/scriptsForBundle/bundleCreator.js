@@ -1,9 +1,9 @@
 const libs = [
   '@reduxjs/toolkit',
-  '@npm.piece/common-frontend',
-  '@npm.piece/constants-frontend',
-  '@npm.piece/ui-kit',
-  '@npm.piece/utils',
+  '@infinityloop.labs/common-frontend',
+  '@infinityloop.labs/constants-frontend',
+  '@infinityloop.labs/ui-kit',
+  '@infinityloop.labs/utils',
   'async-mutex',
   'axios',
   'i18next',

@@ -1,4 +1,4 @@
-import { Flex } from '@npm.piece/ui-kit'
+import { Flex } from '@infinityloop.labs/ui-kit'
 import React from 'react'
 
 type OwnPropertyType = {}

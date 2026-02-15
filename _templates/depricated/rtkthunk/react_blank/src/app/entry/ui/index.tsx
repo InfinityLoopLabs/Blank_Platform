@@ -1,4 +1,4 @@
-import { ErrorBoundary, ServiceInjector } from '@npm.piece/utils'
+import { ErrorBoundary, ServiceInjector } from '@infinityloop.labs/utils'
 import { AppRouter } from '@app/router'
 import { appSize } from '@services/appSize'
 

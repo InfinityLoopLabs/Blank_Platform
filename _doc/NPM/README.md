@@ -5,4 +5,4 @@ nvm alias default 20
 
 nvm use 20
 
-npm i -g @npm.piece/template-generator
+npm i -g @infinityloop.labs/template-generator

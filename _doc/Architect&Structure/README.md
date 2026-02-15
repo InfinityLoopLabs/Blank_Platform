@@ -124,7 +124,7 @@
 
 > ## Для генерации новых features
 >
-> В папке рядом с **_package.json_** вызвать команду из пакета **_@npm.piece/template-generator_**:
+> В папке рядом с **_package.json_** вызвать команду из пакета **_@infinityloop.labs/template-generator_**:
 > ```
 > new widget name
 > new service name

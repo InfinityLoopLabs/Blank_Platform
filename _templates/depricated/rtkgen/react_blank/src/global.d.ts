@@ -1,1 +1,1 @@
-/// <reference types="@npm.piece/types/global" />
+/// <reference types="@infinityloop.labs/types/global" />

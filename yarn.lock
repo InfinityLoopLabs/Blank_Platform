@@ -1996,17 +1996,17 @@
     "@nodelib/fs.scandir" "2.1.5"
     fastq "^1.6.0"
 
-"@npm.piece/common-frontend@^1.0.14", "@npm.piece/common-frontend@file:/Users/m1max/IdeaProjects/infinitylooplabs/Platform/packages/frontend-common":
+"@infinityloop.labs/common-frontend@^1.0.14", "@infinityloop.labs/common-frontend@file:/Users/m1max/IdeaProjects/infinitylooplabs/Platform/packages/frontend-common":
   version "1.0.15"
   resolved "file:packages/frontend-common"
 
-"@npm.piece/constants-frontend@^1.0.7", "@npm.piece/constants-frontend@file:/Users/m1max/IdeaProjects/infinitylooplabs/Platform/packages/frontend-constants":
+"@infinityloop.labs/constants-frontend@^1.0.7", "@infinityloop.labs/constants-frontend@file:/Users/m1max/IdeaProjects/infinitylooplabs/Platform/packages/frontend-constants":
   version "1.0.8"
   resolved "file:packages/frontend-constants"
   dependencies:
     tslib "^2.6.1"
 
-"@npm.piece/eslint-config@^1.0.40", "@npm.piece/eslint-config@file:/Users/m1max/IdeaProjects/infinitylooplabs/Platform/packages/eslint-config":
+"@infinityloop.labs/eslint-config@^1.0.40", "@infinityloop.labs/eslint-config@file:/Users/m1max/IdeaProjects/infinitylooplabs/Platform/packages/eslint-config":
   version "1.0.41"
   resolved "file:packages/eslint-config"
   dependencies:
@@ -2024,13 +2024,13 @@
     tailwindcss "^3.3.5"
     typescript "^5.5.4"
 
-"@npm.piece/event-bus@^1.0.55", "@npm.piece/event-bus@1.0.X", "@npm.piece/event-bus@file:/Users/m1max/IdeaProjects/infinitylooplabs/Platform/packages/frontend-event-bus":
+"@infinityloop.labs/event-bus@^1.0.55", "@infinityloop.labs/event-bus@1.0.X", "@infinityloop.labs/event-bus@file:/Users/m1max/IdeaProjects/infinitylooplabs/Platform/packages/frontend-event-bus":
   version "1.0.56"
   resolved "file:packages/frontend-event-bus"
   dependencies:
     tslib "^2.6.1"
 
-"@npm.piece/generate-hooks-rtk@^1.0.21", "@npm.piece/generate-hooks-rtk@file:/Users/m1max/IdeaProjects/infinitylooplabs/Platform/packages/generate-hooks-rtk":
+"@infinityloop.labs/generate-hooks-rtk@^1.0.21", "@infinityloop.labs/generate-hooks-rtk@file:/Users/m1max/IdeaProjects/infinitylooplabs/Platform/packages/generate-hooks-rtk":
   version "1.0.22"
   resolved "file:packages/generate-hooks-rtk"
   dependencies:
@@ -2038,55 +2038,55 @@
     ts-node "^10.9.1"
     typescript "^5.5.4"
 
-"@npm.piece/locale-downloader@^1.0.12", "@npm.piece/locale-downloader@file:/Users/m1max/IdeaProjects/infinitylooplabs/Platform/packages/download-locale":
+"@infinityloop.labs/locale-downloader@^1.0.12", "@infinityloop.labs/locale-downloader@file:/Users/m1max/IdeaProjects/infinitylooplabs/Platform/packages/download-locale":
   version "1.0.13"
   resolved "file:packages/download-locale"
   dependencies:
     node-fetch "^3.3.1"
 
-"@npm.piece/mf-connect@file:/Users/m1max/IdeaProjects/infinitylooplabs/Platform/packages/mf-connect":
+"@infinityloop.labs/mf-connect@file:/Users/m1max/IdeaProjects/infinitylooplabs/Platform/packages/mf-connect":
   version "1.0.19"
   resolved "file:packages/mf-connect"
   dependencies:
     typescript "^5.5.4"
 
-"@npm.piece/tailwind-config@^1.0.35", "@npm.piece/tailwind-config@file:/Users/m1max/IdeaProjects/infinitylooplabs/Platform/packages/frontend-tailwind-config":
+"@infinityloop.labs/tailwind-config@^1.0.35", "@infinityloop.labs/tailwind-config@file:/Users/m1max/IdeaProjects/infinitylooplabs/Platform/packages/frontend-tailwind-config":
   version "1.0.35"
   resolved "file:packages/frontend-tailwind-config"
   dependencies:
     "@tailwindcss/typography" "^0.5.9"
     tailwindcss "^3.3.5"
 
-"@npm.piece/template-generator@file:/Users/m1max/IdeaProjects/infinitylooplabs/Platform/packages/create-by-template":
+"@infinityloop.labs/template-generator@file:/Users/m1max/IdeaProjects/infinitylooplabs/Platform/packages/create-by-template":
   version "2.0.17"
   resolved "file:packages/create-by-template"
   dependencies:
     tslib "^2.6.1"
 
-"@npm.piece/types@^1.0.11", "@npm.piece/types@file:/Users/m1max/IdeaProjects/infinitylooplabs/Platform/packages/types":
+"@infinityloop.labs/types@^1.0.11", "@infinityloop.labs/types@file:/Users/m1max/IdeaProjects/infinitylooplabs/Platform/packages/types":
   version "1.0.12"
   resolved "file:packages/types"
 
-"@npm.piece/ui-kit@^0.0.138":
+"@infinityloop.labs/ui-kit@^0.0.138":
   version "0.0.138"
-  resolved "https://registry.npmjs.org/@npm.piece/ui-kit/-/ui-kit-0.0.138.tgz"
+  resolved "https://registry.npmjs.org/@infinityloop.labs/ui-kit/-/ui-kit-0.0.138.tgz"
   integrity sha512-qt68TVmqXFlH92A8XfHg/CEe+mZzwt4Cdik1GuD9RxVsGtF3qCAwTLZsdsJIL53d7iJ99SHrxRK9qKXwpSqIyQ==
   dependencies:
     react-table "^7.8.0"
 
-"@npm.piece/ui-kit@file:/Users/m1max/IdeaProjects/infinitylooplabs/Platform/packages/ui-kit":
+"@infinityloop.labs/ui-kit@file:/Users/m1max/IdeaProjects/infinitylooplabs/Platform/packages/ui-kit":
   version "0.0.139"
   resolved "file:packages/ui-kit"
   dependencies:
     react-table "^7.8.0"
 
-"@npm.piece/update-packages@file:/Users/m1max/IdeaProjects/infinitylooplabs/Platform/packages/update-packages":
+"@infinityloop.labs/update-packages@file:/Users/m1max/IdeaProjects/infinitylooplabs/Platform/packages/update-packages":
   version "1.0.1"
   resolved "file:packages/update-packages"
   dependencies:
     semver "^7.5.4"
 
-"@npm.piece/utils@^1.0.150", "@npm.piece/utils@file:/Users/m1max/IdeaProjects/infinitylooplabs/Platform/packages/utils":
+"@infinityloop.labs/utils@^1.0.150", "@infinityloop.labs/utils@file:/Users/m1max/IdeaProjects/infinitylooplabs/Platform/packages/utils":
   version "1.0.150"
   resolved "file:packages/utils"
   dependencies:
@@ -3614,11 +3614,11 @@ anymatch@^3.0.3, anymatch@~3.1.2:
   version "0.1.220"
   resolved "file:frontend/app_auth"
   dependencies:
-    "@npm.piece/common-frontend" "^1.0.14"
-    "@npm.piece/constants-frontend" "^1.0.7"
-    "@npm.piece/event-bus" "^1.0.55"
-    "@npm.piece/ui-kit" "^0.0.138"
-    "@npm.piece/utils" "^1.0.150"
+    "@infinityloop.labs/common-frontend" "^1.0.14"
+    "@infinityloop.labs/constants-frontend" "^1.0.7"
+    "@infinityloop.labs/event-bus" "^1.0.55"
+    "@infinityloop.labs/ui-kit" "^0.0.138"
+    "@infinityloop.labs/utils" "^1.0.150"
     "@reduxjs/toolkit" "^1.9.5"
     async-mutex "^0.4.0"
     axios "^1.5.0"
@@ -3640,11 +3640,11 @@ anymatch@^3.0.3, anymatch@~3.1.2:
   version "0.1.220"
   resolved "file:frontend/app_root"
   dependencies:
-    "@npm.piece/common-frontend" "^1.0.14"
-    "@npm.piece/constants-frontend" "^1.0.7"
-    "@npm.piece/event-bus" "^1.0.55"
-    "@npm.piece/ui-kit" "^0.0.138"
-    "@npm.piece/utils" "^1.0.150"
+    "@infinityloop.labs/common-frontend" "^1.0.14"
+    "@infinityloop.labs/constants-frontend" "^1.0.7"
+    "@infinityloop.labs/event-bus" "^1.0.55"
+    "@infinityloop.labs/ui-kit" "^0.0.138"
+    "@infinityloop.labs/utils" "^1.0.150"
     "@reduxjs/toolkit" "^1.9.5"
     async-mutex "^0.4.0"
     axios "^1.5.0"

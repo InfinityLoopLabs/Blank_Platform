@@ -1,7 +1,7 @@
 const data = {
   '@reduxjs/toolkit': '^1.9.5',
-  '@npm.piece/ui-kit': '^0.0.27',
-  '@npm.piece/utils': '^1.0.32',
+  '@infinityloop.labs/ui-kit': '^0.0.27',
+  '@infinityloop.labs/utils': '^1.0.32',
   'async-mutex': '^0.4.0',
   axios: '^1.3.6',
   clsx: '^2.0.0',

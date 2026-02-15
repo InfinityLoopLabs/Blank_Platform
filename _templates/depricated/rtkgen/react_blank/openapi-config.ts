@@ -1,4 +1,4 @@
-import type { ConfigFile } from '@npm.piece/generate-hooks-rtk/types/export'
+import type { ConfigFile } from '@infinityloop.labs/generate-hooks-rtk/types/export'
 
 // Выбираем куда добавлять хуки
 const getName = (name: string) => `./src/features/generated/hooks/${name}.ts`

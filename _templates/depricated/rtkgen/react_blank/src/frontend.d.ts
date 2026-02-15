@@ -1,1 +1,1 @@
-/// <reference types="@npm.piece/types/frontend" />
+/// <reference types="@infinityloop.labs/types/frontend" />

@@ -1,4 +1,4 @@
-import { useSizeDetect } from '@npm.piece/utils'
+import { useSizeDetect } from '@infinityloop.labs/utils'
 import { useEffect } from 'react'
 import { useAppActions } from '@hooks/useAppActions'
 import { useAppSelector } from '@hooks/useAppSelector'

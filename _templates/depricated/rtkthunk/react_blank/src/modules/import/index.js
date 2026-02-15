@@ -1,4 +1,4 @@
-import { ErrorBoundary } from '@npm.piece/utils'
+import { ErrorBoundary } from '@infinityloop.labs/utils'
 
 import React, { Suspense, lazy } from 'react'
 
