@@ -5,6 +5,14 @@ my-turborepo/node_modules
 .pnp
 .pnp.js
 
+# global build artifacts
+node_modules/
+dist/
+build/
+**/node_modules/
+**/dist/
+**/build/
+
 # testing
 coverage
 
