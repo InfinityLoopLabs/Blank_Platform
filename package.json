@@ -10,7 +10,7 @@
     "packages/*"
   ],
   "scripts": {
-    "build:libs": "turbo run build --filter=@npm.piece/constants-frontend & turbo run build --filter=@npm.piece/event-bus & turbo run build --filter=@npm.piece/common-frontend && turbo run build --filter=@npm.piece/utils && turbo run build --filter=@npm.piece/ui-kit  && turbo run build --filter=@npm.piece/mf-connect  && turbo run build --filter=@npm.piece/locale-downloader",
+    "build:libs": "turbo run build --filter=@infinityloop.labs/constants-frontend & turbo run build --filter=@infinityloop.labs/event-bus & turbo run build --filter=@infinityloop.labs/common-frontend && turbo run build --filter=@infinityloop.labs/utils && turbo run build --filter=@infinityloop.labs/ui-kit  && turbo run build --filter=@infinityloop.labs/mf-connect  && turbo run build --filter=@infinityloop.labs/locale-downloader",
     "build": "turbo run build",
     "prestart": "yarn build:libs",
     "start": "turbo run dev --filter=app_auth & turbo run dev --filter=app_root",
@@ -21,7 +21,8 @@
     "update": "node ./libs/update-packages/bin/index.js && yarn"
   },
   "devDependencies": {
-    "@npm.piece/eslint-config": "*",
+    "@infinityloop.labs/eslint-config-backend": "*",
+    "@infinityloop.labs/eslint-config-frontend": "*",
     "turbo": "^2.2.3"
   },
   "engines": {

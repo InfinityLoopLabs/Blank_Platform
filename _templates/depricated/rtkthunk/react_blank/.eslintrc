@@ -1,6 +1,6 @@
 {
   "extends": [
-    "@npm.piece/eslint-config"
+    "@infinityloop.labs/eslint-config-frontend"
   ],
   "parserOptions": {
     "ecmaVersion": 2020,
@@ -30,4 +30,3 @@
     }
   }
 }
-

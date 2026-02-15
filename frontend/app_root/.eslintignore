@@ -1,7 +1,0 @@
-/build
-/node_modules/**
-/node_modules
-/src/index.ts
-/src/features/generated/hooks
-/src/utils/components/ErrorBoundary/index.tsx
-

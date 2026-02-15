@@ -1,4 +1,4 @@
-import sharedConfig from "@infinityloop.labs/eslint-config";
+import sharedConfig from "@infinityloop.labs/eslint-config-frontend";
 
 export default [
   {

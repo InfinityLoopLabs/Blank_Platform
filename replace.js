@@ -30,8 +30,8 @@ const replaceTextInFiles = (dir, from, to) => {
 }
 
 const main = () => {
-  const from = '@npm.piece/constants-frontend-frontend' // Замените на текст, который нужно заменить
-  const to = '@npm.piece/constants-frontend' // Замените на текст, на который нужно заменить
+  const from = '@npm.piece/' // Замените на текст, который нужно заменить
+  const to = '@infinityloop.labs/' // Замените на текст, на который нужно заменить
   const startDir = '.' // Замените на папку, в которой нужно начать
 
   replaceTextInFiles(startDir, from, to)
