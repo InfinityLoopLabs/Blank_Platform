@@ -1,0 +1,83 @@
+import { Inject, Injectable } from '@nestjs/common';
+
+import { NoopExporter } from '../adapters/noop-exporter';
+import { ObservabilityEvent, ObservabilitySnapshot } from '../domain/observability-event';
+import { ObservabilityExporter } from '../ports/exporter.port';
+import { OBSERVABILITY_EXPORTER_TOKEN } from '../transport/tokens';
+
+@Injectable()
+export class ObservabilityService {
+  private sentEvents = 0;
+  private droppedEvents = 0;
+  private readonly buffer: ObservabilityEvent[] = [];
+
+  constructor(
+    private readonly endpoint: string,
+    private readonly isSidecarUp: boolean,
+    private readonly serviceName: string,
+    private readonly environment: string,
+    @Inject(OBSERVABILITY_EXPORTER_TOKEN) private readonly exporter: ObservabilityExporter = new NoopExporter(),
+  ) {}
+
+  emit(event: string, fields: Record<string, unknown>): void {
+    if (!this.isSidecarUp) {
+      this.droppedEvents += 1;
+      return;
+    }
+    if (this.buffer.length >= 128) {
+      this.droppedEvents += 1;
+      return;
+    }
+
+    const entry: ObservabilityEvent = {
+      event,
+      fields,
+      timestamp: new Date().toISOString(),
+      serviceName: this.serviceName,
+      environment: this.environment,
+    };
+
+    this.buffer.push(entry);
+    this.sentEvents += 1;
+
+    void this.exporter
+      .export(entry)
+      .then((isExported) => {
+        if (!isExported) {
+          this.droppedEvents += 1;
+        }
+        this.release(entry);
+      })
+      .catch(() => {
+        this.droppedEvents += 1;
+        this.release(entry);
+      });
+  }
+
+  log(level: string, message: string, fields: Record<string, unknown>): Record<string, unknown> {
+    return {
+      timestamp: new Date().toISOString(),
+      level,
+      message,
+      service: this.serviceName,
+      environment: this.environment,
+      ...fields,
+    };
+  }
+
+  snapshot(): ObservabilitySnapshot {
+    return {
+      endpoint: this.endpoint,
+      isSidecarUp: this.isSidecarUp,
+      sentEvents: this.sentEvents,
+      droppedEvents: this.droppedEvents,
+    };
+  }
+
+  private release(entry: ObservabilityEvent): void {
+    const index = this.buffer.indexOf(entry);
+    if (index >= 0) {
+      this.buffer.splice(index, 1);
+    }
+  }
+}
