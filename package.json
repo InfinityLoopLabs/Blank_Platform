@@ -21,12 +21,7 @@
     "update": "node ./libs/update-packages/bin/index.js && yarn"
   },
   "devDependencies": {
-    "@infinityloop.labs/eslint-config-backend": "*",
-    "@infinityloop.labs/eslint-config-frontend": "*",
     "turbo": "^2.2.3"
-  },
-  "engines": {
-    "node": ">=14.0.0"
-  },
-  "packageManager": "yarn@1.22.17"
+  }
+
 }

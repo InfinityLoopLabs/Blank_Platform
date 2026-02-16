@@ -1,0 +1,84 @@
+{
+  "include": [
+    "**/*",
+    "app/**/*.ts",
+    "app/**/*.ts",
+    "app/**/*.tsx",
+    "app/**/*.mts",
+    "app/**/*.cts",
+    "**/.server/**/*",
+    "**/.client/**/*",
+    ".react-router/types/**/*",
+    "global.d.ts",
+    "frontend.d.ts",
+    "vite.config.ts",
+    "react-router.config.ts",
+    "openapi-config-auth.ts"
+  ],
+  "compilerOptions": {
+    "lib": [
+      "DOM",
+      "DOM.Iterable",
+      "ES2022"
+    ],
+    "types": [
+      "node",
+      "vite/client"
+    ],
+    "target": "ES2022",
+    "module": "ES2022",
+    // "moduleResolution": "bundler",
+    // после ts 5 нужно использовать bundler, для код гена нижний через node
+    "moduleResolution": "node",
+    "jsx": "react-jsx",
+    "rootDirs": [
+      ".",
+      "./.react-router/types"
+    ],
+    "baseUrl": "./app",
+    "paths": {
+      "@application/*": [
+        "application/*"
+      ],
+      "@components/*": [
+        "components/*"
+      ],
+      "@constants/*": [
+        "constants/*"
+      ],
+      "@functions/*": [
+        "utils/functions/*"
+      ],
+      "@hooks/*": [
+        "utils/hooks/*"
+      ],
+      "@lib/*": [
+        "utils/lib/*"
+      ],
+      "@layouts/*": [
+        "layouts/*"
+      ],
+      "@modules/*": [
+        "modules/*"
+      ],
+      "@pages/*": [
+        "pages/*"
+      ],
+      "@generated/*": [
+        "features/generated/*"
+      ],
+      "@services/*": [
+        "features/services/*"
+      ],
+      "@widgets/*": [
+        "features/widgets/*"
+      ]
+    },
+    "esModuleInterop": true,
+    "verbatimModuleSyntax": true,
+    "noEmit": true,
+    "resolveJsonModule": true,
+    "skipLibCheck": true,
+    "strict": true
+  }
+}
