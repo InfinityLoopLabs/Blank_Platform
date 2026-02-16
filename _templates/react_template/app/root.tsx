@@ -9,20 +9,12 @@ import {
   Scripts,
   ScrollRestoration,
 } from 'react-router'
-import { useAppSelector } from '@hooks/useAppSelector'
 import { analyticsEngine } from '@services/analyticsEngine'
 import { appSize } from '@services/appSize'
 import { auth } from '@services/auth'
-import { chartPopover } from '@services/chartPopover'
 import { palette } from '@services/palette'
 import { router } from '@services/router'
 import { theme } from '@services/theme'
-import { toolbar } from '@services/toolbar'
-import { ActionToolbar } from '@widgets/ActionToolbar'
-import { ChartPopover } from '@widgets/ChartPopover'
-import { DraftsToolBarBlocks } from '@widgets/DraftsToolBarBlocks'
-import { DraftsToolBarEditBlocks } from '@widgets/DraftsToolBarEditBlocks'
-import { Header } from '@widgets/Header'
 import { Popup } from '@widgets/Popup'
 import { Providers } from '@application/providers'
 import type { Route } from './+types/root'
@@ -64,14 +56,8 @@ export function Layout({ children }: { children: ReactNode }) {
 }
 
 export default function App() {
-  const { isAuthenticated } = useAppSelector(state => state.auth)
-
   return (
     <Flex className="size-full bg-black" column>
-      <Header.Widget />
-      {/* График в header: Начало */}
-      <ChartPopover.Widget />
-      {/* График в header: Конец */}
       <Flex>
         <Flex className="overflow-y-auto w-full">
           <Outlet />
@@ -80,11 +66,6 @@ export default function App() {
 
       <Popup.Widget />
 
-      <DraftsToolBarBlocks.Widget />
-
-      <DraftsToolBarEditBlocks.Widget />
-
-      <ActionToolbar.Widget />
       {/*  Сервисы без авторизации: Начало */}
       <ServiceInjector
         services={[
@@ -94,13 +75,11 @@ export default function App() {
           auth.service,
           router.service,
           theme.service,
-          toolbar.service,
         ]}
       />
       {/*  Сервисы без авторизации: Конец */}
 
       {/*  Сервисы с авторизацией: Начало */}
-      {isAuthenticated && <ServiceInjector services={[chartPopover.service]} />}
       {/*  Сервисы с авторизацией: Конец */}
     </Flex>
   )

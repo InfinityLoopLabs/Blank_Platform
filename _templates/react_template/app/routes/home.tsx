@@ -1,4 +1,4 @@
-import { Page as PageComponent } from '@pages/CourseList'
+import { Page as PageComponent } from '@pages/Login'
 
 import type { Route } from './+types/home'
 

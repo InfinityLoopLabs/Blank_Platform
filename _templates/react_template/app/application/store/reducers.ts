@@ -13,7 +13,6 @@ import { generatedReducersList } from '@application/store/generated/reducers'
 
 export const reducersList = {
   // Services: Начало
-  toolbar,
   roles,
   analyticsEngine,
   appSize,

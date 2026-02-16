@@ -9,3 +9,6 @@
 .pnp.*
 /.claude/
 /.idea
+/playwright-report/
+/test-results/
+/blob-report/
