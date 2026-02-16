@@ -7,7 +7,8 @@
     "_templates/*",
     "frontend/*",
     "backend/*",
-    "packages/*"
+    "packages/*",
+    "cli"
   ],
   "scripts": {
     "build:libs": "turbo run build --filter=@infinityloop.labs/constants-frontend & turbo run build --filter=@infinityloop.labs/event-bus & turbo run build --filter=@infinityloop.labs/common-frontend && turbo run build --filter=@infinityloop.labs/utils && turbo run build --filter=@infinityloop.labs/ui-kit  && turbo run build --filter=@infinityloop.labs/mf-connect  && turbo run build --filter=@infinityloop.labs/locale-downloader",

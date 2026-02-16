@@ -4,20 +4,15 @@ import { type ActionCreatorsMapObject, bindActionCreators } from 'redux'
 import { Actions as analyticsEngineActions } from '@services/analyticsEngine/'
 import { Actions as appSizeActions } from '@services/appSize/'
 import { Actions as authActions } from '@services/auth/'
-import { Actions as chartPopoverActions } from '@services/chartPopover/'
 import { Actions as formsActions } from '@services/forms/'
 import { Actions as indexeddbActions } from '@services/indexeddb/'
 import { Actions as notifyActions } from '@services/notify/'
 import { Actions as popupActions } from '@services/popup/'
-import { Actions as progressActions } from '@services/progress/'
 import { Actions as rolesActions } from '@services/roles/'
 import { Actions as routerActions } from '@services/router/'
 import { Actions as themeActions } from '@services/theme/'
-import { Actions as toolbarActions } from '@services/toolbar/'
-import { Actions as BreadcrumbsActions } from '@widgets/Breadcrumbs/'
+
 import type { AppDispatchType } from '@application/store/store'
-import { Actions as paletteActions } from '@services/palette/'
-import { Actions as LootboxActions } from '@widgets/Lootbox/'
 
 /**
  * Хук для создания и группировки действий из различных сервисов.
@@ -46,22 +41,16 @@ export const useAppActions = () => {
   return useMemo(
     () => ({
       // insert actions here
-Lootbox: createAction(LootboxActions),
-palette: createAction(paletteActions),
-      Breadcrumbs: createAction(BreadcrumbsActions),
       analyticsEngine: createAction(analyticsEngineActions),
       appSize: createAction(appSizeActions),
       auth: createAction(authActions),
-      chartPopover: createAction(chartPopoverActions),
       forms: createAction(formsActions),
       indexeddb: createAction(indexeddbActions),
       notify: createAction(notifyActions),
       popup: createAction(popupActions),
-      progress: createAction(progressActions),
       roles: createAction(rolesActions),
       router: createAction(routerActions),
       theme: createAction(themeActions),
-      toolbar: createAction(toolbarActions),
     }),
     [],
   )

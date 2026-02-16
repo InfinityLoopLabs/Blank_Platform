@@ -1,0 +1,14 @@
+services:
+  platform-template-tests:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    environment:
+      PLATFORM_REPO_PATH: /workspace/platform
+      TEMPLATE_REPO_PATH: /workspace/react_template
+      CONFIG_FILE_NAME: infinityloop.config.js
+      REPO1_URL: ${REPO1_URL:-}
+      REPO2_URL: ${REPO2_URL:-}
+    volumes:
+      - ../../:/workspace/platform
+      - ../react_template:/workspace/react_template
