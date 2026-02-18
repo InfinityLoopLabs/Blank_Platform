@@ -16,7 +16,7 @@ export const REQUIRED_POLICY_METADATA_KEY = 'requiredPolicy';
 export const RequiredPolicy = (policy: string) => SetMetadata(REQUIRED_POLICY_METADATA_KEY, policy);
 
 @Injectable()
-export class AuthGuard implements CanActivate {
+export class HttpAuthGuard implements CanActivate {
   canActivate(context: ExecutionContext): boolean {
     const request = context.switchToHttp().getRequest();
     const requestContext = getRequestContext(request);
@@ -28,6 +28,8 @@ export class AuthGuard implements CanActivate {
     return true;
   }
 }
+
+export const AuthGuard = HttpAuthGuard;
 
 @Injectable()
 export class PolicyGuard implements CanActivate {

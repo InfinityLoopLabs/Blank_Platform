@@ -21,6 +21,7 @@
     "@hookform/resolvers": "^5.2.2",
     "@infinityloop.labs/common": "1.0.4",
     "@infinityloop.labs/event-bus": "1.0.2",
+    "@infinityloop.labs/fronted-core": "*",
     "@infinityloop.labs/routing": "^1.0.0",
     "@infinityloop.labs/tailwind-config": "^1.0.17",
     "@infinityloop.labs/ui-kit": "^0.0.10",

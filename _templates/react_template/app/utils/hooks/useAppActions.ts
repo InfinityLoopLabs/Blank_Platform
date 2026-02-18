@@ -1,15 +1,17 @@
 import { useMemo } from 'react'
+import {
+  useAppSizeActions,
+  useFormsActions,
+  useIndexeddbActions,
+  usePopupActions,
+  useRouterActions,
+} from '@infinityloop.labs/fronted-core'
 import { useDispatch } from 'react-redux'
 import { type ActionCreatorsMapObject, bindActionCreators } from 'redux'
 import { Actions as analyticsEngineActions } from '@services/analyticsEngine/'
-import { Actions as appSizeActions } from '@services/appSize/'
 import { Actions as authActions } from '@services/auth/'
-import { Actions as formsActions } from '@services/forms/'
-import { Actions as indexeddbActions } from '@services/indexeddb/'
 import { Actions as notifyActions } from '@services/notify/'
-import { Actions as popupActions } from '@services/popup/'
 import { Actions as rolesActions } from '@services/roles/'
-import { Actions as routerActions } from '@services/router/'
 import { Actions as themeActions } from '@services/theme/'
 
 import type { AppDispatchType } from '@application/store/store'
@@ -35,6 +37,11 @@ import type { AppDispatchType } from '@application/store/store'
  */
 export const useAppActions = () => {
   const dispatch = useDispatch<AppDispatchType>()
+  const appSize = useAppSizeActions()
+  const forms = useFormsActions()
+  const indexeddb = useIndexeddbActions()
+  const popup = usePopupActions()
+  const router = useRouterActions()
   const createAction = <T extends ActionCreatorsMapObject>(actions: T) =>
     bindActionCreators(actions, dispatch)
 
@@ -42,16 +49,16 @@ export const useAppActions = () => {
     () => ({
       // insert actions here
       analyticsEngine: createAction(analyticsEngineActions),
-      appSize: createAction(appSizeActions),
+      appSize,
       auth: createAction(authActions),
-      forms: createAction(formsActions),
-      indexeddb: createAction(indexeddbActions),
+      forms,
+      indexeddb,
       notify: createAction(notifyActions),
-      popup: createAction(popupActions),
+      popup,
       roles: createAction(rolesActions),
-      router: createAction(routerActions),
+      router,
       theme: createAction(themeActions),
     }),
-    [],
+    [appSize, forms, indexeddb, popup, router],
   )
 }

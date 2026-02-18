@@ -1,5 +1,6 @@
 import React from 'react'
 
+import type { ModalStateType } from '@infinityloop.labs/fronted-core'
 import { Flex, Paper, Typography } from '@infinityloop.labs/ui-kit'
 import {
   ArrayRender,
@@ -7,7 +8,6 @@ import {
   ErrorBoundary,
   Popover,
 } from '@infinityloop.labs/utils'
-import type { ModalStateType } from '@services/popup/lib/types'
 import { dti } from '../constants/data-testid'
 
 // В UI запрещено использование хуков и логики — только рендер данных, полученных из контейнера.

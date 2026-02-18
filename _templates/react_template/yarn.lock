@@ -1253,7 +1253,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@infinityloop.labs/event-bus@npm:1.0.2":
+"@infinityloop.labs/event-bus@npm:1.0.2, @infinityloop.labs/event-bus@npm:^1.0.2":
   version: 1.0.2
   resolution: "@infinityloop.labs/event-bus@npm:1.0.2"
   dependencies:
@@ -1261,6 +1261,20 @@ __metadata:
   peerDependencies:
     react: 19.x.x
   checksum: 10c0/682bb1efa6edf6feb242d783d770a0ca3d586eb2d947dac8272731be7767b0bd056da78cbf6bdb615b5d2ea9c6359f0bc492ad0ea9c4438dd78816eaba684adb
+  languageName: node
+  linkType: hard
+
+"@infinityloop.labs/fronted-core@npm:*":
+  version: 0.0.1
+  resolution: "@infinityloop.labs/fronted-core@npm:0.0.1"
+  dependencies:
+    "@infinityloop.labs/event-bus": "npm:^1.0.2"
+    "@reduxjs/toolkit": "npm:^2.10.1"
+    react-redux: "npm:^9.2.0"
+  peerDependencies:
+    react: 19.x.x
+    react-dom: 19.x.x
+  checksum: 10c0/a24aba1cfc455d6ffe9ec719e6e2e690b1d036fb17bb6fc3d33b7030533e92b3c07ec38e6d9bc792b1571a4dffa0c4e92c3c84cd9ba0e62df3a9f046d460e0b2
   languageName: node
   linkType: hard
 
@@ -3004,6 +3018,28 @@ __metadata:
     react-redux:
       optional: true
   checksum: 10c0/8dce17761d289ccdcc7599cabfe3a2f28eaa13e2971ced8f9bd3160af31d96ea11ddecfcbe9fe0c07b5a9fba592140a202d4581cb9aa1c486c5ba0e01316dfce
+  languageName: node
+  linkType: hard
+
+"@reduxjs/toolkit@npm:^2.10.1":
+  version: 2.11.2
+  resolution: "@reduxjs/toolkit@npm:2.11.2"
+  dependencies:
+    "@standard-schema/spec": "npm:^1.0.0"
+    "@standard-schema/utils": "npm:^0.3.0"
+    immer: "npm:^11.0.0"
+    redux: "npm:^5.0.1"
+    redux-thunk: "npm:^3.1.0"
+    reselect: "npm:^5.1.0"
+  peerDependencies:
+    react: ^16.9.0 || ^17.0.0 || ^18 || ^19
+    react-redux: ^7.2.1 || ^8.1.3 || ^9.0.0
+  peerDependenciesMeta:
+    react:
+      optional: true
+    react-redux:
+      optional: true
+  checksum: 10c0/4d388b96dc4b12a577af23607c252b3647c1b3b5136dbb0212e1dbbef9bb309e93d3ba6a95795ee165e87e4286453025cd67a98b5b3bb6d244b93ea487dd1ac0
   languageName: node
   linkType: hard
 
@@ -6251,6 +6287,7 @@ __metadata:
     "@infinityloop.labs/common": "npm:1.0.4"
     "@infinityloop.labs/eslint-config": "npm:^2.0.0"
     "@infinityloop.labs/event-bus": "npm:1.0.2"
+    "@infinityloop.labs/fronted-core": "npm:*"
     "@infinityloop.labs/routing": "npm:^1.0.0"
     "@infinityloop.labs/tailwind-config": "npm:^1.0.17"
     "@infinityloop.labs/types": "npm:^1.0.2"

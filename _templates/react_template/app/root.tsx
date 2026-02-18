@@ -1,4 +1,10 @@
-import type { ReactNode } from 'react'
+import { type ReactNode } from 'react'
+import {
+  appSize,
+  indexeddb,
+  popup,
+  router,
+} from '@infinityloop.labs/fronted-core'
 import { Flex } from '@infinityloop.labs/ui-kit'
 import { ServiceInjector } from '@infinityloop.labs/utils'
 import {
@@ -10,16 +16,26 @@ import {
   ScrollRestoration,
 } from 'react-router'
 import { analyticsEngine } from '@services/analyticsEngine'
-import { appSize } from '@services/appSize'
 import { auth } from '@services/auth'
-import { palette } from '@services/palette'
-import { router } from '@services/router'
 import { theme } from '@services/theme'
 import { Popup } from '@widgets/Popup'
+import {
+  indexedDBInstance,
+  indexedDbTableNames,
+  indexedDbVersion,
+} from '@application/api/indexeddb'
 import { Providers } from '@application/providers'
 import type { Route } from './+types/root'
 
 import './app.css'
+
+const indexedDbInstances = [
+  {
+    instance: indexedDBInstance,
+    tableNames: indexedDbTableNames,
+    version: indexedDbVersion,
+  },
+]
 
 export const links: Route.LinksFunction = () => [
   {
@@ -71,8 +87,9 @@ export default function App() {
         services={[
           analyticsEngine.service,
           appSize.service,
-          palette.service,
           auth.service,
+          indexeddb.service(indexedDbInstances),
+          popup.service,
           router.service,
           theme.service,
         ]}

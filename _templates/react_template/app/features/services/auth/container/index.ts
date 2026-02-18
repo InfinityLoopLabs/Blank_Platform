@@ -6,6 +6,7 @@ import {
   EventTransferActionsEnum,
   useSubscribe,
 } from '@infinityloop.labs/event-bus'
+import type { RouterQueryParamsType } from '@infinityloop.labs/fronted-core'
 import {
   useAppLocation,
   useAppSimpleNavigation,
@@ -21,7 +22,6 @@ import {
 } from '@constants/local'
 import { useAppActions } from '@hooks/useAppActions'
 import { useAppSelector } from '@hooks/useAppSelector'
-import type { RouterQueryParamsType } from '@services/router/lib/types'
 import {
   useGetApiMeQuery,
   usePostApiRefreshMutation,

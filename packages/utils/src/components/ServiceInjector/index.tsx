@@ -1,5 +1,5 @@
 type OwnPropertyType = {
-  services: Array<() => void>
+  services?: Array<() => void>
 }
 
 // Компонент Service Injector предназначен для инжектирования кастомных хуков, содержащих useEffect,
@@ -12,7 +12,7 @@ type OwnPropertyType = {
 // Таким образом, Service Injector может быть полезным инструментом для оптимизации производительности и организации кода,
 // так как он позволяет разделять логику сайд-эффектов от дерева компонентов и связанных с ним рендеров.
 
-export const ServiceInjector = ({ services }: OwnPropertyType) => {
+export const ServiceInjector = ({ services = [] }: OwnPropertyType) => {
   services.forEach(service => service())
 
   return null

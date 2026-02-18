@@ -1,9 +1,0 @@
-export enum TableNamesEnum {
-  PR_EMPLOYEE_ACHIEVEMENTS_AND_GOALS_FORM_DRAFT = 'PR_EMPLOYEE_ACHIEVEMENTS_AND_GOALS_FORM_DRAFT',
-}
-
-export const TableNames = [
-  TableNamesEnum.PR_EMPLOYEE_ACHIEVEMENTS_AND_GOALS_FORM_DRAFT,
-]
-
-export const MainIndexDBID = 1

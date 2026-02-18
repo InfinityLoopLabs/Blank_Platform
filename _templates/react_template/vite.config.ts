@@ -28,6 +28,7 @@ export default defineConfig({
       '@infinityloop.labs/ui-kit',
       '@infinityloop.labs/utils',
       '@infinityloop.labs/routing',
+      '@infinityloop.labs/fronted-core',
     ],
   },
 })
