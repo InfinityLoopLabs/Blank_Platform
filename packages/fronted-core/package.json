@@ -1,0 +1,53 @@
+{
+  "name": "@infinityloop.labs/fronted-core",
+  "private": false,
+  "version": "0.0.1",
+  "type": "module",
+  "license": "MIT",
+  "files": [
+    "package.json",
+    "README",
+    "LICENSE",
+    "dist/"
+  ],
+  "main": "./dist/index.umd.js",
+  "module": "./dist/index.es.js",
+  "types": "./dist/index.d.ts",
+  "publishConfig": {
+    "access": "public"
+  },
+  "exports": {
+    ".": {
+      "import": "./dist/index.es.js",
+      "require": "./dist/index.umd.js",
+      "types": "./dist/index.d.ts"
+    }
+  },
+  "scripts": {
+    "build": "tsc && vite build",
+    "lint": "eslint src --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
+    "preview": "vite preview"
+  },
+  "peerDependencies": {
+    "react": "19.x.x",
+    "react-dom": "19.x.x",
+    "react-router": "^7.13.0"
+  },
+  "devDependencies": {
+    "@types/node": "^22.15.3",
+    "@types/react": "^19.1.8",
+    "@types/react-dom": "^19.1.9",
+    "@vitejs/plugin-react-swc": "^3.4.0",
+    "eslint-plugin-react-refresh": "^0.4.3",
+    "typescript": "^5.9.2",
+    "vite": "^4.5.0",
+    "vite-plugin-dts": "^3.6.1"
+  },
+  "dependencies": {
+    "@infinityloop.labs/event-bus": "^1.0.2",
+    "@infinityloop.labs/routing": "^1.0.0",
+    "@infinityloop.labs/utils": "^1.0.0",
+    "@reduxjs/toolkit": "^2.10.1",
+    "react-redux": "^9.2.0"
+  }
+}
