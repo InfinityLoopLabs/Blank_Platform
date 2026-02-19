@@ -3,16 +3,16 @@ import {
   useAppSizeActions,
   useFormsActions,
   useIndexeddbActions,
+  useNotifyActions,
   usePopupActions,
   useRouterActions,
+  useThemeActions,
 } from '@infinityloop.labs/fronted-core'
 import { useDispatch } from 'react-redux'
 import { type ActionCreatorsMapObject, bindActionCreators } from 'redux'
 import { Actions as analyticsEngineActions } from '@services/analyticsEngine/'
 import { Actions as authActions } from '@services/auth/'
-import { Actions as notifyActions } from '@services/notify/'
 import { Actions as rolesActions } from '@services/roles/'
-import { Actions as themeActions } from '@services/theme/'
 
 import type { AppDispatchType } from '@application/store/store'
 
@@ -40,8 +40,10 @@ export const useAppActions = () => {
   const appSize = useAppSizeActions()
   const forms = useFormsActions()
   const indexeddb = useIndexeddbActions()
+  const notify = useNotifyActions()
   const popup = usePopupActions()
   const router = useRouterActions()
+  const theme = useThemeActions()
   const createAction = <T extends ActionCreatorsMapObject>(actions: T) =>
     bindActionCreators(actions, dispatch)
 
@@ -53,12 +55,12 @@ export const useAppActions = () => {
       auth: createAction(authActions),
       forms,
       indexeddb,
-      notify: createAction(notifyActions),
+      notify,
       popup,
       roles: createAction(rolesActions),
       router,
-      theme: createAction(themeActions),
+      theme,
     }),
-    [appSize, forms, indexeddb, popup, router],
+    [appSize, forms, indexeddb, notify, popup, router, theme],
   )
 }

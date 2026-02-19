@@ -50,6 +50,13 @@ export {
   type ScreenFlagStateType,
 } from './features/services/appSize'
 export {
+  Actions as notifyActions,
+  notify,
+  type NotifyType,
+  Reducer as notifyReducer,
+  useNotifyActions,
+} from './features/services/notify'
+export {
   Actions as popupActions,
   Reducer as popupReducer,
   popup,
@@ -65,3 +72,9 @@ export {
   type RouterQueryParamValueType,
   type RouterQueryParamsType,
 } from './features/services/router'
+export {
+  Actions as themeActions,
+  Reducer as themeReducer,
+  theme,
+  useThemeActions,
+} from './features/services/theme'

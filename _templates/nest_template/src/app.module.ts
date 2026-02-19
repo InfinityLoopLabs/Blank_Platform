@@ -9,7 +9,7 @@ import { IntegrationPolicyModule } from './platform/modules/integration-policy/t
 import { ObservabilityModule } from './platform/modules/observability/transport';
 import { GrpcTransportModule } from './platform/transport/grpc';
 import { MiddlewareExceptionFilter } from './platform/transport/http/filters';
-import { HttpAuthGuard, PolicyGuard } from './platform/transport/http/guards';
+import { AuthGuard, PolicyGuard } from './platform/transport/http/guards';
 import { TimingInterceptor } from './platform/transport/http/interceptors';
 import { RequestContextMiddleware } from './platform/transport/http/middleware';
 import { RequestValidationPipe } from './platform/transport/http/pipes';
@@ -20,7 +20,7 @@ import { ResponseFactory } from './platform/transport/http/response.factory';
   controllers: [SamplesController],
   providers: [
     ResponseFactory,
-    HttpAuthGuard,
+    AuthGuard,
     PolicyGuard,
     RequestValidationPipe,
     TimingInterceptor,

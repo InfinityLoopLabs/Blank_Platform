@@ -12,16 +12,16 @@ export const useContainer = () => {
 
   useEffect(() => {
     setQueryParameters(queryParams as RouterQueryParamsType)
-  }, [queryParams, setQueryParameters])
+  }, [queryParams])
 
   useEffect(() => {
     const pathSegments = pathname.split('/').filter(Boolean)
     setPathNameFlags(pathSegments[0])
-  }, [pathname, setPathNameFlags])
+  }, [pathname])
 
   useEffect(() => {
     setIsRouterInitialized(true)
-  }, [setIsRouterInitialized])
+  }, [])
 
   useEffect(() => {
     window.scrollTo({

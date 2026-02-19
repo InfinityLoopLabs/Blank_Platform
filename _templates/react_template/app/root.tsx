@@ -1,9 +1,11 @@
 import { type ReactNode } from 'react'
 import {
   appSize,
+  notify,
   indexeddb,
   popup,
   router,
+  theme,
 } from '@infinityloop.labs/fronted-core'
 import { Flex } from '@infinityloop.labs/ui-kit'
 import { ServiceInjector } from '@infinityloop.labs/utils'
@@ -17,7 +19,6 @@ import {
 } from 'react-router'
 import { analyticsEngine } from '@services/analyticsEngine'
 import { auth } from '@services/auth'
-import { theme } from '@services/theme'
 import { Popup } from '@widgets/Popup'
 import {
   indexedDBInstance,
@@ -88,6 +89,7 @@ export default function App() {
           analyticsEngine.service,
           appSize.service,
           auth.service,
+          notify.service,
           indexeddb.service(indexedDbInstances),
           popup.service,
           router.service,

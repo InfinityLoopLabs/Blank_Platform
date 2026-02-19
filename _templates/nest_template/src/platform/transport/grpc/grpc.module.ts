@@ -1,10 +1,10 @@
 import { Module } from '@nestjs/common';
 
-import { GrpcAuthGuard } from './grpc-auth.guard';
+import { GrpcContextInterceptor } from './interceptors';
 import { GrpcTransportService } from './grpc.service';
 
 @Module({
-  providers: [GrpcTransportService, GrpcAuthGuard],
-  exports: [GrpcTransportService, GrpcAuthGuard],
+  providers: [GrpcTransportService, GrpcContextInterceptor],
+  exports: [GrpcTransportService, GrpcContextInterceptor],
 })
 export class GrpcTransportModule {}

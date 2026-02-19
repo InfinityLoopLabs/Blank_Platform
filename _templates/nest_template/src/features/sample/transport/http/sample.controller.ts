@@ -25,7 +25,7 @@ import {
 } from '../../../../platform/transport/http/context'
 import { MiddlewareExceptionFilter } from '../../../../platform/transport/http/filters'
 import {
-  HttpAuthGuard,
+  AuthGuard,
   PolicyGuard,
   RequiredPolicy,
 } from '../../../../platform/transport/http/guards'
@@ -44,7 +44,7 @@ export class SamplesController {
   @Post()
   @HttpCode(HttpStatus.CREATED)
   @RequiredPolicy('sample:create')
-  @UseGuards(HttpAuthGuard, PolicyGuard)
+  @UseGuards(AuthGuard, PolicyGuard)
   @UseInterceptors(TimingInterceptor)
   async create(
     @Body(RequestValidationPipe) payload: CreateRequestDto,

@@ -1,25 +1,20 @@
 import { CanActivate, ExecutionContext, Injectable, SetMetadata } from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
 
-import { getRequestContext } from '../context';
+import {
+  TransportError,
+  getExecutionRequestContext,
+} from '../../common';
 
-export class MiddlewareError extends Error {
-  constructor(
-    public readonly code: string,
-    message: string,
-  ) {
-    super(message);
-  }
-}
+export class MiddlewareError extends TransportError {}
 
 export const REQUIRED_POLICY_METADATA_KEY = 'requiredPolicy';
 export const RequiredPolicy = (policy: string) => SetMetadata(REQUIRED_POLICY_METADATA_KEY, policy);
 
 @Injectable()
-export class HttpAuthGuard implements CanActivate {
+export class AuthGuard implements CanActivate {
   canActivate(context: ExecutionContext): boolean {
-    const request = context.switchToHttp().getRequest();
-    const requestContext = getRequestContext(request);
+    const requestContext = getExecutionRequestContext(context);
 
     if (!requestContext.isAuthenticated) {
       throw new MiddlewareError('UNAUTHENTICATED', 'authentication failed');
@@ -29,7 +24,7 @@ export class HttpAuthGuard implements CanActivate {
   }
 }
 
-export const AuthGuard = HttpAuthGuard;
+export const HttpAuthGuard = AuthGuard;
 
 @Injectable()
 export class PolicyGuard implements CanActivate {
@@ -45,8 +40,7 @@ export class PolicyGuard implements CanActivate {
       return true;
     }
 
-    const request = context.switchToHttp().getRequest();
-    const requestContext = getRequestContext(request);
+    const requestContext = getExecutionRequestContext(context);
 
     if (requiredPolicy === 'sample:create' && !requestContext.canCreateSample) {
       throw new MiddlewareError('FORBIDDEN', 'policy denied');
