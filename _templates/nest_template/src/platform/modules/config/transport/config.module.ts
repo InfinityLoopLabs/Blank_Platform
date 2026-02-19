@@ -1,22 +1,22 @@
 import { Module } from '@nestjs/common';
 
+import { AppConfigProvider } from '../application/app-config.provider';
 import { ConfigService } from '../application/config.service';
 import { EnvConfigRepository } from '../adapters/env-config.repository';
-import { APP_CONFIG_TOKEN, CONFIG_REPOSITORY_TOKEN } from './tokens';
 
 @Module({
   providers: [
     {
-      provide: CONFIG_REPOSITORY_TOKEN,
+      provide: EnvConfigRepository,
       useFactory: () => new EnvConfigRepository(process.env),
     },
     ConfigService,
     {
-      provide: APP_CONFIG_TOKEN,
+      provide: AppConfigProvider,
       inject: [ConfigService],
-      useFactory: (configService: ConfigService) => configService.load(),
+      useFactory: (configService: ConfigService) => new AppConfigProvider(configService.load()),
     },
   ],
-  exports: [APP_CONFIG_TOKEN, CONFIG_REPOSITORY_TOKEN, ConfigService],
+  exports: [AppConfigProvider, EnvConfigRepository, ConfigService],
 })
 export class ConfigModule {}

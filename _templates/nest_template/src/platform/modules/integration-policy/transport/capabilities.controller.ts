@@ -1,15 +1,13 @@
-import { Controller, Get, HttpCode, HttpStatus, Inject, Req } from '@nestjs/common';
+import { Controller, Get, HttpCode, HttpStatus, Req } from '@nestjs/common';
 
 import { RequestWithContext, getRequestContext } from '../../../transport/http/context';
 import { ResponseFactory } from '../../../transport/http/response.factory';
 import { IntegrationPolicyService } from '../application/integration-policy.service';
-import { IntegrationPolicies } from '../domain/integration-policy';
-import { INTEGRATION_POLICIES_TOKEN } from './tokens';
 
 @Controller('internal/capabilities')
 export class CapabilitiesController {
   constructor(
-    @Inject(INTEGRATION_POLICIES_TOKEN) private readonly config: IntegrationPolicies,
+    private readonly integrationPolicyService: IntegrationPolicyService,
     private readonly responseFactory: ResponseFactory,
   ) {}
 
@@ -17,9 +15,10 @@ export class CapabilitiesController {
   @HttpCode(HttpStatus.OK)
   status(@Req() request: RequestWithContext) {
     const context = getRequestContext(request);
+    const config = this.integrationPolicyService.load();
     return this.responseFactory.ok(
       'integration capabilities',
-      IntegrationPolicyService.capabilityReport(this.config),
+      IntegrationPolicyService.capabilityReport(config),
       context,
     ).envelope;
   }

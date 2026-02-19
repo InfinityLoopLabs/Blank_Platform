@@ -1,13 +1,12 @@
-import { Inject, Injectable } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 
 import { EnvConfigRepository } from '../../config/adapters/env-config.repository';
 import { ConfigRepository } from '../../config/ports/config.repository';
-import { CONFIG_REPOSITORY_TOKEN } from '../../config/transport/tokens';
 import { IntegrationPolicy, IntegrationPolicies, IntegrationHealth } from '../domain/integration-policy';
 
 @Injectable()
 export class IntegrationPolicyService {
-  constructor(@Inject(CONFIG_REPOSITORY_TOKEN) private readonly repository: ConfigRepository) {}
+  constructor(private readonly repository: EnvConfigRepository) {}
 
   load(): IntegrationPolicies {
     return IntegrationPolicyService.fromRepository(this.repository);
@@ -45,11 +44,11 @@ export class IntegrationPolicyService {
     };
 
     return {
-      postgres: build('postgres', true, 'postgres://localhost:5432/sample'),
-      kafka: build('kafka', true, 'localhost:9092'),
-      redis: build('redis', true, 'localhost:6379'),
-      clickhouse: build('clickhouse', false, 'localhost:8123'),
-      scylla: build('scylla', false, 'localhost:9042'),
+      postgres: build('postgres', true, 'postgres://localhost:20432/app'),
+      kafka: build('kafka', true, 'localhost:20092'),
+      redis: build('redis', true, 'localhost:20379'),
+      clickhouse: build('clickhouse', false, 'localhost:20123'),
+      scylla: build('scylla', false, 'localhost:20042'),
       neo4j: build('neo4j', false, 'bolt://localhost:7687'),
       qdrant: build('qdrant', false, 'http://localhost:6333'),
     };

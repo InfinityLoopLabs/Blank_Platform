@@ -1,13 +1,12 @@
-import { Inject, Injectable } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 
 import { AppConfig } from '../domain/app-config';
 import { ConfigRepository } from '../ports/config.repository';
 import { EnvConfigRepository } from '../adapters/env-config.repository';
-import { CONFIG_REPOSITORY_TOKEN } from '../transport/tokens';
 
 @Injectable()
 export class ConfigService {
-  constructor(@Inject(CONFIG_REPOSITORY_TOKEN) private readonly repository: ConfigRepository) {}
+  constructor(private readonly repository: EnvConfigRepository) {}
 
   load(): AppConfig {
     return ConfigService.fromRepository(this.repository);

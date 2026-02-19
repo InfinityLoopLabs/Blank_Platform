@@ -3,12 +3,13 @@ import 'reflect-metadata';
 import { NestFactory } from '@nestjs/core';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 
-import { AppModule } from './app.module';
-import { APP_CONFIG_TOKEN, AppConfig } from './platform/modules/config/transport';
+import { AppConfigProvider } from './platform/modules/config/transport';
 
 async function bootstrap() {
+  const { AppModule } = await import('./app.module');
   const app = await NestFactory.create(AppModule);
-  const config = app.get<AppConfig>(APP_CONFIG_TOKEN);
+  app.enableShutdownHooks();
+  const config = app.get(AppConfigProvider).value;
 
   const swaggerConfig = new DocumentBuilder()
     .setTitle('Sample API')

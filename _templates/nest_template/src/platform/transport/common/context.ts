@@ -1,6 +1,6 @@
 import { IncomingHttpHeaders } from 'http';
 
-export type TransportProtocol = 'http' | 'grpc' | 'unknown';
+export type TransportProtocol = 'http' | 'grpc' | 'ws' | 'unknown';
 
 export type RequestContext = {
   protocol: TransportProtocol;
@@ -89,6 +89,18 @@ export function buildHttpRequestContext(headers: IncomingHttpHeaders): RequestCo
     userId,
     isAuthenticated: userId.length > 0,
     canCreateSample: parseBoolean(readHttpHeader(headers, 'x-can-create-sample')),
+  };
+}
+
+export function buildWebsocketRequestContext(headers?: IncomingHttpHeaders): RequestContext {
+  if (!headers) {
+    return anonymousRequestContext('ws');
+  }
+
+  const context = buildHttpRequestContext(headers);
+  return {
+    ...context,
+    protocol: 'ws',
   };
 }
 

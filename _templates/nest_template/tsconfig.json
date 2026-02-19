@@ -13,6 +13,7 @@
       "@core/*": ["platform/*"],
       "@features/*": ["features/*"]
     },
+    "types": ["node"],
     "esModuleInterop": true,
     "skipLibCheck": true
   },

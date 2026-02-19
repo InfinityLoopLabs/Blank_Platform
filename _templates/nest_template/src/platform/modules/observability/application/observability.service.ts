@@ -1,9 +1,8 @@
-import { Inject, Injectable } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 
 import { NoopExporter } from '../adapters/noop-exporter';
 import { ObservabilityEvent, ObservabilitySnapshot } from '../domain/observability-event';
 import { ObservabilityExporter } from '../ports/exporter.port';
-import { OBSERVABILITY_EXPORTER_TOKEN } from '../transport/tokens';
 
 @Injectable()
 export class ObservabilityService {
@@ -16,7 +15,7 @@ export class ObservabilityService {
     private readonly isSidecarUp: boolean,
     private readonly serviceName: string,
     private readonly environment: string,
-    @Inject(OBSERVABILITY_EXPORTER_TOKEN) private readonly exporter: ObservabilityExporter = new NoopExporter(),
+    private readonly exporter: ObservabilityExporter = new NoopExporter(),
   ) {}
 
   emit(event: string, fields: Record<string, unknown>): void {

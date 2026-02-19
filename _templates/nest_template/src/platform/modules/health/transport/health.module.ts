@@ -1,6 +1,6 @@
 import { Module } from '@nestjs/common';
 
-import { APP_CONFIG_TOKEN, AppConfig, ConfigModule } from '../../config/transport';
+import { AppConfigProvider, ConfigModule } from '../../config/transport';
 import { HealthService } from '../application/health.service';
 import { HealthController } from './health.controller';
 
@@ -10,8 +10,8 @@ import { HealthController } from './health.controller';
   providers: [
     {
       provide: HealthService,
-      inject: [APP_CONFIG_TOKEN],
-      useFactory: (config: AppConfig) => new HealthService(config.schemaMode),
+      inject: [AppConfigProvider],
+      useFactory: (configProvider: AppConfigProvider) => new HealthService(configProvider.value.schemaMode),
     },
   ],
   exports: [HealthService],
