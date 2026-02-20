@@ -1,0 +1,50 @@
+{
+  "name": "@infinityloop.labs/nest-connectors",
+  "version": "0.1.0",
+  "type": "module",
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.es.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "import": "./dist/index.es.js",
+      "require": "./dist/index.cjs",
+      "types": "./dist/index.d.ts"
+    }
+  },
+  "files": [
+    "package.json",
+    "README.md",
+    "dist/"
+  ],
+  "publishConfig": {
+    "access": "public"
+  },
+  "scripts": {
+    "build": "rollup -c",
+    "clean": "rm -rf dist"
+  },
+  "peerDependencies": {
+    "@clickhouse/client": "^1.12.1",
+    "@nestjs/common": "^10.4.13",
+    "@nestjs/core": "^10.4.13",
+    "@nestjs/microservices": "^10.4.13",
+    "cassandra-driver": "^4.8.0",
+    "ioredis": "^5.7.0",
+    "minio": "^8.0.6",
+    "pg": "^8.16.3",
+    "reflect-metadata": "^0.2.2",
+    "rxjs": "^7.8.2"
+  },
+  "devDependencies": {
+    "@rollup/plugin-commonjs": "^28.0.6",
+    "@rollup/plugin-node-resolve": "^16.0.1",
+    "@rollup/plugin-typescript": "^12.1.4",
+    "@types/node": "^22.13.1",
+    "@types/pg": "^8.15.6",
+    "rollup": "^4.50.1",
+    "rollup-plugin-dts": "^6.2.3",
+    "tslib": "^2.8.1",
+    "typescript": "^5.7.3"
+  }
+}
