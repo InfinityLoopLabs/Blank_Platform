@@ -1,6 +1,8 @@
 import { Module } from '@nestjs/common';
 
 import { AppConfigProvider, ConfigModule } from '../../config/transport';
+import { MiddlewareExceptionFilter } from '../../../transport/http/filters';
+import { ResponseFactory } from '../../../transport/http/response.factory';
 import { HealthService } from '../application/health.service';
 import { HealthController } from './health.controller';
 
@@ -8,6 +10,8 @@ import { HealthController } from './health.controller';
   imports: [ConfigModule],
   controllers: [HealthController],
   providers: [
+    ResponseFactory,
+    MiddlewareExceptionFilter,
     {
       provide: HealthService,
       inject: [AppConfigProvider],

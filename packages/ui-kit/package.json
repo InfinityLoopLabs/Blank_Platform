@@ -1,6 +1,5 @@
 {
   "name": "@infinityloop.labs/ui-kit",
-  "private": false,
   "version": "0.0.10",
   "type": "module",
   "license": "MIT",

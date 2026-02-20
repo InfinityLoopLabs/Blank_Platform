@@ -11,7 +11,7 @@
 - `src/platform/transport/http` canonical HTTP request flow primitives
 - `src/platform/transport/grpc` gRPC transport scaffold
 - `src/platform/modules/config/{domain,application,ports,adapters,transport}` for replaceable app config source (`env`, `server`, etc.)
-- `src/platform/connectors/<connector>` for isolated connector modules (options/types are рядом с модулем, без `types/` подпапок)
+- `@infinityloop.labs/nest-connectors` for reusable connector modules and generic repositories
 - `src/platform/modules/integration-policy/{domain,application,transport}` for integration capabilities config (postgres/kafka/redis/... flags + endpoints)
 - `src/platform/modules/observability/{domain,application,ports,adapters,transport}` for sidecar-only OTLP export
 - `src/platform/modules/health/{domain,application,transport}` for health/readiness/health status module
@@ -42,6 +42,12 @@ Available modules and exported classes:
 
 You can import only required connectors in `AppModule`.
 
+Feature flags in app bootstrap:
+
+- connectors are imported by default; only `false` disables import.
+- supported flags: `POSTGRES_ENABLED`, `CLICKHOUSE_ENABLED`, `SCYLLA_ENABLED`, `REDIS_ENABLED`, `KAFKA_ENABLED`, `MINIO_ENABLED`.
+- if flag equals `false`, module is not imported and its providers are not injectable.
+
 Env files:
 
 - startup uses `@nestjs/config` (`ConfigModule.forRoot`) with `envFilePath: [\`.env.<APP_ENV|NODE_ENV>\`, '.env']`.
@@ -66,7 +72,7 @@ Env files:
 
 ```ts
 import { Injectable } from '@nestjs/common';
-import { PostgresRepository } from './platform/connectors';
+import { PostgresRepository } from '@infinityloop.labs/nest-connectors';
 
 type UserRow = { id: string; email: string; name: string };
 
@@ -96,7 +102,7 @@ import {
   KafkaConnectorModule,
   ClickHouseConnectorModule,
   RedisConnectorModule,
-} from './platform/connectors';
+} from '@infinityloop.labs/nest-connectors';
 
 @Module({
   imports: [
@@ -143,7 +149,7 @@ export class AppModule {}
 
 ```ts
 import { Injectable } from '@nestjs/common';
-import { PostgresRepository } from './platform/connectors';
+import { PostgresRepository } from '@infinityloop.labs/nest-connectors';
 
 @Injectable()
 export class OrdersReadService {
@@ -169,3 +175,30 @@ npm run build
 npm run start
 npm run test:domain
 ```
+
+## TypeORM Migrations
+
+Ready-to-use TypeORM migration setup:
+
+- datasource: `src/database/typeorm.data-source.ts`
+- migrations folder: `src/database/migrations`
+- migration table: `schema_migrations`
+
+Commands:
+
+```bash
+npm run migration:create --name=init_schema
+npm run migration:generate --name=add_users_table
+npm run migration:run
+npm run migration:revert
+npm run migration:show
+```
+
+Env used for migrations:
+
+- `POSTGRES_HOST` (default `localhost`)
+- `POSTGRES_PORT` (default `20432`)
+- `POSTGRES_DB` (default `app`)
+- `POSTGRES_USER` (default `app`)
+- `POSTGRES_PASSWORD` (default `app`)
+- `APP_ENV`/`NODE_ENV` for `.env.<env>` selection (defaults to `.env.development`)

@@ -68,12 +68,9 @@
     "vitest": "^0.34.6"
   },
   "peerDependencies": {
-    "@reduxjs/toolkit": "2.X.X",
     "@infinityloop.labs/event-bus": "1.0.X",
+    "@reduxjs/toolkit": "2.X.X",
     "async-mutex": "0.X.X",
     "axios": "1.X.X"
-  },
-  "dependencies": {
-
   }
 }
