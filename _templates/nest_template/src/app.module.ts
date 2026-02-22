@@ -19,10 +19,10 @@ import {
 @Module({
   imports: [
     ConfigModule,
+    MigrationsModule,
     ...connectorImports,
     IntegrationPolicyModule,
     ObservabilityModule,
-    MigrationsModule,
     HealthModule,
     GrpcTransportModule,
   ],

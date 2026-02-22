@@ -8,6 +8,25 @@ import { IConfigRepository } from '../ports/config.repository'
 export class ConfigService {
   constructor(private readonly repository: EnvConfigRepository) {}
 
+  get(key: string): string | undefined {
+    return this.repository.get(key)
+  }
+
+  getBoolean(key: string, fallback = false): boolean {
+    const rawValue = (this.repository.get(key) ?? '').trim().toLowerCase()
+    if (!rawValue) {
+      return fallback
+    }
+    if (rawValue === 'true') {
+      return true
+    }
+    if (rawValue === 'false') {
+      return false
+    }
+
+    throw new Error(`Invalid boolean env ${key}: ${rawValue}`)
+  }
+
   load(): AppConfigType {
     return ConfigService.fromRepository(this.repository)
   }
