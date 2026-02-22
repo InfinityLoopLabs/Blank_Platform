@@ -1,9 +1,4 @@
 import {
-  CreateRequestDto,
-  RequestValidationPipe,
-  ResponseFactory,
-} from '@core/transport/http'
-import {
   Body,
   Controller,
   HttpCode,
@@ -17,10 +12,15 @@ import {
 } from '@nestjs/common'
 
 import { Response } from 'express'
+import {
+  CreateRequestDtoType,
+  RequestValidationPipe,
+  ResponseFactory,
+} from '@core/transport/http'
 
 import { HealthService } from '../../../../platform/modules/health/transport'
 import {
-  RequestWithContext,
+  RequestWithContextType,
   getRequestContext,
 } from '../../../../platform/transport/http/context'
 import { MiddlewareExceptionFilter } from '../../../../platform/transport/http/filters'
@@ -38,7 +38,7 @@ export class SamplesController {
   constructor(
     private readonly createSampleUseCase: CreateSampleUseCase,
     private readonly responseFactory: ResponseFactory,
-    private readonly healthService: HealthService
+    private readonly healthService: HealthService,
   ) {}
 
   @Post()
@@ -47,9 +47,9 @@ export class SamplesController {
   @UseGuards(AuthGuard, PolicyGuard)
   @UseInterceptors(TimingInterceptor)
   async create(
-    @Body(RequestValidationPipe) payload: CreateRequestDto,
-    @Req() request: RequestWithContext,
-    @Res({ passthrough: true }) response: Response
+    @Body(RequestValidationPipe) payload: CreateRequestDtoType,
+    @Req() request: RequestWithContextType,
+    @Res({ passthrough: true }) response: Response,
   ) {
     this.healthService.ensureWriteAllowed()
 
@@ -58,7 +58,7 @@ export class SamplesController {
     const output = this.responseFactory.created(
       'sample created',
       result,
-      context
+      context,
     )
 
     response.status(output.statusCode)

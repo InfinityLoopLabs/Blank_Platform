@@ -24,9 +24,12 @@
     "swagger-ui-express": "^5.0.1"
   },
   "devDependencies": {
+    "@infinityloop.labs/eslint-config-backend": "*",
     "@types/express": "^5.0.1",
     "@types/node": "^22.13.1",
     "@types/pg": "^8.15.6",
+    "eslint": "^9.29.0",
+    "eslint-import-resolver-alias": "^1.1.2",
     "nodemon": "^3.1.10",
     "ts-node": "^10.9.2",
     "typescript": "^5.7.3"
@@ -34,6 +37,8 @@
   "scripts": {
     "build": "tsc -p tsconfig.json",
     "dev": "npm run start:dev",
+    "lint": "eslint --ext .ts src tests",
+    "lint:fix": "eslint --fix --ext .ts src tests",
     "start": "node dist/main.js",
     "start:dev": "nodemon --watch src --ext ts,json --exec \"npm run build && node dist/main.js\"",
     "test:domain": "echo 'Domain tests scaffolded; configure jest runtime in next iteration.'"

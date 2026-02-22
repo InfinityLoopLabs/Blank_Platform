@@ -1,9 +1,9 @@
-import { Module } from '@nestjs/common';
+import { Module } from '@nestjs/common'
 
-import { ConfigModule } from '../../config/transport';
-import { ResponseFactory } from '../../../transport/http/response.factory';
-import { IntegrationPolicyService } from '../application/integration-policy.service';
-import { CapabilitiesController } from './capabilities.controller';
+import { ResponseFactory } from '../../../transport/http/response.factory'
+import { ConfigModule } from '../../config/transport'
+import { IntegrationPolicyService } from '../application/integration-policy.service'
+import { CapabilitiesController } from './capabilities.controller'
 
 @Module({
   imports: [ConfigModule],

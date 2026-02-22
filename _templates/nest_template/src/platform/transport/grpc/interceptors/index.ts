@@ -1,1 +1,1 @@
-export { GrpcContextInterceptor } from './context.interceptor';
+export { GrpcContextInterceptor } from './context.interceptor'

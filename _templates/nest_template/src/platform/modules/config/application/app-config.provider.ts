@@ -1,5 +1,5 @@
-import { AppConfig } from '../domain/app-config';
+import { AppConfigType } from '../domain/app-config'
 
 export class AppConfigProvider {
-  constructor(public readonly value: AppConfig) {}
+  constructor(public readonly value: AppConfigType) {}
 }

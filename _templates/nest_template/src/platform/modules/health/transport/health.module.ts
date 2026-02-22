@@ -1,10 +1,10 @@
-import { Module } from '@nestjs/common';
+import { Module } from '@nestjs/common'
 
-import { AppConfigProvider, ConfigModule } from '../../config/transport';
-import { MiddlewareExceptionFilter } from '../../../transport/http/filters';
-import { ResponseFactory } from '../../../transport/http/response.factory';
-import { HealthService } from '../application/health.service';
-import { HealthController } from './health.controller';
+import { MiddlewareExceptionFilter } from '../../../transport/http/filters'
+import { ResponseFactory } from '../../../transport/http/response.factory'
+import { AppConfigProvider, ConfigModule } from '../../config/transport'
+import { HealthService } from '../application/health.service'
+import { HealthController } from './health.controller'
 
 @Module({
   imports: [ConfigModule],
@@ -15,7 +15,8 @@ import { HealthController } from './health.controller';
     {
       provide: HealthService,
       inject: [AppConfigProvider],
-      useFactory: (configProvider: AppConfigProvider) => new HealthService(configProvider.value.schemaMode),
+      useFactory: (configProvider: AppConfigProvider) =>
+        new HealthService(configProvider.value.schemaMode),
     },
   ],
   exports: [HealthService],

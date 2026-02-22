@@ -1,4 +1,4 @@
-import { Sample } from '../../src/features/sample/domain/sample.entity';
+import { Sample } from '../../src/features/sample/domain/sample.entity'
 
 describe('Sample domain entity', () => {
   it('creates a valid sample', () => {
@@ -7,11 +7,11 @@ describe('Sample domain entity', () => {
       name: 'starter',
       totalCents: 5000,
       isPriority: true,
-    });
+    })
 
-    expect(sample.hasItems).toBe(true);
-    expect(sample.isPriority).toBe(true);
-  });
+    expect(sample.hasItems).toBe(true)
+    expect(sample.isPriority).toBe(true)
+  })
 
   it('rejects invalid totals', () => {
     expect(() =>
@@ -21,6 +21,6 @@ describe('Sample domain entity', () => {
         totalCents: 0,
         isPriority: false,
       }),
-    ).toThrow('sample total must be greater than zero');
-  });
-});
+    ).toThrow('sample total must be greater than zero')
+  })
+})

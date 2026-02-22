@@ -1,27 +1,31 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable } from '@nestjs/common'
 
-import { RequestContext } from './context';
+import { RequestContextType } from './context'
 
-type ErrorPayload = {
-  code: string;
-};
+type ErrorPayloadType = {
+  code: string
+}
 
-type Envelope<TPayload> = {
-  message: string;
-  payload: TPayload | null;
+type EnvelopeType<TPayload> = {
+  message: string
+  payload: TPayload | null
   meta: {
-    timestamp: string;
-    requestId?: string;
-    correlationId?: string;
-    traceId?: string;
-    spanId?: string;
-  };
-  error: ErrorPayload | null;
-};
+    timestamp: string
+    requestId?: string
+    correlationId?: string
+    traceId?: string
+    spanId?: string
+  }
+  error: ErrorPayloadType | null
+}
 
 @Injectable()
 export class ResponseFactory {
-  ok<TPayload>(message: string, payload: TPayload, context: RequestContext): { statusCode: number; envelope: Envelope<TPayload> } {
+  ok<TPayload>(
+    message: string,
+    payload: TPayload,
+    context: RequestContextType,
+  ): { statusCode: number; envelope: EnvelopeType<TPayload> } {
     return {
       statusCode: 200,
       envelope: {
@@ -30,10 +34,14 @@ export class ResponseFactory {
         meta: this.meta(context),
         error: null,
       },
-    };
+    }
   }
 
-  created<TPayload>(message: string, payload: TPayload, context: RequestContext): { statusCode: number; envelope: Envelope<TPayload> } {
+  created<TPayload>(
+    message: string,
+    payload: TPayload,
+    context: RequestContextType,
+  ): { statusCode: number; envelope: EnvelopeType<TPayload> } {
     return {
       statusCode: 201,
       envelope: {
@@ -42,10 +50,15 @@ export class ResponseFactory {
         meta: this.meta(context),
         error: null,
       },
-    };
+    }
   }
 
-  error(statusCode: number, message: string, code: string, context: RequestContext): { statusCode: number; envelope: Envelope<never> } {
+  error(
+    statusCode: number,
+    message: string,
+    code: string,
+    context: RequestContextType,
+  ): { statusCode: number; envelope: EnvelopeType<never> } {
     return {
       statusCode,
       envelope: {
@@ -54,16 +67,16 @@ export class ResponseFactory {
         meta: this.meta(context),
         error: { code },
       },
-    };
+    }
   }
 
-  private meta(context: RequestContext) {
+  private meta(context: RequestContextType) {
     return {
       timestamp: new Date().toISOString(),
       requestId: context.requestId,
       correlationId: context.correlationId,
       traceId: context.traceId,
       spanId: context.spanId,
-    };
+    }
   }
 }

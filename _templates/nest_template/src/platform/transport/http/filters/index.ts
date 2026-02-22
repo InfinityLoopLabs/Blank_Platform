@@ -7,13 +7,10 @@ import {
 
 import { Response } from 'express'
 
-import {
-  getHostRequestContext,
-  mapTransportError,
-} from '../../common'
+import { getHostRequestContext, mapTransportError } from '../../common'
 import { MiddlewareError } from '../guards'
 import { ResponseFactory } from '../response.factory'
-export const mapError = mapTransportError;
+export const mapError = mapTransportError
 
 @Injectable()
 @Catch()
@@ -33,7 +30,7 @@ export class MiddlewareExceptionFilter implements ExceptionFilter {
       mapped.statusCode,
       mapped.message,
       mapped.code,
-      context
+      context,
     )
 
     response.status(result.statusCode).json(result.envelope)

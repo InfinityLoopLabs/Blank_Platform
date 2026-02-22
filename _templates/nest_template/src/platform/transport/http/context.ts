@@ -1,21 +1,26 @@
-import { IncomingHttpHeaders } from 'http';
+import { IncomingHttpHeaders } from 'http'
 
-import { Request } from 'express';
+import { Request } from 'express'
 
-import { RequestContext, buildHttpRequestContext } from '../common';
-export type { RequestContext } from '../common';
+import { RequestContextType, buildHttpRequestContext } from '../common'
+export type { RequestContextType } from '../common'
 
-export type RequestWithContext = Request & {
-  requestContext?: RequestContext;
-};
-
-export function buildRequestContext(headers: IncomingHttpHeaders): RequestContext {
-  return buildHttpRequestContext(headers);
+export type RequestWithContextType = Request & {
+  requestContext?: RequestContextType
 }
 
-export function getRequestContext(request: RequestWithContext): RequestContext {
+export function buildRequestContext(
+  headers: IncomingHttpHeaders,
+): RequestContextType {
+  return buildHttpRequestContext(headers)
+}
+
+export function getRequestContext(
+  request: RequestWithContextType,
+): RequestContextType {
   if (request.requestContext) {
-    return request.requestContext;
+    return request.requestContext
   }
-  return buildRequestContext(request.headers);
+
+  return buildRequestContext(request.headers)
 }

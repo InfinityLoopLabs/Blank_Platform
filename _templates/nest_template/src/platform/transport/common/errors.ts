@@ -3,14 +3,14 @@ export class TransportError extends Error {
     public readonly code: string,
     message: string,
   ) {
-    super(message);
+    super(message)
   }
 }
 
 export function mapTransportError(error: unknown): {
-  statusCode: number;
-  code: string;
-  message: string;
+  statusCode: number
+  code: string
+  message: string
 } {
   if (error instanceof TransportError) {
     if (error.code === 'VALIDATION_ERROR') {
@@ -18,21 +18,21 @@ export function mapTransportError(error: unknown): {
         statusCode: 400,
         code: error.code,
         message: error.message,
-      };
+      }
     }
     if (error.code === 'UNAUTHENTICATED') {
       return {
         statusCode: 401,
         code: error.code,
         message: error.message,
-      };
+      }
     }
     if (error.code === 'FORBIDDEN') {
       return {
         statusCode: 403,
         code: error.code,
         message: error.message,
-      };
+      }
     }
     if (
       error.code === 'SCHEMA_INCOMPATIBLE' ||
@@ -42,7 +42,7 @@ export function mapTransportError(error: unknown): {
         statusCode: 503,
         code: error.code,
         message: error.message,
-      };
+      }
     }
   }
 
@@ -50,5 +50,5 @@ export function mapTransportError(error: unknown): {
     statusCode: 500,
     code: 'INTERNAL_ERROR',
     message: 'internal server error',
-  };
+  }
 }

@@ -172,6 +172,7 @@ export class OrdersReadService {
 cd _templates/nest_template
 npm install
 npm run build
+npm run lint
 npm run start
 npm run test:domain
 ```

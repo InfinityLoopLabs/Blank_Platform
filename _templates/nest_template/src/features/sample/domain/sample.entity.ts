@@ -8,19 +8,19 @@ export class Sample {
   ) {}
 
   static create(input: {
-    id: string;
-    name: string;
-    totalCents: number;
-    isPriority: boolean;
+    id: string
+    name: string
+    totalCents: number
+    isPriority: boolean
   }): Sample {
     if (!input.id.trim()) {
-      throw new Error('sample id must not be empty');
+      throw new Error('sample id must not be empty')
     }
     if (!input.name.trim()) {
-      throw new Error('sample name must not be empty');
+      throw new Error('sample name must not be empty')
     }
     if (input.totalCents <= 0) {
-      throw new Error('sample total must be greater than zero');
+      throw new Error('sample total must be greater than zero')
     }
 
     return new Sample(
@@ -29,6 +29,6 @@ export class Sample {
       input.totalCents,
       true,
       input.isPriority,
-    );
+    )
   }
 }

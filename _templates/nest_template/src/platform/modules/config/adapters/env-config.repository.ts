@@ -1,12 +1,12 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable } from '@nestjs/common'
 
-import { ConfigRepository } from '../ports/config.repository';
+import { IConfigRepository } from '../ports/config.repository'
 
 @Injectable()
-export class EnvConfigRepository implements ConfigRepository {
+export class EnvConfigRepository implements IConfigRepository {
   constructor(private readonly source: NodeJS.ProcessEnv = process.env) {}
 
   get(key: string): string | undefined {
-    return this.source[key];
+    return this.source[key]
   }
 }

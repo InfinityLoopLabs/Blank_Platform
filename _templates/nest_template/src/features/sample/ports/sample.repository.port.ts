@@ -1,6 +1,6 @@
-import { Sample } from '../domain/sample.entity';
+import { Sample } from '../domain/sample.entity'
 
-export interface SampleRepositoryPort {
-  save(sample: Sample): Promise<void>;
-  nextId(): string;
+export interface ISampleRepositoryPort {
+  save(sample: Sample): Promise<void>
+  nextId(): string
 }

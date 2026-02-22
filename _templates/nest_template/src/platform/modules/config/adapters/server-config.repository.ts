@@ -1,11 +1,11 @@
-import { ConfigRepository } from '../ports/config.repository';
+import { IConfigRepository } from '../ports/config.repository'
 
-export type ConfigSnapshot = Record<string, string>;
+export type ConfigSnapshotType = Record<string, string>
 
-export class ServerConfigRepository implements ConfigRepository {
-  constructor(private readonly snapshot: ConfigSnapshot) {}
+export class ServerConfigRepository implements IConfigRepository {
+  constructor(private readonly snapshot: ConfigSnapshotType) {}
 
   get(key: string): string | undefined {
-    return this.snapshot[key];
+    return this.snapshot[key]
   }
 }

@@ -1,7 +1,7 @@
-import { Module } from '@nestjs/common';
+import { Module } from '@nestjs/common'
 
-import { GrpcContextInterceptor } from './interceptors';
-import { GrpcTransportService } from './grpc.service';
+import { GrpcTransportService } from './grpc.service'
+import { GrpcContextInterceptor } from './interceptors'
 
 @Module({
   providers: [GrpcTransportService, GrpcContextInterceptor],

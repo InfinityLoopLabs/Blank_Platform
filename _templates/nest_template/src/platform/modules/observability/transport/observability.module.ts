@@ -1,9 +1,9 @@
-import { Module } from '@nestjs/common';
+import { Module } from '@nestjs/common'
 
-import { AppConfigProvider, ConfigModule } from '../../config/transport';
-import { NoopExporter } from '../adapters/noop-exporter';
-import { OtlpHttpExporter } from '../adapters/otlp-http-exporter';
-import { ObservabilityService } from '../application/observability.service';
+import { AppConfigProvider, ConfigModule } from '../../config/transport'
+import { NoopExporter } from '../adapters/noop-exporter'
+import { OtlpHttpExporter } from '../adapters/otlp-http-exporter'
+import { ObservabilityService } from '../application/observability.service'
 
 @Module({
   imports: [ConfigModule],
@@ -12,17 +12,18 @@ import { ObservabilityService } from '../application/observability.service';
       provide: ObservabilityService,
       inject: [AppConfigProvider],
       useFactory: (configProvider: AppConfigProvider) => {
-        const config = configProvider.value;
+        const config = configProvider.value
         const exporter = !config.isOtelSidecarAvailable
           ? new NoopExporter()
-          : new OtlpHttpExporter(config.otelSidecarEndpoint);
+          : new OtlpHttpExporter(config.otelSidecarEndpoint)
+
         return new ObservabilityService(
           config.otelSidecarEndpoint,
           config.isOtelSidecarAvailable,
           'sample-nest',
           config.appEnv,
           exporter,
-        );
+        )
       },
     },
   ],

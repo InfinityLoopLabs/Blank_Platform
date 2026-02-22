@@ -1,8 +1,10 @@
-import { ObservabilityEvent } from '../domain/observability-event';
-import { ObservabilityExporter } from '../ports/exporter.port';
+import { ObservabilityEventType } from '../domain/observability-event'
+import { IObservabilityExporter } from '../ports/exporter.port'
 
-export class NoopExporter implements ObservabilityExporter {
-  async export(_event: ObservabilityEvent): Promise<boolean> {
-    return false;
+export class NoopExporter implements IObservabilityExporter {
+  async export(event: ObservabilityEventType): Promise<boolean> {
+    void event
+
+    return false
   }
 }
