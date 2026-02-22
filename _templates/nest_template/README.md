@@ -176,29 +176,51 @@ npm run start
 npm run test:domain
 ```
 
-## TypeORM Migrations
+## Multi-DB Migrations
 
-Ready-to-use TypeORM migration setup:
+Separate migration mechanisms are available for each DB with dedicated journal table in each engine:
 
-- datasource: `src/database/typeorm.data-source.ts`
-- migrations folder: `src/database/migrations`
-- migration table: `schema_migrations`
+- Postgres runner: `src/database/postgres-migrator.ts`
+- ClickHouse runner: `src/database/clickhouse-migrator.ts`
+- Scylla runner: `src/database/scylla-migrator.ts`
+- journal tables: `schema_migrations_postgres`, `schema_migrations_clickhouse`, `schema_migrations_scylla`
+
+Migration folders:
+
+- `src/database/migrations/postgres/*.sql`
+- `src/database/migrations/clickhouse/*.sql`
+- `src/database/migrations/scylla/*.cql`
 
 Commands:
 
 ```bash
-npm run migration:create --name=init_schema
-npm run migration:generate --name=add_users_table
-npm run migration:run
-npm run migration:revert
-npm run migration:show
+npm run migration:postgres:status
+npm run migration:postgres:up
+npm run migration:clickhouse:status
+npm run migration:clickhouse:up
+npm run migration:scylla:status
+npm run migration:scylla:up
+npm run migration:all:status
+npm run migration:all:up
 ```
 
-Env used for migrations:
+Behavior:
 
-- `POSTGRES_HOST` (default `localhost`)
-- `POSTGRES_PORT` (default `20432`)
-- `POSTGRES_DB` (default `app`)
-- `POSTGRES_USER` (default `app`)
-- `POSTGRES_PASSWORD` (default `app`)
-- `APP_ENV`/`NODE_ENV` for `.env.<env>` selection (defaults to `.env.development`)
+- each runner creates its journal table automatically if missing
+- each migration file is hashed (`sha256`) and checksum is stored in DB
+- if already applied migration file was changed, runner returns checksum mismatch error
+- `status` shows total/applied/pending and checksum mismatches
+- `up` applies only pending migrations in filename order
+
+Scylla notes:
+
+- migration journal keyspace: `SCYLLA_MIGRATIONS_KEYSPACE` (fallback: `SCYLLA_KEYSPACE`, then `app`)
+- keyspace is auto-created if missing
+- in `.cql` files you can use placeholder `{{KEYSPACE}}`
+
+## TypeORM (Postgres-only, optional)
+
+TypeORM setup is still available for Postgres-specific flow:
+
+- datasource: `src/database/typeorm.data-source.ts`
+- commands: `migration:create`, `migration:generate`, `migration:run`, `migration:revert`, `migration:show`
