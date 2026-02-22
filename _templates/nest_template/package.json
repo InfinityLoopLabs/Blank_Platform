@@ -12,7 +12,6 @@
     "@nestjs/platform-express": "^10.4.13",
     "@nestjs/swagger": "^7.4.2",
     "@nestjs/terminus": "^10.3.0",
-    "@nestjs/typeorm": "^10.0.2",
     "cassandra-driver": "^4.8.0",
     "class-transformer": "^0.5.1",
     "class-validator": "^0.14.3",
@@ -22,8 +21,7 @@
     "pg": "^8.16.3",
     "reflect-metadata": "^0.2.2",
     "rxjs": "^7.8.2",
-    "swagger-ui-express": "^5.0.1",
-    "typeorm": "^0.3.28"
+    "swagger-ui-express": "^5.0.1"
   },
   "devDependencies": {
     "@types/express": "^5.0.1",
@@ -38,20 +36,18 @@
     "dev": "npm run start:dev",
     "start": "node dist/main.js",
     "start:dev": "nodemon --watch src --ext ts,json --exec \"npm run build && node dist/main.js\"",
-    "migration:postgres:status": "ts-node --project ./src/migrations/tsconfig.json ./src/migrations/postgres-migrator.ts status",
-    "migration:postgres:up": "ts-node --project ./src/migrations/tsconfig.json ./src/migrations/postgres-migrator.ts up",
-    "migration:clickhouse:status": "ts-node --project ./src/migrations/tsconfig.json ./src/migrations/clickhouse-migrator.ts status",
-    "migration:clickhouse:up": "ts-node --project ./src/migrations/tsconfig.json ./src/migrations/clickhouse-migrator.ts up",
-    "migration:scylla:status": "ts-node --project ./src/migrations/tsconfig.json ./src/migrations/scylla-migrator.ts status",
-    "migration:scylla:up": "ts-node --project ./src/migrations/tsconfig.json ./src/migrations/scylla-migrator.ts up",
+    "migration:postgres:status": "ts-node --project ./tsconfig.json ./src/migrations/cli.ts postgres status",
+    "migration:postgres:up": "ts-node --project ./tsconfig.json ./src/migrations/cli.ts postgres up",
+    "migration:postgres:down": "ts-node --project ./tsconfig.json ./src/migrations/cli.ts postgres down",
+    "migration:clickhouse:status": "ts-node --project ./tsconfig.json ./src/migrations/cli.ts clickhouse status",
+    "migration:clickhouse:up": "ts-node --project ./tsconfig.json ./src/migrations/cli.ts clickhouse up",
+    "migration:clickhouse:down": "ts-node --project ./tsconfig.json ./src/migrations/cli.ts clickhouse down",
+    "migration:scylla:status": "ts-node --project ./tsconfig.json ./src/migrations/cli.ts scylla status",
+    "migration:scylla:up": "ts-node --project ./tsconfig.json ./src/migrations/cli.ts scylla up",
+    "migration:scylla:down": "ts-node --project ./tsconfig.json ./src/migrations/cli.ts scylla down",
     "migration:all:status": "npm run migration:postgres:status && npm run migration:clickhouse:status && npm run migration:scylla:status",
     "migration:all:up": "npm run migration:postgres:up && npm run migration:clickhouse:up && npm run migration:scylla:up",
-    "typeorm": "TS_NODE_PROJECT=./src/migrations/tsconfig.json typeorm-ts-node-commonjs -d ./src/migrations/typeorm.data-source.ts",
-    "migration:create": "npm run typeorm -- migration:create ./src/migrations/typeorm/$npm_config_name",
-    "migration:generate": "npm run typeorm -- migration:generate ./src/migrations/typeorm/$npm_config_name",
-    "migration:run": "npm run typeorm -- migration:run",
-    "migration:revert": "npm run typeorm -- migration:revert",
-    "migration:show": "npm run typeorm -- migration:show",
+    "migration:all:down": "npm run migration:scylla:down && npm run migration:clickhouse:down && npm run migration:postgres:down",
     "test:domain": "echo 'Domain tests scaffolded; configure jest runtime in next iteration.'"
   }
 }

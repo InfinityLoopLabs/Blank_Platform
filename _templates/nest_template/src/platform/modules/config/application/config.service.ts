@@ -32,14 +32,24 @@ export class ConfigService {
       throw new Error('APP_PORT must be a positive integer');
     }
 
-    const schemaModeRaw = (repository.get('SCHEMA_MODE') ?? 'ok').trim();
+    const schemaModeRaw = (repository.get('SCHEMA_MODE') ?? '').trim();
+    if (!schemaModeRaw) {
+      throw new Error('SCHEMA_MODE is required');
+    }
     const allowedModes = ['ok', 'dirty', 'checksum_mismatch', 'missing_version', 'db_down'] as const;
     if (!allowedModes.includes(schemaModeRaw as (typeof allowedModes)[number])) {
       throw new Error('SCHEMA_MODE must be one of: ok, dirty, checksum_mismatch, missing_version, db_down');
     }
 
-    const otelSidecarEndpoint = (repository.get('OTEL_SIDECAR_ENDPOINT') ?? 'localhost:4317').trim();
-    const isOtelSidecarAvailableRaw = (repository.get('OTEL_SIDECAR_AVAILABLE') ?? 'true').trim().toLowerCase();
+    const otelSidecarEndpoint = (repository.get('OTEL_SIDECAR_ENDPOINT') ?? '').trim();
+    if (!otelSidecarEndpoint) {
+      throw new Error('OTEL_SIDECAR_ENDPOINT is required');
+    }
+
+    const isOtelSidecarAvailableRaw = (repository.get('OTEL_SIDECAR_AVAILABLE') ?? '').trim().toLowerCase();
+    if (!isOtelSidecarAvailableRaw) {
+      throw new Error('OTEL_SIDECAR_AVAILABLE is required');
+    }
     if (!['true', 'false'].includes(isOtelSidecarAvailableRaw)) {
       throw new Error('OTEL_SIDECAR_AVAILABLE must be true or false');
     }

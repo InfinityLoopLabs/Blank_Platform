@@ -182,49 +182,46 @@ All migration-related files are in `src/migrations/`.
 
 Separate migration mechanisms are available for each DB with dedicated journal table in each engine:
 
-- Postgres runner: `src/migrations/postgres-migrator.ts`
-- ClickHouse runner: `src/migrations/clickhouse-migrator.ts`
-- Scylla runner: `src/migrations/scylla-migrator.ts`
+- CLI entrypoint: `src/migrations/cli.ts`
+- Postgres module/service: `src/migrations/postgres/postgres-migration.module.ts`, `src/migrations/postgres/postgres-migration.service.ts`
+- ClickHouse module/service: `src/migrations/clickhouse/clickhouse-migration.module.ts`, `src/migrations/clickhouse/clickhouse-migration.service.ts`
+- Scylla module/service: `src/migrations/scylla/scylla-migration.module.ts`, `src/migrations/scylla/scylla-migration.service.ts`
 - journal tables: `schema_migrations_postgres`, `schema_migrations_clickhouse`, `schema_migrations_scylla`
-- shared utils: `src/migrations/shared/*`
-- runner tsconfig: `src/migrations/tsconfig.json`
-
 Migration folders:
 
-- `src/migrations/postgres/*.sql`
-- `src/migrations/clickhouse/*.sql`
-- `src/migrations/scylla/*.cql`
+- `src/migrations/postgres/*.up.sql` + `src/migrations/postgres/*.down.sql`
+- `src/migrations/clickhouse/*.up.sql` + `src/migrations/clickhouse/*.down.sql`
+- `src/migrations/scylla/*.up.cql` + `src/migrations/scylla/*.down.cql`
 
 Commands:
 
 ```bash
 npm run migration:postgres:status
 npm run migration:postgres:up
+npm run migration:postgres:down
 npm run migration:clickhouse:status
 npm run migration:clickhouse:up
+npm run migration:clickhouse:down
 npm run migration:scylla:status
 npm run migration:scylla:up
+npm run migration:scylla:down
 npm run migration:all:status
 npm run migration:all:up
+npm run migration:all:down
 ```
 
 Behavior:
 
 - each runner creates its journal table automatically if missing
-- each migration file is hashed (`sha256`) and checksum is stored in DB
+- each `.up` migration file is hashed (`sha256`) and checksum is stored in DB
 - if already applied migration file was changed, runner returns checksum mismatch error
-- `status` shows total/applied/pending and checksum mismatches
+- runner validates that each `*.up.*` has paired `*.down.*` file and vice versa
+- `status` shows total/applied/pending, checksum mismatches and orphan applied migrations
 - `up` applies only pending migrations in filename order
+- `down` rolls back one latest applied local migration (LIFO) and removes it from journal
 
 Scylla notes:
 
 - migration journal keyspace: `SCYLLA_MIGRATIONS_KEYSPACE` (fallback: `SCYLLA_KEYSPACE`, then `app`)
 - keyspace is auto-created if missing
 - in `.cql` files you can use placeholder `{{KEYSPACE}}`
-
-## TypeORM (Postgres-only, optional)
-
-TypeORM setup is still available for Postgres-specific flow:
-
-- datasource: `src/migrations/typeorm.data-source.ts`
-- commands: `migration:create`, `migration:generate`, `migration:run`, `migration:revert`, `migration:show`
