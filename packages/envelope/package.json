@@ -1,0 +1,40 @@
+{
+  "name": "@infinityloop.labs/envelope",
+  "version": "1.0.0",
+  "main": "./dist/index.umd.js",
+  "module": "./dist/index.es.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "import": "./dist/index.es.js",
+      "require": "./dist/index.umd.js",
+      "types": "./dist/index.d.ts"
+    }
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "scripts": {
+    "build": "tsc && vite build",
+    "test": "vitest run --coverage",
+    "test:watch": "vitest"
+  },
+  "files": [
+    "package.json",
+    "README.md",
+    "dist/",
+    "contract/"
+  ],
+  "license": "ISC",
+  "dependencies": {
+    "tslib": "^2.8.1"
+  },
+  "devDependencies": {
+    "@types/node": "^24.3.0",
+    "@vitest/coverage-v8": "^0.34.6",
+    "typescript": "^5.9.2",
+    "vite": "^4.5.0",
+    "vite-plugin-dts": "^3.6.1",
+    "vitest": "^0.34.6"
+  }
+}

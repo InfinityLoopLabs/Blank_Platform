@@ -8,9 +8,14 @@ import { ConditionalModule } from '@nestjs/config'
 
 import { ConfigModule, EnvConfigRepository } from '../../config/transport'
 
+// Shared dependencies used by async migration-module factories.
 const migrationModuleImports = [ConfigModule]
 const migrationModuleInject = [EnvConfigRepository]
 
+/**
+ * Conditionally registers migration modules for each storage engine.
+ * Connector and migration options are sourced from validated environment values.
+ */
 export const migrationImports: NonNullable<ModuleMetadata['imports']> = [
   ConditionalModule.registerWhen(
     PostgresMigrationModule.registerAsync({

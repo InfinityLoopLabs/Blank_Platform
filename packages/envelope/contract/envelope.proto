@@ -1,0 +1,69 @@
+syntax = "proto3";
+
+package infinityloop.envelope.v1;
+
+import "google/protobuf/struct.proto";
+
+message ActorContext {
+  string sub = 1;
+  string act = 2;
+  repeated string scopes = 3;
+}
+
+message AuthContext {
+  enum Method {
+    METHOD_UNSPECIFIED = 0;
+    MTLS = 1;
+    JWT = 2;
+    MTLS_JWT = 3;
+    API_KEY = 4;
+    UNKNOWN = 5;
+  }
+
+  Method method = 1;
+  string token_ref = 2;
+}
+
+message SignatureBlock {
+  enum Alg {
+    ALG_UNSPECIFIED = 0;
+    EDDSA = 1;
+    ES256 = 2;
+    HS256 = 3;
+  }
+
+  Alg alg = 1;
+  string kid = 2;
+  string value = 3;
+}
+
+message MessageEnvelope {
+  string specversion = 1;          // expected: "1.0"
+  string id = 2;
+  string type = 3;
+  string source = 4;
+  string subject = 5;
+  string time = 6;                 // ISO-8601 UTC
+  string datacontenttype = 7;
+  string dataschema = 8;
+  string traceparent = 9;
+  string tracestate = 10;
+  string correlation_id = 11;
+  string causation_id = 12;
+  string tenant_id = 13;
+  ActorContext actor = 14;
+  AuthContext auth_context = 15;
+  string idempotency_key = 16;
+  uint32 ttl_sec = 17;
+  uint32 retry_count = 18;
+  SignatureBlock signature = 19;
+  google.protobuf.Struct data = 20;
+}
+
+message EnvelopeHeaderContext {
+  string traceparent = 1;
+  string tracestate = 2;
+  string correlation_id = 3;
+  string causation_id = 4;
+  string tenant_id = 5;
+}

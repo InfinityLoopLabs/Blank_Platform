@@ -35,6 +35,9 @@ type ResolvedScyllaMigrationOptions = {
   keyspacePlaceholder: string;
 };
 
+/**
+ * Runs filesystem-based scylla migrations and keeps execution journal in keyspace table.
+ */
 @Injectable()
 export class ScyllaMigrationService {
   private readonly logger = new Logger(ScyllaMigrationService.name);
@@ -45,6 +48,9 @@ export class ScyllaMigrationService {
     private readonly options: ResolvedScyllaMigrationOptions,
   ) {}
 
+  /**
+   * Entry point for migration commands: inspect status, apply pending, or rollback one.
+   */
   async run(command: MigrationCommand): Promise<void> {
     const pairs = readMigrationPairs(
       this.options.migrationsDirectory,
@@ -87,6 +93,9 @@ export class ScyllaMigrationService {
     );
   }
 
+  /**
+   * Builds a reconciled view between local migration files and DB journal.
+   */
   private buildSnapshot(
     pairs: MigrationPair[],
     pairById: Map<string, MigrationPair>,
@@ -125,6 +134,9 @@ export class ScyllaMigrationService {
     }
   }
 
+  /**
+   * Applies pending migrations in filename order and records each run in journal.
+   */
   private async applyPending(
     pairs: MigrationPair[],
     applied: Map<string, string>,
@@ -157,6 +169,9 @@ export class ScyllaMigrationService {
     this.logger.log(`applied ${pendingCount} migration(s)`);
   }
 
+  /**
+   * Rolls back the latest applied local migration (LIFO).
+   */
   private async rollbackOne(
     pairs: MigrationPair[],
     applied: Map<string, string>,
@@ -193,6 +208,9 @@ export class ScyllaMigrationService {
     this.logger.log(`rolled back ${target.id}`);
   }
 
+  /**
+   * Ensures keyspace and migration journal table exist before command execution.
+   */
   private async ensureJournal(keyspace: string): Promise<void> {
     const keyspaceName = toCqlIdentifier(keyspace);
     const tableName = toQualifiedTable(keyspace, this.options.journalTable);
@@ -213,6 +231,9 @@ export class ScyllaMigrationService {
     `);
   }
 
+  /**
+   * Reads applied migration checksums from scylla journal.
+   */
   private async readAppliedMap(keyspace: string): Promise<Map<string, string>> {
     const rows = await this.scylla.execute(
       `SELECT id, checksum FROM ${toQualifiedTable(keyspace, this.options.journalTable)}`,
@@ -228,6 +249,9 @@ export class ScyllaMigrationService {
   }
 }
 
+/**
+ * Expands optional migration config with deterministic defaults.
+ */
 export function normalizeScyllaMigrationOptions(
   options: ScyllaMigrationOptions,
 ): ResolvedScyllaMigrationOptions {
@@ -244,6 +268,9 @@ export function normalizeScyllaMigrationOptions(
   };
 }
 
+/**
+ * Loads and validates pairs of up/down migration files from directory.
+ */
 function readMigrationPairs(directory: string, upSuffix: string, downSuffix: string): MigrationPair[] {
   if (!existsSync(directory)) {
     return [];
@@ -287,6 +314,9 @@ function readMigrationPairs(directory: string, upSuffix: string, downSuffix: str
   });
 }
 
+/**
+ * Reads file and rejects empty migrations early.
+ */
 function readFile(path: string): string {
   const content = readFileSync(path, 'utf8').trim();
   if (content.length === 0) {
@@ -299,6 +329,9 @@ function sha256(value: string): string {
   return createHash('sha256').update(value).digest('hex');
 }
 
+/**
+ * Splits CQL script by semicolon, while respecting quotes and comments.
+ */
 function splitStatements(script: string): string[] {
   const statements: string[] = [];
   let buffer = '';
@@ -385,10 +418,16 @@ function splitStatements(script: string): string[] {
   return statements;
 }
 
+/**
+ * Validates and formats `keyspace.table` for dynamic CQL.
+ */
 function toQualifiedTable(keyspace: string, table: string): string {
   return `${toCqlIdentifier(keyspace)}.${toCqlIdentifier(table)}`;
 }
 
+/**
+ * Guards against unsafe identifier interpolation.
+ */
 function toCqlIdentifier(value: string): string {
   if (!/^[A-Za-z_][A-Za-z0-9_]*$/.test(value)) {
     throw new Error(`Invalid CQL identifier: ${value}`);
@@ -396,6 +435,9 @@ function toCqlIdentifier(value: string): string {
   return value;
 }
 
+/**
+ * Replaces keyspace placeholder in migration files with validated keyspace name.
+ */
 function replaceKeyspacePlaceholder(script: string, keyspace: string, placeholder: string): string {
   return script.replaceAll(placeholder, toCqlIdentifier(keyspace));
 }

@@ -15,8 +15,14 @@ import {
   ClickHouseMigrationOptions,
 } from './clickhouse-migration-options';
 
+/**
+ * Nest module entrypoint for clickhouse migration infrastructure.
+ */
 @Module({})
 export class ClickHouseMigrationModule {
+  /**
+   * Registers clickhouse connector + migration service with static options.
+   */
   static register(options: ClickHouseMigrationOptions): DynamicModule {
     return {
       module: ClickHouseMigrationModule,
@@ -32,6 +38,9 @@ export class ClickHouseMigrationModule {
     };
   }
 
+  /**
+   * Registers clickhouse migrations where options are resolved from DI at runtime.
+   */
   static registerAsync(options: ClickHouseMigrationAsyncOptions): DynamicModule {
     const connectorOptions: ClickHouseConnectorAsyncOptions = {
       imports: options.imports,

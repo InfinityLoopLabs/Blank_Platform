@@ -1,0 +1,89 @@
+import type { SpecVersion } from "./types";
+
+export const SPEC_VERSION: SpecVersion = "1.0";
+
+export const TYPE_REGEX = /^[a-z][a-z0-9-]*(\.[a-z][a-z0-9-]*)+$/;
+export const SOURCE_REGEX = /^[a-z][a-z0-9-]*(\.[a-z][a-z0-9-]*)*$/;
+export const TRACEPARENT_REGEX = /^00-[0-9a-f]{32}-[0-9a-f]{16}-[0-9a-f]{2}$/;
+
+export const FORBIDDEN_TOKEN_REF_PATTERNS: RegExp[] = [
+  /^[A-Za-z0-9-_]+\.[A-Za-z0-9-_]+\.[A-Za-z0-9-_]+$/, // JWT-like token
+  /^Bearer\s+/i,
+];
+
+export const ENVELOPE_JSON_SCHEMA = {
+  $schema: "https://json-schema.org/draft/2020-12/schema",
+  $id: "https://infinityloop.labs/schemas/envelope-1.0.json",
+  title: "MessageEnvelope",
+  type: "object",
+  additionalProperties: false,
+  required: [
+    "specversion",
+    "id",
+    "type",
+    "source",
+    "time",
+    "datacontenttype",
+    "correlation_id",
+    "idempotency_key",
+    "retry_count",
+    "data",
+  ],
+  properties: {
+    specversion: { const: "1.0" },
+    id: { type: "string", minLength: 1 },
+    type: { type: "string", pattern: "^[a-z][a-z0-9-]*(\\.[a-z][a-z0-9-]*)+$" },
+    source: { type: "string", pattern: "^[a-z][a-z0-9-]*(\\.[a-z][a-z0-9-]*)*$" },
+    subject: { type: "string", minLength: 1 },
+    time: { type: "string", format: "date-time" },
+    datacontenttype: { type: "string", minLength: 1 },
+    dataschema: { type: "string", format: "uri" },
+    traceparent: { type: "string" },
+    tracestate: { type: "string" },
+    correlation_id: { type: "string", minLength: 1 },
+    causation_id: { type: "string", minLength: 1 },
+    tenant_id: { type: "string", minLength: 1 },
+    actor: {
+      type: "object",
+      additionalProperties: false,
+      required: ["sub"],
+      properties: {
+        sub: { type: "string", minLength: 1 },
+        act: { type: "string", minLength: 1 },
+        scopes: {
+          type: "array",
+          items: { type: "string", minLength: 1 },
+        },
+      },
+    },
+    auth_context: {
+      type: "object",
+      additionalProperties: false,
+      required: ["method"],
+      properties: {
+        method: {
+          type: "string",
+          enum: ["mTLS", "JWT", "mTLS+JWT", "API_KEY", "UNKNOWN"],
+        },
+        token_ref: { type: "string", minLength: 1 },
+      },
+    },
+    idempotency_key: { type: "string", minLength: 1 },
+    ttl_sec: { type: "integer", minimum: 1 },
+    retry_count: { type: "integer", minimum: 0 },
+    signature: {
+      type: "object",
+      additionalProperties: false,
+      required: ["alg", "kid", "value"],
+      properties: {
+        alg: {
+          type: "string",
+          enum: ["EdDSA", "ES256", "HS256"],
+        },
+        kid: { type: "string", minLength: 1 },
+        value: { type: "string", minLength: 1 },
+      },
+    },
+    data: {},
+  },
+} as const;

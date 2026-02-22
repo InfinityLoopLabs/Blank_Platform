@@ -12,8 +12,14 @@ import {
   POSTGRES_MIGRATION_OPTIONS,
 } from './postgres-migration.service';
 
+/**
+ * Nest module entrypoint for postgres migration infrastructure.
+ */
 @Module({})
 export class PostgresMigrationModule {
+  /**
+   * Registers postgres connector + migration service with static options.
+   */
   static register(options: PostgresMigrationOptions): DynamicModule {
     return {
       module: PostgresMigrationModule,
@@ -29,6 +35,9 @@ export class PostgresMigrationModule {
     };
   }
 
+  /**
+   * Registers postgres migrations where options are resolved from DI at runtime.
+   */
   static registerAsync(options: PostgresMigrationAsyncOptions): DynamicModule {
     const connectorOptions: PostgresConnectorAsyncOptions = {
       imports: options.imports,

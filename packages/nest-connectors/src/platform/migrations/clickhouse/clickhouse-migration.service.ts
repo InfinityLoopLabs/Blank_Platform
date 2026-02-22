@@ -38,6 +38,9 @@ type ResolvedClickHouseMigrationOptions = {
   downSuffix: string;
 };
 
+/**
+ * Runs filesystem-based clickhouse migrations and keeps execution journal in DB.
+ */
 @Injectable()
 export class ClickHouseMigrationService {
   private readonly logger = new Logger(ClickHouseMigrationService.name);
@@ -48,6 +51,9 @@ export class ClickHouseMigrationService {
     private readonly options: ResolvedClickHouseMigrationOptions,
   ) {}
 
+  /**
+   * Entry point for migration commands: inspect status, apply pending, or rollback one.
+   */
   async run(command: MigrationCommand): Promise<void> {
     const pairs = readMigrationPairs(
       this.options.migrationsDirectory,
@@ -80,6 +86,9 @@ export class ClickHouseMigrationService {
     await this.rollbackOne(pairs, applied, snapshot.orphanAppliedIds);
   }
 
+  /**
+   * Builds a reconciled view between local migration files and DB journal.
+   */
   private buildSnapshot(
     pairs: MigrationPair[],
     pairById: Map<string, MigrationPair>,
@@ -118,6 +127,9 @@ export class ClickHouseMigrationService {
     }
   }
 
+  /**
+   * Applies pending migrations in filename order and records each run in journal.
+   */
   private async applyPending(
     pairs: MigrationPair[],
     applied: Map<string, string>,
@@ -151,6 +163,9 @@ export class ClickHouseMigrationService {
     this.logger.log(`applied ${pendingCount} migration(s)`);
   }
 
+  /**
+   * Rolls back the latest applied local migration (LIFO).
+   */
   private async rollbackOne(
     pairs: MigrationPair[],
     applied: Map<string, string>,
@@ -184,6 +199,9 @@ export class ClickHouseMigrationService {
     this.logger.log(`rolled back ${target.id}`);
   }
 
+  /**
+   * Creates migration journal table on first run.
+   */
   private async ensureJournal(): Promise<void> {
     await this.clickhouse.command(`
       CREATE TABLE IF NOT EXISTS ${this.options.journalTable}
@@ -198,6 +216,9 @@ export class ClickHouseMigrationService {
     `);
   }
 
+  /**
+   * Reads applied migration checksums from DB journal.
+   */
   private async readAppliedMap(): Promise<Map<string, string>> {
     const rows = await this.clickhouse.queryRows<AppliedMigration>(
       `SELECT id, checksum FROM ${this.options.journalTable}`,
@@ -206,6 +227,9 @@ export class ClickHouseMigrationService {
   }
 }
 
+/**
+ * Expands optional migration config with deterministic defaults.
+ */
 export function normalizeClickHouseMigrationOptions(
   options: ClickHouseMigrationOptions,
 ): ResolvedClickHouseMigrationOptions {
@@ -218,6 +242,9 @@ export function normalizeClickHouseMigrationOptions(
   };
 }
 
+/**
+ * Loads and validates pairs of up/down migration files from directory.
+ */
 function readMigrationPairs(directory: string, upSuffix: string, downSuffix: string): MigrationPair[] {
   if (!existsSync(directory)) {
     return [];
@@ -261,6 +288,9 @@ function readMigrationPairs(directory: string, upSuffix: string, downSuffix: str
   });
 }
 
+/**
+ * Reads file and rejects empty migrations early.
+ */
 function readFile(path: string): string {
   const content = readFileSync(path, 'utf8').trim();
   if (content.length === 0) {
@@ -273,6 +303,9 @@ function sha256(value: string): string {
   return createHash('sha256').update(value).digest('hex');
 }
 
+/**
+ * Splits SQL script by semicolon, while respecting quotes and comments.
+ */
 function splitStatements(script: string): string[] {
   const statements: string[] = [];
   let buffer = '';

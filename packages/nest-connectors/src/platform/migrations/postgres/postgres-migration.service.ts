@@ -38,6 +38,9 @@ type ResolvedPostgresMigrationOptions = {
   downSuffix: string;
 };
 
+/**
+ * Runs filesystem-based postgres migrations and keeps execution journal in DB.
+ */
 @Injectable()
 export class PostgresMigrationService {
   private readonly logger = new Logger(PostgresMigrationService.name);
@@ -48,6 +51,9 @@ export class PostgresMigrationService {
     private readonly options: ResolvedPostgresMigrationOptions,
   ) {}
 
+  /**
+   * Entry point for migration commands: inspect status, apply pending, or rollback one.
+   */
   async run(command: MigrationCommand): Promise<void> {
     const pairs = readMigrationPairs(
       this.options.migrationsDirectory,
@@ -80,6 +86,9 @@ export class PostgresMigrationService {
     await this.rollbackOne(pairs, applied, snapshot.orphanAppliedIds);
   }
 
+  /**
+   * Builds a reconciled view between local migration files and DB journal.
+   */
   private buildSnapshot(
     pairs: MigrationPair[],
     pairById: Map<string, MigrationPair>,
@@ -118,6 +127,9 @@ export class PostgresMigrationService {
     }
   }
 
+  /**
+   * Applies pending migrations in filename order and records each run in journal.
+   */
   private async applyPending(
     pairs: MigrationPair[],
     applied: Map<string, string>,
@@ -147,6 +159,9 @@ export class PostgresMigrationService {
     this.logger.log(`applied ${pendingCount} migration(s)`);
   }
 
+  /**
+   * Rolls back the latest applied local migration (LIFO).
+   */
   private async rollbackOne(
     pairs: MigrationPair[],
     applied: Map<string, string>,
@@ -175,6 +190,9 @@ export class PostgresMigrationService {
     this.logger.log(`rolled back ${target.id}`);
   }
 
+  /**
+   * Creates migration journal table on first run.
+   */
   private async ensureJournal(): Promise<void> {
     await this.postgres.execute(`
       CREATE TABLE IF NOT EXISTS ${this.options.journalTable} (
@@ -186,6 +204,9 @@ export class PostgresMigrationService {
     `);
   }
 
+  /**
+   * Reads applied migration checksums from DB journal.
+   */
   private async readAppliedMap(): Promise<Map<string, string>> {
     const rows = await this.postgres.query<AppliedMigration>(
       `SELECT id, checksum FROM ${this.options.journalTable}`,
@@ -194,6 +215,9 @@ export class PostgresMigrationService {
   }
 }
 
+/**
+ * Expands optional migration config with deterministic defaults.
+ */
 export function normalizePostgresMigrationOptions(
   options: PostgresMigrationOptions,
 ): ResolvedPostgresMigrationOptions {
@@ -206,6 +230,9 @@ export function normalizePostgresMigrationOptions(
   };
 }
 
+/**
+ * Loads and validates pairs of up/down migration files from directory.
+ */
 function readMigrationPairs(directory: string, upSuffix: string, downSuffix: string): MigrationPair[] {
   if (!existsSync(directory)) {
     return [];
@@ -249,6 +276,9 @@ function readMigrationPairs(directory: string, upSuffix: string, downSuffix: str
   });
 }
 
+/**
+ * Reads file and rejects empty migrations early.
+ */
 function readFile(path: string): string {
   const content = readFileSync(path, 'utf8').trim();
   if (content.length === 0) {

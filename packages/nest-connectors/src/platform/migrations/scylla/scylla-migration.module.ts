@@ -12,8 +12,14 @@ import {
 } from './scylla-migration.service';
 import { ScyllaMigrationAsyncOptions, ScyllaMigrationOptions } from './scylla-migration-options';
 
+/**
+ * Nest module entrypoint for scylla migration infrastructure.
+ */
 @Module({})
 export class ScyllaMigrationModule {
+  /**
+   * Registers scylla connector + migration service with static options.
+   */
   static register(options: ScyllaMigrationOptions): DynamicModule {
     return {
       module: ScyllaMigrationModule,
@@ -29,6 +35,9 @@ export class ScyllaMigrationModule {
     };
   }
 
+  /**
+   * Registers scylla migrations where options are resolved from DI at runtime.
+   */
   static registerAsync(options: ScyllaMigrationAsyncOptions): DynamicModule {
     const connectorOptions: ScyllaConnectorAsyncOptions = {
       imports: options.imports,

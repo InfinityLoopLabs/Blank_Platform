@@ -52,6 +52,10 @@ export class MigrationBootstrapService implements OnApplicationBootstrap {
     await this.runWhenEnabled('SCYLLA_ENABLED', 'scylla', this.scyllaMigration)
   }
 
+  /**
+   * Executes migration cycle (`status` -> `up` -> `status`) for a single engine
+   * when its feature flag is enabled.
+   */
   private async runWhenEnabled(
     flagKey: string,
     engine: string,
