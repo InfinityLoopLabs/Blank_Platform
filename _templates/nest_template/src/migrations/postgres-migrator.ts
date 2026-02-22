@@ -14,7 +14,7 @@ type AppliedMigration = {
 };
 
 const JOURNAL_TABLE = 'schema_migrations_postgres';
-const MIGRATIONS_DIR = resolve(process.cwd(), 'src/database/migrations/postgres');
+const MIGRATIONS_DIR = resolve(process.cwd(), 'src/migrations/postgres');
 
 @Injectable()
 class PostgresMigrationService {

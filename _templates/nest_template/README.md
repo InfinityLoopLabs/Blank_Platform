@@ -178,18 +178,22 @@ npm run test:domain
 
 ## Multi-DB Migrations
 
+All migration-related files are in `src/migrations/`.
+
 Separate migration mechanisms are available for each DB with dedicated journal table in each engine:
 
-- Postgres runner: `src/database/postgres-migrator.ts`
-- ClickHouse runner: `src/database/clickhouse-migrator.ts`
-- Scylla runner: `src/database/scylla-migrator.ts`
+- Postgres runner: `src/migrations/postgres-migrator.ts`
+- ClickHouse runner: `src/migrations/clickhouse-migrator.ts`
+- Scylla runner: `src/migrations/scylla-migrator.ts`
 - journal tables: `schema_migrations_postgres`, `schema_migrations_clickhouse`, `schema_migrations_scylla`
+- shared utils: `src/migrations/shared/*`
+- runner tsconfig: `src/migrations/tsconfig.json`
 
 Migration folders:
 
-- `src/database/migrations/postgres/*.sql`
-- `src/database/migrations/clickhouse/*.sql`
-- `src/database/migrations/scylla/*.cql`
+- `src/migrations/postgres/*.sql`
+- `src/migrations/clickhouse/*.sql`
+- `src/migrations/scylla/*.cql`
 
 Commands:
 
@@ -222,5 +226,5 @@ Scylla notes:
 
 TypeORM setup is still available for Postgres-specific flow:
 
-- datasource: `src/database/typeorm.data-source.ts`
+- datasource: `src/migrations/typeorm.data-source.ts`
 - commands: `migration:create`, `migration:generate`, `migration:run`, `migration:revert`, `migration:show`

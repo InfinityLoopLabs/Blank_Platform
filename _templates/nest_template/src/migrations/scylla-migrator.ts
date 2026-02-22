@@ -15,7 +15,7 @@ type AppliedMigration = {
 };
 
 const JOURNAL_TABLE = 'schema_migrations_scylla';
-const MIGRATIONS_DIR = resolve(process.cwd(), 'src/database/migrations/scylla');
+const MIGRATIONS_DIR = resolve(process.cwd(), 'src/migrations/scylla');
 
 @Injectable()
 class ScyllaMigrationService {

@@ -15,7 +15,7 @@ type AppliedMigration = {
 };
 
 const JOURNAL_TABLE = 'schema_migrations_clickhouse';
-const MIGRATIONS_DIR = resolve(process.cwd(), 'src/database/migrations/clickhouse');
+const MIGRATIONS_DIR = resolve(process.cwd(), 'src/migrations/clickhouse');
 
 @Injectable()
 class ClickHouseMigrationService {

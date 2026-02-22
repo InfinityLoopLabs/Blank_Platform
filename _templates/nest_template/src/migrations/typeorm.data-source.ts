@@ -17,7 +17,7 @@ export default new DataSource({
   logging: false,
   migrationsTableName: 'schema_migrations',
   entities: ['src/**/*.entity.{ts,js}', 'src/**/*.orm-entity.{ts,js}'],
-  migrations: ['src/database/migrations/*.{ts,js}'],
+  migrations: ['src/migrations/typeorm/*.{ts,js}'],
 });
 
 function loadEnvironmentFiles(): void {
