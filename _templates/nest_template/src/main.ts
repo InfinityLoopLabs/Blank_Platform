@@ -19,12 +19,7 @@ async function bootstrap() {
     .filter(origin => origin.length > 0)
 
   app.enableCors({
-    origin:
-      corsOrigins.length > 0
-        ? corsOrigins
-        : appEnv === 'production'
-          ? false
-          : true,
+    origin: corsOrigins.length > 0 ? corsOrigins : appEnv !== 'production',
     credentials: true,
   })
   app.useGlobalPipes(
