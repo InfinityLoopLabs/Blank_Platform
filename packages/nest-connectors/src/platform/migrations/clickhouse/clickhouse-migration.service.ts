@@ -1,11 +1,13 @@
 import { createHash } from 'crypto';
 import { existsSync, readdirSync, readFileSync } from 'fs';
-import { Injectable, Logger } from '@nestjs/common';
-import { ScyllaRepository } from '@infinityloop.labs/nest-connectors';
+import { Inject, Injectable, Logger } from '@nestjs/common';
 import { resolve } from 'path';
 
-import { EnvConfigRepository } from '../../platform/modules/config/transport';
+import { ClickHouseRepository } from '../../connectors/clickhouse';
 import { MigrationCommand } from '../migration-command';
+import { ClickHouseMigrationOptions } from './clickhouse-migration-options';
+
+export const CLICKHOUSE_MIGRATION_OPTIONS = Symbol('CLICKHOUSE_MIGRATION_OPTIONS');
 
 type MigrationPair = {
   id: string;
@@ -13,6 +15,11 @@ type MigrationPair = {
   downPath: string;
   upScript: string;
   downScript: string;
+  checksum: string;
+};
+
+type AppliedMigration = {
+  id: string;
   checksum: string;
 };
 
@@ -24,47 +31,53 @@ type MigrationSnapshot = {
   orphanAppliedIds: string[];
 };
 
-const JOURNAL_TABLE = 'schema_migrations_scylla';
-const MIGRATIONS_DIR = resolve(process.cwd(), 'src/migrations/scylla');
-const UP_SUFFIX = '.up.cql';
-const DOWN_SUFFIX = '.down.cql';
+type ResolvedClickHouseMigrationOptions = {
+  migrationsDirectory: string;
+  journalTable: string;
+  upSuffix: string;
+  downSuffix: string;
+};
 
 @Injectable()
-export class ScyllaMigrationService {
-  private readonly logger = new Logger(ScyllaMigrationService.name);
+export class ClickHouseMigrationService {
+  private readonly logger = new Logger(ClickHouseMigrationService.name);
 
   constructor(
-    private readonly scylla: ScyllaRepository,
-    private readonly env: EnvConfigRepository,
+    private readonly clickhouse: ClickHouseRepository,
+    @Inject(CLICKHOUSE_MIGRATION_OPTIONS)
+    private readonly options: ResolvedClickHouseMigrationOptions,
   ) {}
 
   async run(command: MigrationCommand): Promise<void> {
-    const pairs = readMigrationPairs(MIGRATIONS_DIR, UP_SUFFIX, DOWN_SUFFIX);
+    const pairs = readMigrationPairs(
+      this.options.migrationsDirectory,
+      this.options.upSuffix,
+      this.options.downSuffix,
+    );
     const pairById = new Map(pairs.map((pair) => [pair.id, pair]));
 
-    const keyspace = this.readMigrationKeyspace();
-    await this.ensureJournal(keyspace);
-    const applied = await this.readAppliedMap(keyspace);
+    await this.ensureJournal();
+    const applied = await this.readAppliedMap();
     const snapshot = this.buildSnapshot(pairs, pairById, applied);
 
     if (command === 'status') {
       this.logSnapshot(snapshot);
       if (snapshot.mismatchIds.length > 0) {
-        throw new Error(`Checksum mismatch for scylla migrations: ${snapshot.mismatchIds.join(', ')}`);
+        throw new Error(`Checksum mismatch for clickhouse migrations: ${snapshot.mismatchIds.join(', ')}`);
       }
       return;
     }
 
     if (snapshot.mismatchIds.length > 0) {
-      throw new Error(`Checksum mismatch for scylla migrations: ${snapshot.mismatchIds.join(', ')}`);
+      throw new Error(`Checksum mismatch for clickhouse migrations: ${snapshot.mismatchIds.join(', ')}`);
     }
 
     if (command === 'up') {
-      await this.applyPending(pairs, applied, keyspace, snapshot.pendingIds.length);
+      await this.applyPending(pairs, applied, snapshot.pendingIds.length);
       return;
     }
 
-    await this.rollbackOne(pairs, applied, keyspace, snapshot.orphanAppliedIds);
+    await this.rollbackOne(pairs, applied, snapshot.orphanAppliedIds);
   }
 
   private buildSnapshot(
@@ -108,7 +121,6 @@ export class ScyllaMigrationService {
   private async applyPending(
     pairs: MigrationPair[],
     applied: Map<string, string>,
-    keyspace: string,
     pendingCount: number,
   ): Promise<void> {
     const pendingPairs = pairs.filter((pair) => !applied.has(pair.id));
@@ -119,15 +131,19 @@ export class ScyllaMigrationService {
 
     for (const pair of pendingPairs) {
       const startedAt = Date.now();
-      const statements = splitStatements(replaceKeyspacePlaceholder(pair.upScript, keyspace));
+      const statements = splitStatements(pair.upScript);
       for (const statement of statements) {
-        await this.scylla.execute(statement);
+        await this.clickhouse.command(statement);
       }
 
-      await this.scylla.executePrepared(
-        `INSERT INTO ${toQualifiedTable(keyspace, JOURNAL_TABLE)} (id, checksum, applied_at, execution_ms) VALUES (?, ?, ?, ?)`,
-        [pair.id, pair.checksum, new Date(), Date.now() - startedAt],
-      );
+      await this.clickhouse.insertRows(this.options.journalTable, [
+        {
+          id: pair.id,
+          checksum: pair.checksum,
+          applied_at: new Date().toISOString().replace('T', ' ').slice(0, 19),
+          execution_ms: Date.now() - startedAt,
+        },
+      ]);
 
       this.logger.log(`applied ${pair.id}`);
     }
@@ -138,11 +154,10 @@ export class ScyllaMigrationService {
   private async rollbackOne(
     pairs: MigrationPair[],
     applied: Map<string, string>,
-    keyspace: string,
     orphanAppliedIds: string[],
   ): Promise<void> {
     if (orphanAppliedIds.length > 0) {
-      throw new Error(`Orphan applied scylla migrations exist in DB: ${orphanAppliedIds.join(', ')}`);
+      throw new Error(`Orphan applied clickhouse migrations exist in DB: ${orphanAppliedIds.join(', ')}`);
     }
 
     const target = [...pairs].reverse().find((pair) => applied.has(pair.id));
@@ -153,58 +168,54 @@ export class ScyllaMigrationService {
 
     const appliedChecksum = applied.get(target.id);
     if (appliedChecksum !== target.checksum) {
-      throw new Error(`Checksum mismatch for scylla migration ${target.id}; rollback aborted`);
+      throw new Error(`Checksum mismatch for clickhouse migration ${target.id}; rollback aborted`);
     }
 
-    const statements = splitStatements(replaceKeyspacePlaceholder(target.downScript, keyspace));
+    const statements = splitStatements(target.downScript);
     for (const statement of statements) {
-      await this.scylla.execute(statement);
+      await this.clickhouse.command(statement);
     }
 
-    await this.scylla.executePrepared(
-      `DELETE FROM ${toQualifiedTable(keyspace, JOURNAL_TABLE)} WHERE id = ?`,
-      [target.id],
+    await this.clickhouse.command(
+      `ALTER TABLE ${this.options.journalTable} DELETE WHERE id = {id:String} SETTINGS mutations_sync = 2`,
+      { id: target.id },
     );
 
     this.logger.log(`rolled back ${target.id}`);
   }
 
-  private async ensureJournal(keyspace: string): Promise<void> {
-    const keyspaceName = toCqlIdentifier(keyspace);
-    const tableName = toQualifiedTable(keyspace, JOURNAL_TABLE);
-
-    await this.scylla.execute(`
-      CREATE KEYSPACE IF NOT EXISTS ${keyspaceName}
-      WITH replication = {'class': 'SimpleStrategy', 'replication_factor': 1}
-    `);
-
-    await this.scylla.execute(`
-      CREATE TABLE IF NOT EXISTS ${tableName}
+  private async ensureJournal(): Promise<void> {
+    await this.clickhouse.command(`
+      CREATE TABLE IF NOT EXISTS ${this.options.journalTable}
       (
-        id text PRIMARY KEY,
-        checksum text,
-        applied_at timestamp,
-        execution_ms int
+        id String,
+        checksum String,
+        applied_at DateTime,
+        execution_ms UInt32
       )
+      ENGINE = MergeTree
+      ORDER BY id
     `);
   }
 
-  private async readAppliedMap(keyspace: string): Promise<Map<string, string>> {
-    const rows = await this.scylla.execute(`SELECT id, checksum FROM ${toQualifiedTable(keyspace, JOURNAL_TABLE)}`);
-    const entries = rows.map((row) => {
-      const rowRecord = row as { id?: unknown; checksum?: unknown; get?: (key: string) => unknown };
-      const id = rowRecord.id ?? rowRecord.get?.('id');
-      const checksum = rowRecord.checksum ?? rowRecord.get?.('checksum');
-      return [String(id), String(checksum)] as const;
-    });
-
-    return new Map(entries);
+  private async readAppliedMap(): Promise<Map<string, string>> {
+    const rows = await this.clickhouse.queryRows<AppliedMigration>(
+      `SELECT id, checksum FROM ${this.options.journalTable}`,
+    );
+    return new Map(rows.map((item) => [item.id, item.checksum]));
   }
+}
 
-  private readMigrationKeyspace(): string {
-    const value = (this.env.get('SCYLLA_MIGRATIONS_KEYSPACE') ?? this.env.get('SCYLLA_KEYSPACE') ?? 'app').trim();
-    return value.length > 0 ? value : 'app';
-  }
+export function normalizeClickHouseMigrationOptions(
+  options: ClickHouseMigrationOptions,
+): ResolvedClickHouseMigrationOptions {
+  return {
+    migrationsDirectory:
+      options.migrationsDirectory ?? resolve(process.cwd(), 'src/migrations/clickhouse'),
+    journalTable: options.journalTable ?? 'schema_migrations_clickhouse',
+    upSuffix: options.upSuffix ?? '.up.sql',
+    downSuffix: options.downSuffix ?? '.down.sql',
+  };
 }
 
 function readMigrationPairs(directory: string, upSuffix: string, downSuffix: string): MigrationPair[] {
@@ -346,19 +357,4 @@ function splitStatements(script: string): string[] {
   }
 
   return statements;
-}
-
-function toQualifiedTable(keyspace: string, table: string): string {
-  return `${toCqlIdentifier(keyspace)}.${toCqlIdentifier(table)}`;
-}
-
-function toCqlIdentifier(value: string): string {
-  if (!/^[A-Za-z_][A-Za-z0-9_]*$/.test(value)) {
-    throw new Error(`Invalid CQL identifier: ${value}`);
-  }
-  return value;
-}
-
-function replaceKeyspacePlaceholder(script: string, keyspace: string): string {
-  return script.replaceAll('{{KEYSPACE}}', toCqlIdentifier(keyspace));
 }

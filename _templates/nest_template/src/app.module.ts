@@ -1,16 +1,17 @@
 import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common';
 
-import { ConfigModule } from './platform/modules/config/transport';
-import { connectorImports } from './platform/modules/connectors/transport';
-import { HealthModule } from './platform/modules/health/transport';
-import { IntegrationPolicyModule } from './platform/modules/integration-policy/transport';
-import { ObservabilityModule } from './platform/modules/observability/transport';
-import { GrpcTransportModule } from './platform/transport/grpc';
-import { MiddlewareExceptionFilter } from './platform/transport/http/filters';
-import { AuthGuard, PolicyGuard } from './platform/transport/http/guards';
-import { TimingInterceptor } from './platform/transport/http/interceptors';
-import { RequestContextMiddleware } from './platform/transport/http/middleware';
-import { ResponseFactory } from './platform/transport/http/response.factory';
+import { ConfigModule } from '@core/modules/config/transport';
+import { connectorImports } from '@core/modules/connectors/transport';
+import { HealthModule } from '@core/modules/health/transport';
+import { IntegrationPolicyModule } from '@core/modules/integration-policy/transport';
+import { MigrationsModule } from '@core/modules/migrations/transport';
+import { ObservabilityModule } from '@core/modules/observability/transport';
+import { GrpcTransportModule } from '@core/transport/grpc';
+import { MiddlewareExceptionFilter } from '@core/transport/http';
+import { AuthGuard, PolicyGuard } from '@core/transport/http';
+import { TimingInterceptor } from '@core/transport/http';
+import { RequestContextMiddleware } from '@core/transport/http';
+import { ResponseFactory } from '@core/transport/http';
 
 @Module({
   imports: [
@@ -18,6 +19,7 @@ import { ResponseFactory } from './platform/transport/http/response.factory';
     ...connectorImports,
     IntegrationPolicyModule,
     ObservabilityModule,
+    MigrationsModule,
     HealthModule,
     GrpcTransportModule,
   ],

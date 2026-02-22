@@ -1,10 +1,13 @@
 import { createHash } from 'crypto';
 import { existsSync, readdirSync, readFileSync } from 'fs';
-import { Injectable, Logger } from '@nestjs/common';
-import { PostgresRepository } from '@infinityloop.labs/nest-connectors';
+import { Inject, Injectable, Logger } from '@nestjs/common';
 import { resolve } from 'path';
 
+import { PostgresRepository } from '../../connectors/postgres';
 import { MigrationCommand } from '../migration-command';
+import { PostgresMigrationOptions } from './postgres-migration-options';
+
+export const POSTGRES_MIGRATION_OPTIONS = Symbol('POSTGRES_MIGRATION_OPTIONS');
 
 type MigrationPair = {
   id: string;
@@ -28,19 +31,29 @@ type MigrationSnapshot = {
   orphanAppliedIds: string[];
 };
 
-const JOURNAL_TABLE = 'schema_migrations_postgres';
-const MIGRATIONS_DIR = resolve(process.cwd(), 'src/migrations/postgres');
-const UP_SUFFIX = '.up.sql';
-const DOWN_SUFFIX = '.down.sql';
+type ResolvedPostgresMigrationOptions = {
+  migrationsDirectory: string;
+  journalTable: string;
+  upSuffix: string;
+  downSuffix: string;
+};
 
 @Injectable()
 export class PostgresMigrationService {
   private readonly logger = new Logger(PostgresMigrationService.name);
 
-  constructor(private readonly postgres: PostgresRepository) {}
+  constructor(
+    private readonly postgres: PostgresRepository,
+    @Inject(POSTGRES_MIGRATION_OPTIONS)
+    private readonly options: ResolvedPostgresMigrationOptions,
+  ) {}
 
   async run(command: MigrationCommand): Promise<void> {
-    const pairs = readMigrationPairs(MIGRATIONS_DIR, UP_SUFFIX, DOWN_SUFFIX);
+    const pairs = readMigrationPairs(
+      this.options.migrationsDirectory,
+      this.options.upSuffix,
+      this.options.downSuffix,
+    );
     const pairById = new Map(pairs.map((pair) => [pair.id, pair]));
 
     await this.ensureJournal();
@@ -122,7 +135,7 @@ export class PostgresMigrationService {
         await client.query(pair.upScript);
         await client.query(
           `
-            INSERT INTO ${JOURNAL_TABLE} (id, checksum, execution_ms)
+            INSERT INTO ${this.options.journalTable} (id, checksum, execution_ms)
             VALUES ($1, $2, $3)
           `,
           [pair.id, pair.checksum, Date.now() - startedAt],
@@ -156,7 +169,7 @@ export class PostgresMigrationService {
 
     await this.postgres.transaction(async (client) => {
       await client.query(target.downScript);
-      await client.query(`DELETE FROM ${JOURNAL_TABLE} WHERE id = $1`, [target.id]);
+      await client.query(`DELETE FROM ${this.options.journalTable} WHERE id = $1`, [target.id]);
     });
 
     this.logger.log(`rolled back ${target.id}`);
@@ -164,7 +177,7 @@ export class PostgresMigrationService {
 
   private async ensureJournal(): Promise<void> {
     await this.postgres.execute(`
-      CREATE TABLE IF NOT EXISTS ${JOURNAL_TABLE} (
+      CREATE TABLE IF NOT EXISTS ${this.options.journalTable} (
         id TEXT PRIMARY KEY,
         checksum TEXT NOT NULL,
         applied_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
@@ -174,9 +187,23 @@ export class PostgresMigrationService {
   }
 
   private async readAppliedMap(): Promise<Map<string, string>> {
-    const rows = await this.postgres.query<AppliedMigration>(`SELECT id, checksum FROM ${JOURNAL_TABLE}`);
+    const rows = await this.postgres.query<AppliedMigration>(
+      `SELECT id, checksum FROM ${this.options.journalTable}`,
+    );
     return new Map(rows.map((item) => [item.id, item.checksum]));
   }
+}
+
+export function normalizePostgresMigrationOptions(
+  options: PostgresMigrationOptions,
+): ResolvedPostgresMigrationOptions {
+  return {
+    migrationsDirectory:
+      options.migrationsDirectory ?? resolve(process.cwd(), 'src/migrations/postgres'),
+    journalTable: options.journalTable ?? 'schema_migrations_postgres',
+    upSuffix: options.upSuffix ?? '.up.sql',
+    downSuffix: options.downSuffix ?? '.down.sql',
+  };
 }
 
 function readMigrationPairs(directory: string, upSuffix: string, downSuffix: string): MigrationPair[] {

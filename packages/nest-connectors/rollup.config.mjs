@@ -15,6 +15,8 @@ const external = [
   'reflect-metadata',
   'rxjs',
   'rxjs/operators',
+  'fs',
+  'path',
   'stream',
   'crypto'
 ];

@@ -36,18 +36,6 @@
     "dev": "npm run start:dev",
     "start": "node dist/main.js",
     "start:dev": "nodemon --watch src --ext ts,json --exec \"npm run build && node dist/main.js\"",
-    "migration:postgres:status": "ts-node --project ./tsconfig.json ./src/migrations/cli.ts postgres status",
-    "migration:postgres:up": "ts-node --project ./tsconfig.json ./src/migrations/cli.ts postgres up",
-    "migration:postgres:down": "ts-node --project ./tsconfig.json ./src/migrations/cli.ts postgres down",
-    "migration:clickhouse:status": "ts-node --project ./tsconfig.json ./src/migrations/cli.ts clickhouse status",
-    "migration:clickhouse:up": "ts-node --project ./tsconfig.json ./src/migrations/cli.ts clickhouse up",
-    "migration:clickhouse:down": "ts-node --project ./tsconfig.json ./src/migrations/cli.ts clickhouse down",
-    "migration:scylla:status": "ts-node --project ./tsconfig.json ./src/migrations/cli.ts scylla status",
-    "migration:scylla:up": "ts-node --project ./tsconfig.json ./src/migrations/cli.ts scylla up",
-    "migration:scylla:down": "ts-node --project ./tsconfig.json ./src/migrations/cli.ts scylla down",
-    "migration:all:status": "npm run migration:postgres:status && npm run migration:clickhouse:status && npm run migration:scylla:status",
-    "migration:all:up": "npm run migration:postgres:up && npm run migration:clickhouse:up && npm run migration:scylla:up",
-    "migration:all:down": "npm run migration:scylla:down && npm run migration:clickhouse:down && npm run migration:postgres:down",
     "test:domain": "echo 'Domain tests scaffolded; configure jest runtime in next iteration.'"
   }
 }

@@ -182,10 +182,10 @@ All migration-related files are in `src/migrations/`.
 
 Separate migration mechanisms are available for each DB with dedicated journal table in each engine:
 
-- CLI entrypoint: `src/migrations/cli.ts`
-- Postgres module/service: `src/migrations/postgres/postgres-migration.module.ts`, `src/migrations/postgres/postgres-migration.service.ts`
-- ClickHouse module/service: `src/migrations/clickhouse/clickhouse-migration.module.ts`, `src/migrations/clickhouse/clickhouse-migration.service.ts`
-- Scylla module/service: `src/migrations/scylla/scylla-migration.module.ts`, `src/migrations/scylla/scylla-migration.service.ts`
+- App bootstrap entrypoint: `src/platform/modules/migrations/application/migration-bootstrap.service.ts`
+- Postgres module/service: `@infinityloop.labs/nest-connectors` (`PostgresMigrationModule`, `PostgresMigrationService`)
+- ClickHouse module/service: `@infinityloop.labs/nest-connectors` (`ClickHouseMigrationModule`, `ClickHouseMigrationService`)
+- Scylla module/service: `@infinityloop.labs/nest-connectors` (`ScyllaMigrationModule`, `ScyllaMigrationService`)
 - journal tables: `schema_migrations_postgres`, `schema_migrations_clickhouse`, `schema_migrations_scylla`
 Migration folders:
 
@@ -193,22 +193,11 @@ Migration folders:
 - `src/migrations/clickhouse/*.up.sql` + `src/migrations/clickhouse/*.down.sql`
 - `src/migrations/scylla/*.up.cql` + `src/migrations/scylla/*.down.cql`
 
-Commands:
+Apply mode:
 
-```bash
-npm run migration:postgres:status
-npm run migration:postgres:up
-npm run migration:postgres:down
-npm run migration:clickhouse:status
-npm run migration:clickhouse:up
-npm run migration:clickhouse:down
-npm run migration:scylla:status
-npm run migration:scylla:up
-npm run migration:scylla:down
-npm run migration:all:status
-npm run migration:all:up
-npm run migration:all:down
-```
+- migrations run automatically on app startup via `MigrationBootstrapService` in `MigrationsModule`
+- for enabled DB connectors, startup executes `run('up')` and waits for completion
+- on migration error, application startup fails
 
 Behavior:
 
