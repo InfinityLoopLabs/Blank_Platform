@@ -1,12 +1,9 @@
+import { SchemaModeType } from './schema-mode'
+
 export type AppConfigType = {
   appEnv: string
   appPort: number
-  schemaMode:
-    | 'ok'
-    | 'dirty'
-    | 'checksum_mismatch'
-    | 'missing_version'
-    | 'db_down'
+  schemaMode: SchemaModeType
   otelSidecarEndpoint: string
   isOtelSidecarAvailable: boolean
 }

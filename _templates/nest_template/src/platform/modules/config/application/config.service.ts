@@ -1,12 +1,29 @@
-import { Injectable } from '@nestjs/common'
+import { Inject, Injectable } from '@nestjs/common'
 
 import { EnvConfigRepository } from '../adapters/env-config.repository'
 import { AppConfigType } from '../domain/app-config'
-import { IConfigRepository } from '../ports/config.repository'
+import { ALLOWED_SCHEMA_MODES } from '../domain/schema-mode'
+import {
+  CONFIG_REPOSITORY,
+  IConfigRepository,
+} from '../ports/config.repository'
+import {
+  requiredBoolean,
+  requiredOneOf,
+  requiredPositiveInt,
+  requiredString,
+} from '../transport/env-readers'
+import {
+  resolveRuntimeEnv,
+  validateEnvironment,
+  VALIDATION_ENV_KEYS,
+} from '../transport/environment.validation'
 
 @Injectable()
 export class ConfigService {
-  constructor(private readonly repository: EnvConfigRepository) {}
+  constructor(
+    @Inject(CONFIG_REPOSITORY) private readonly repository: IConfigRepository,
+  ) {}
 
   get(key: string): string | undefined {
     return this.repository.get(key)
@@ -36,66 +53,47 @@ export class ConfigService {
   }
 
   static fromRepository(repository: IConfigRepository): AppConfigType {
-    const appEnv = (repository.get('APP_ENV') ?? '').trim()
-    if (!appEnv) {
-      throw new Error('APP_ENV is required')
+    const snapshot = ConfigService.readValidationSnapshot(repository)
+    const validatedSnapshot = validateEnvironment(snapshot)
+    const validatedRepository: IConfigRepository = {
+      get: key => validatedSnapshot[key],
     }
 
-    const appPortRaw = (repository.get('APP_PORT') ?? '').trim()
-    if (!appPortRaw) {
-      throw new Error('APP_PORT is required')
-    }
-
-    const appPort = Number(appPortRaw)
-    if (!Number.isInteger(appPort) || appPort <= 0) {
-      throw new Error('APP_PORT must be a positive integer')
-    }
-
-    const schemaModeRaw = (repository.get('SCHEMA_MODE') ?? '').trim()
-    if (!schemaModeRaw) {
-      throw new Error('SCHEMA_MODE is required')
-    }
-    const allowedModes = [
-      'ok',
-      'dirty',
-      'checksum_mismatch',
-      'missing_version',
-      'db_down',
-    ] as const
-    if (
-      !allowedModes.includes(schemaModeRaw as (typeof allowedModes)[number])
-    ) {
-      throw new Error(
-        'SCHEMA_MODE must be one of: ok, dirty, checksum_mismatch, missing_version, db_down',
-      )
-    }
-
-    const otelSidecarEndpoint = (
-      repository.get('OTEL_SIDECAR_ENDPOINT') ?? ''
-    ).trim()
-    if (!otelSidecarEndpoint) {
-      throw new Error('OTEL_SIDECAR_ENDPOINT is required')
-    }
-
-    const isOtelSidecarAvailableRaw = (
-      repository.get('OTEL_SIDECAR_AVAILABLE') ?? ''
+    const appEnv = resolveRuntimeEnv(validatedSnapshot)
+    const appPort = requiredPositiveInt(validatedRepository, 'APP_PORT')
+    const schemaMode = requiredOneOf(
+      validatedRepository,
+      'SCHEMA_MODE',
+      ALLOWED_SCHEMA_MODES,
     )
-      .trim()
-      .toLowerCase()
-    if (!isOtelSidecarAvailableRaw) {
-      throw new Error('OTEL_SIDECAR_AVAILABLE is required')
-    }
-    if (!['true', 'false'].includes(isOtelSidecarAvailableRaw)) {
-      throw new Error('OTEL_SIDECAR_AVAILABLE must be true or false')
-    }
-    const isOtelSidecarAvailable = isOtelSidecarAvailableRaw === 'true'
+    const otelSidecarEndpoint = requiredString(
+      validatedRepository,
+      'OTEL_SIDECAR_ENDPOINT',
+    )
+    const isOtelSidecarAvailable = requiredBoolean(
+      validatedRepository,
+      'OTEL_SIDECAR_AVAILABLE',
+    )
 
     return {
       appEnv,
       appPort,
-      schemaMode: schemaModeRaw as AppConfigType['schemaMode'],
+      schemaMode,
       otelSidecarEndpoint,
       isOtelSidecarAvailable,
     }
+  }
+
+  private static readValidationSnapshot(
+    repository: IConfigRepository,
+  ): Record<string, string | undefined> {
+    return VALIDATION_ENV_KEYS.reduce<Record<string, string | undefined>>(
+      (accumulator, key) => {
+        accumulator[key] = repository.get(key)
+
+        return accumulator
+      },
+      {},
+    )
   }
 }

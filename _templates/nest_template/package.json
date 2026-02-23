@@ -17,6 +17,7 @@
     "class-validator": "^0.14.3",
     "ioredis": "^5.7.0",
     "kafkajs": "^2.2.4",
+    "module-alias": "^2.2.3",
     "minio": "^8.0.6",
     "pg": "^8.16.3",
     "reflect-metadata": "^0.2.2",
@@ -34,13 +35,18 @@
     "ts-node": "^10.9.2",
     "typescript": "^5.7.3"
   },
+  "_moduleAliases": {
+    "@core": "dist/platform",
+    "@features": "dist/features",
+    "@infrastructure": "dist/infrastructure"
+  },
   "scripts": {
     "build": "tsc -p tsconfig.json",
     "dev": "npm run start:dev",
     "lint": "eslint --ext .ts src tests",
     "lint:fix": "eslint --fix --ext .ts src tests",
-    "start": "node dist/main.js",
-    "start:dev": "nodemon --watch src --ext ts,json --exec \"npm run build && node dist/main.js\"",
+    "start": "node -r ./module-alias-register.js dist/main.js",
+    "start:dev": "nodemon --watch src --ext ts,json --exec \"npm run build && node -r ./module-alias-register.js dist/main.js\"",
     "test:domain": "echo 'Domain tests scaffolded; configure jest runtime in next iteration.'"
   }
 }

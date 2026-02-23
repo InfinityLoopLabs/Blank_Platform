@@ -1,7 +1,10 @@
-import { Injectable } from '@nestjs/common'
+import { Inject, Injectable } from '@nestjs/common'
 
 import { EnvConfigRepository } from '../../config/adapters/env-config.repository'
-import { IConfigRepository } from '../../config/ports/config.repository'
+import {
+  CONFIG_REPOSITORY,
+  IConfigRepository,
+} from '../../config/ports/config.repository'
 import {
   IntegrationPolicyType,
   IntegrationPoliciesType,
@@ -10,7 +13,9 @@ import {
 
 @Injectable()
 export class IntegrationPolicyService {
-  constructor(private readonly repository: EnvConfigRepository) {}
+  constructor(
+    @Inject(CONFIG_REPOSITORY) private readonly repository: IConfigRepository,
+  ) {}
 
   load(): IntegrationPoliciesType {
     return IntegrationPolicyService.fromRepository(this.repository)

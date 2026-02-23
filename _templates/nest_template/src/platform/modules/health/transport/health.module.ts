@@ -15,8 +15,8 @@ import { HealthController } from './health.controller'
     {
       provide: HealthService,
       inject: [AppConfigProvider],
-      useFactory: (configProvider: AppConfigProvider) =>
-        new HealthService(configProvider.value.schemaMode),
+      useFactory: (appConfigProvider: AppConfigProvider) =>
+        new HealthService(appConfigProvider.value.schemaMode),
     },
   ],
   exports: [HealthService],

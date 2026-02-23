@@ -20,6 +20,7 @@ export default [
           map: [
             ['@core', './src/platform'],
             ['@features', './src/features'],
+            ['@infrastructure', './src/infrastructure'],
           ],
           extensions: ['.js', '.ts'],
         },
@@ -44,6 +45,7 @@ export default [
           map: [
             ['@core', './src/platform'],
             ['@features', './src/features'],
+            ['@infrastructure', './src/infrastructure'],
           ],
           extensions: ['.js', '.ts'],
         },

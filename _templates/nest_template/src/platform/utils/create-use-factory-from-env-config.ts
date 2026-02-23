@@ -6,19 +6,19 @@
  * - Remove repetitive casting from `(...args: unknown[])` to concrete env repository type.
  *
  * Contract:
- * - The first entry in module `inject` MUST be env config provider class/token.
+ * - The first entry in module `inject` MUST be env-config provider token.
  * - The provided mapper must be a pure transform: `env -> module options`.
  *
  * Why this exists:
  * - `registerAsync` in many connector modules expects a variadic `useFactory(...args)`.
- * - In practice, we always inject one primary dependency (`EnvConfigRepository`) first.
+ * - In practice, we inject one primary env-config dependency (`CONFIG_REPOSITORY`) first.
  * - This helper centralizes that adaptation in one explicit place.
  *
  * Example:
  * ```ts
  * PostgresConnectorModule.registerAsync({
  *   imports: [ConfigModule],
- *   inject: [EnvConfigRepository],
+ *   inject: [CONFIG_REPOSITORY],
  *   useFactory: createUseFactoryFromEnvConfig(buildPostgresConnectorOptions),
  * })
  * ```

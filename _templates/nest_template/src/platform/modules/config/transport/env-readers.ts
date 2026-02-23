@@ -1,6 +1,6 @@
-import { EnvConfigRepository } from '../adapters/env-config.repository'
+import { IConfigRepository } from '../ports/config.repository'
 
-export function requiredString(env: EnvConfigRepository, key: string): string {
+export function requiredString(env: IConfigRepository, key: string): string {
   const value = (env.get(key) ?? '').trim()
   if (!value) {
     throw new Error(`Missing required env: ${key}`)
@@ -10,7 +10,7 @@ export function requiredString(env: EnvConfigRepository, key: string): string {
 }
 
 export function optionalString(
-  env: EnvConfigRepository,
+  env: IConfigRepository,
   key: string,
 ): string | undefined {
   const value = (env.get(key) ?? '').trim()
@@ -19,7 +19,7 @@ export function optionalString(
 }
 
 export function requiredPositiveInt(
-  env: EnvConfigRepository,
+  env: IConfigRepository,
   key: string,
 ): number {
   const value = requiredString(env, key)
@@ -32,7 +32,7 @@ export function requiredPositiveInt(
 }
 
 export function requiredNonNegativeInt(
-  env: EnvConfigRepository,
+  env: IConfigRepository,
   key: string,
 ): number {
   const value = requiredString(env, key)
@@ -44,7 +44,7 @@ export function requiredNonNegativeInt(
   return parsed
 }
 
-export function requiredBoolean(env: EnvConfigRepository, key: string): boolean {
+export function requiredBoolean(env: IConfigRepository, key: string): boolean {
   const value = requiredString(env, key).toLowerCase()
   if (value === 'true') {
     return true
@@ -55,7 +55,7 @@ export function requiredBoolean(env: EnvConfigRepository, key: string): boolean 
   throw new Error(`Invalid boolean env ${key}: ${value}`)
 }
 
-export function requiredCsv(env: EnvConfigRepository, key: string): string[] {
+export function requiredCsv(env: IConfigRepository, key: string): string[] {
   const source = requiredString(env, key)
   const values = source
     .split(',')
@@ -66,4 +66,19 @@ export function requiredCsv(env: EnvConfigRepository, key: string): string[] {
   }
 
   return values
+}
+
+export function requiredOneOf<T extends readonly string[]>(
+  env: IConfigRepository,
+  key: string,
+  allowed: T,
+): T[number] {
+  const value = requiredString(env, key) as T[number]
+  if (!allowed.includes(value)) {
+    throw new Error(
+      `Invalid env ${key}: ${value}. Allowed: ${allowed.join(', ')}`,
+    )
+  }
+
+  return value
 }

@@ -4,11 +4,15 @@ import { ConfigModule as NestConfigModule } from '@nestjs/config'
 import { EnvConfigRepository } from '../adapters/env-config.repository'
 import { AppConfigProvider } from '../application/app-config.provider'
 import { ConfigService } from '../application/config.service'
-import { validateEnvironment } from './environment.validation'
+import { CONFIG_REPOSITORY } from '../ports/config.repository'
+import {
+  resolveRuntimeEnv,
+  validateEnvironment,
+} from './environment.validation'
 
-const runtimeEnv =
-  (process.env.APP_ENV ?? process.env.NODE_ENV ?? 'development').trim() ||
-  'development'
+const runtimeEnv = resolveRuntimeEnv(
+  process.env as Record<string, string | undefined>,
+)
 const environmentModule = NestConfigModule.forRoot({
   isGlobal: true,
   envFilePath: [`.env.${runtimeEnv}`, '.env'],
@@ -22,16 +26,26 @@ const environmentModule = NestConfigModule.forRoot({
   providers: [
     {
       provide: EnvConfigRepository,
-      useFactory: () => new EnvConfigRepository(process.env),
+      useFactory: () =>
+        new EnvConfigRepository(
+          Object.freeze({ ...process.env }) as Record<
+            string,
+            string | undefined
+          >,
+        ),
+    },
+    {
+      provide: CONFIG_REPOSITORY,
+      useExisting: EnvConfigRepository,
     },
     ConfigService,
-    {
-      provide: AppConfigProvider,
-      inject: [ConfigService],
-      useFactory: (configService: ConfigService) =>
-        new AppConfigProvider(configService.load()),
-    },
+    AppConfigProvider,
   ],
-  exports: [AppConfigProvider, EnvConfigRepository, ConfigService],
+  exports: [
+    AppConfigProvider,
+    CONFIG_REPOSITORY,
+    EnvConfigRepository,
+    ConfigService,
+  ],
 })
 export class ConfigModule {}

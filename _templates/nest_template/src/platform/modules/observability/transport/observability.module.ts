@@ -11,8 +11,8 @@ import { ObservabilityService } from '../application/observability.service'
     {
       provide: ObservabilityService,
       inject: [AppConfigProvider],
-      useFactory: (configProvider: AppConfigProvider) => {
-        const config = configProvider.value
+      useFactory: (appConfigProvider: AppConfigProvider) => {
+        const { value: config } = appConfigProvider
         const exporter = !config.isOtelSidecarAvailable
           ? new NoopExporter()
           : new OtlpHttpExporter(config.otelSidecarEndpoint)
