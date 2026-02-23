@@ -1,8 +1,6 @@
-import { Module } from '@nestjs/common'
 import { MinioConnectorModule } from '@infinityloop.labs/nest-connectors'
+import { Module } from '@nestjs/common'
 import { ConditionalModule } from '@nestjs/config'
-
-import { createUseFactoryFromEnvConfig } from '@core/utils'
 import {
   ConfigModule,
   EnvConfigRepository,
@@ -11,6 +9,7 @@ import {
   requiredPositiveInt,
   requiredString,
 } from '@core/modules/config/transport'
+import { createUseFactoryFromEnvConfig } from '@core/utils'
 
 @Module({
   imports: [
