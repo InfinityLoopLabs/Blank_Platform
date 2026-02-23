@@ -11,7 +11,8 @@
     "baseUrl": "./src",
     "paths": {
       "@core/*": ["platform/*"],
-      "@features/*": ["features/*"]
+      "@features/*": ["features/*"],
+      "@infrastructure/*": ["infrastructure/*"]
     },
     "types": ["node"],
     "esModuleInterop": true,

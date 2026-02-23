@@ -1,7 +1,12 @@
 import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common'
 
 import { ConfigModule } from '@core/modules/config/transport'
-import { connectorImports } from '@core/modules/connectors/transport'
+import { ClickHouseModule } from '@infrastructure/clickhouse/clickhouse.module'
+import { KafkaModule } from '@infrastructure/kafka/kafka.module'
+import { MinioModule } from '@infrastructure/minio/minio.module'
+import { PostgresModule } from '@infrastructure/postgres/postgres.module'
+import { RedisModule } from '@infrastructure/redis/redis.module'
+import { ScyllaModule } from '@infrastructure/scylla/scylla.module'
 import { HealthModule } from '@core/modules/health/transport'
 import { IntegrationPolicyModule } from '@core/modules/integration-policy/transport'
 import { MigrationsModule } from '@core/modules/migrations/transport'
@@ -20,7 +25,12 @@ import {
   imports: [
     ConfigModule,
     MigrationsModule,
-    ...connectorImports,
+    PostgresModule,
+    ClickHouseModule,
+    ScyllaModule,
+    RedisModule,
+    KafkaModule,
+    MinioModule,
     IntegrationPolicyModule,
     ObservabilityModule,
     HealthModule,

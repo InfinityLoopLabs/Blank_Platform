@@ -1,4 +1,4 @@
-import { EnvConfigRepository } from '../../config/transport'
+import { EnvConfigRepository } from '../adapters/env-config.repository'
 
 export function requiredString(env: EnvConfigRepository, key: string): string {
   const value = (env.get(key) ?? '').trim()
