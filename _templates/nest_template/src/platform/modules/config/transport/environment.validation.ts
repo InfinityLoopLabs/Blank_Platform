@@ -50,6 +50,17 @@ export const VALIDATION_ENV_KEYS = [
   'MINIO_USE_SSL',
   'MINIO_ACCESS_KEY',
   'MINIO_SECRET_KEY',
+  'NEO4J_ENABLED',
+  'NEO4J_URI',
+  'NEO4J_USER',
+  'NEO4J_PASSWORD',
+  'NEO4J_DATABASE',
+  'NEO4J_MAX_CONNECTION_POOL_SIZE',
+  'NEO4J_CONNECTION_TIMEOUT_MS',
+  'QDRANT_ENABLED',
+  'QDRANT_URL',
+  'QDRANT_API_KEY',
+  'QDRANT_TIMEOUT_MS',
 ] as const
 
 export function resolveRuntimeEnv(source: RuntimeEnvType): string {
@@ -80,6 +91,8 @@ export function validateEnvironment(source: RuntimeEnvType): RuntimeEnvType {
   const isRedisEnabled = requiredBoolean(envRepository, 'REDIS_ENABLED')
   const isKafkaEnabled = requiredBoolean(envRepository, 'KAFKA_ENABLED')
   const isMinioEnabled = requiredBoolean(envRepository, 'MINIO_ENABLED')
+  const isNeo4jEnabled = requiredBoolean(envRepository, 'NEO4J_ENABLED')
+  const isQdrantEnabled = requiredBoolean(envRepository, 'QDRANT_ENABLED')
 
   if (isPostgresEnabled) {
     requiredString(envRepository, 'POSTGRES_HOST')
@@ -120,6 +133,19 @@ export function validateEnvironment(source: RuntimeEnvType): RuntimeEnvType {
     requiredBoolean(envRepository, 'MINIO_USE_SSL')
     requiredString(envRepository, 'MINIO_ACCESS_KEY')
     requiredString(envRepository, 'MINIO_SECRET_KEY')
+  }
+
+  if (isNeo4jEnabled) {
+    requiredString(envRepository, 'NEO4J_URI')
+    requiredString(envRepository, 'NEO4J_USER')
+    requiredString(envRepository, 'NEO4J_PASSWORD')
+    requiredPositiveInt(envRepository, 'NEO4J_MAX_CONNECTION_POOL_SIZE')
+    requiredPositiveInt(envRepository, 'NEO4J_CONNECTION_TIMEOUT_MS')
+  }
+
+  if (isQdrantEnabled) {
+    requiredString(envRepository, 'QDRANT_URL')
+    requiredPositiveInt(envRepository, 'QDRANT_TIMEOUT_MS')
   }
 
   return env

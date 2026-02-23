@@ -4,6 +4,7 @@ import typescript from '@rollup/plugin-typescript';
 import { dts } from 'rollup-plugin-dts';
 
 const external = [
+  '@qdrant/js-client-rest',
   '@clickhouse/client',
   '@nestjs/common',
   '@nestjs/core',
@@ -11,6 +12,7 @@ const external = [
   'cassandra-driver',
   'ioredis',
   'minio',
+  'neo4j-driver',
   'pg',
   'reflect-metadata',
   'rxjs',

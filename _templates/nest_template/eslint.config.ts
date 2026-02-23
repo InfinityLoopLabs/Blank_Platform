@@ -1,6 +1,20 @@
+import type { Linter } from 'eslint';
 import sharedConfig from '@infinityloop.labs/eslint-config-backend';
 
-export default [
+const aliasResolver: Linter.Config['settings'] = {
+  'import/resolver': {
+    alias: {
+      map: [
+        ['@core', './src/platform'],
+        ['@features', './src/features'],
+        ['@infrastructure', './src/infrastructure'],
+      ],
+      extensions: ['.js', '.ts'],
+    },
+  },
+};
+
+const config: Linter.Config[] = [
   {
     ignores: ['dist/**/*', 'build/**/*', 'node_modules/**/*'],
   },
@@ -14,18 +28,7 @@ export default [
         project: './tsconfig.json',
       },
     },
-    settings: {
-      'import/resolver': {
-        alias: {
-          map: [
-            ['@core', './src/platform'],
-            ['@features', './src/features'],
-            ['@infrastructure', './src/infrastructure'],
-          ],
-          extensions: ['.js', '.ts'],
-        },
-      },
-    },
+    settings: aliasResolver,
   },
   {
     files: ['tests/**/*.ts'],
@@ -39,17 +42,8 @@ export default [
         },
       },
     },
-    settings: {
-      'import/resolver': {
-        alias: {
-          map: [
-            ['@core', './src/platform'],
-            ['@features', './src/features'],
-            ['@infrastructure', './src/infrastructure'],
-          ],
-          extensions: ['.js', '.ts'],
-        },
-      },
-    },
+    settings: aliasResolver,
   },
 ];
+
+export default config;

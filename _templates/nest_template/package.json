@@ -3,6 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "@qdrant/js-client-rest": "^1.13.0",
     "@clickhouse/client": "^1.12.1",
     "@infinityloop.labs/nest-connectors": "file:../../packages/nest-connectors",
     "@nestjs/common": "^10.4.13",
@@ -17,36 +18,37 @@
     "class-validator": "^0.14.3",
     "ioredis": "^5.7.0",
     "kafkajs": "^2.2.4",
-    "module-alias": "^2.2.3",
     "minio": "^8.0.6",
+    "neo4j-driver": "^5.28.2",
     "pg": "^8.16.3",
     "reflect-metadata": "^0.2.2",
     "rxjs": "^7.8.2",
+    "tsconfig-paths": "^3.15.0",
     "swagger-ui-express": "^5.0.1"
   },
   "devDependencies": {
     "@infinityloop.labs/eslint-config-backend": "*",
+    "@nestjs/cli": "^11.0.0",
     "@types/express": "^5.0.1",
     "@types/node": "^22.13.1",
     "@types/pg": "^8.15.6",
     "eslint": "^9.29.0",
     "eslint-import-resolver-alias": "^1.1.2",
+    "jiti": "^1.21.0",
     "nodemon": "^3.1.10",
     "ts-node": "^10.9.2",
     "typescript": "^5.7.3"
   },
-  "_moduleAliases": {
-    "@core": "dist/platform",
-    "@features": "dist/features",
-    "@infrastructure": "dist/infrastructure"
-  },
   "scripts": {
-    "build": "tsc -p tsconfig.json",
+    "build": "nest build",
     "dev": "npm run start:dev",
-    "lint": "eslint --ext .ts src tests",
-    "lint:fix": "eslint --fix --ext .ts src tests",
-    "start": "node -r ./module-alias-register.js dist/main.js",
-    "start:dev": "nodemon --watch src --ext ts,json --exec \"npm run build && node -r ./module-alias-register.js dist/main.js\"",
+    "lint": "eslint --config eslint.config.ts --ext .ts src tests",
+    "lint:fix": "eslint --config eslint.config.ts --fix --ext .ts src tests",
+    "start": "nest start",
+    "start:dev": "nest start --watch",
+    "start:debug": "nest start --debug --watch",
+    "start:prod": "node -r ./register-paths.js dist/main.js",
+    "test": "npm run test:domain",
     "test:domain": "echo 'Domain tests scaffolded; configure jest runtime in next iteration.'"
   }
 }
