@@ -37,7 +37,9 @@ export default {
   external: (id) => externalModules.has(id) || id.startsWith("node:"),
   plugins: [
     typescript({
-      tsconfig: "./tsconfig.rollup.json",
+      tsconfig: "./tsconfig.json",
+      module: "ESNext",
+      moduleResolution: "Bundler",
       declaration: false,
       declarationMap: false,
     }),
