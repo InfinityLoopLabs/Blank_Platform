@@ -95,6 +95,24 @@ services:
       retries: 20
       start_period: 120s
 
+  rabbitmq:
+    image: rabbitmq:3.13-management-alpine
+    container_name: local-infra-rabbitmq
+    restart: unless-stopped
+    environment:
+      RABBITMQ_DEFAULT_USER: ${RABBITMQ_DEFAULT_USER:-app}
+      RABBITMQ_DEFAULT_PASS: ${RABBITMQ_DEFAULT_PASS:-app}
+    ports:
+      - "20567:5672"
+      - "20572:15672"
+    volumes:
+      - ./data/rabbitmq:/var/lib/rabbitmq
+    healthcheck:
+      test: ["CMD-SHELL", "rabbitmq-diagnostics -q ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 20
+
   minio:
     image: minio/minio:latest
     container_name: local-infra-minio

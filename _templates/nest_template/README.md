@@ -12,7 +12,7 @@
 - `src/platform/transport/grpc` gRPC transport scaffold
 - `src/platform/modules/config/{domain,application,ports,adapters,transport}` for replaceable app config source (`env`, `server`, etc.)
 - `@infinityloop.labs/nest-connectors` for reusable connector modules and generic repositories
-- `src/platform/modules/integration-policy/{domain,application,transport}` for integration capabilities config (postgres/kafka/redis/... flags + endpoints)
+- `src/platform/modules/integration-policy/{domain,application,transport}` for integration capabilities config (postgres/kafka/rabbitmq/redis/... flags + endpoints)
 - `src/platform/modules/observability/{domain,application,ports,adapters,transport}` for sidecar-only OTLP export
 - `src/platform/modules/health/{domain,application,transport}` for health/readiness/health status module
 
@@ -38,6 +38,7 @@ Available modules and exported classes:
 - `ScyllaConnectorModule` -> `ScyllaConnector`, `ScyllaRepository`
 - `RedisConnectorModule` -> `RedisConnector`, `RedisRepository`
 - `KafkaConnectorModule` -> `KafkaConnector`, `KafkaRepository`
+- `RabbitMqConnectorModule` -> `RabbitMqConnector`, `RabbitMqRepository`
 - `MinioConnectorModule` -> `MinioConnector`, `MinioRepository`
 
 You can import only required connectors in `AppModule`.
@@ -45,7 +46,7 @@ You can import only required connectors in `AppModule`.
 Feature flags in app bootstrap:
 
 - connectors are imported by default; only `false` disables import.
-- supported flags: `POSTGRES_ENABLED`, `CLICKHOUSE_ENABLED`, `SCYLLA_ENABLED`, `REDIS_ENABLED`, `KAFKA_ENABLED`, `MINIO_ENABLED`.
+- supported flags: `POSTGRES_ENABLED`, `CLICKHOUSE_ENABLED`, `SCYLLA_ENABLED`, `REDIS_ENABLED`, `KAFKA_ENABLED`, `RABBITMQ_ENABLED`, `MINIO_ENABLED`.
 - if flag equals `false`, module is not imported and its providers are not injectable.
 
 Env files:
@@ -65,6 +66,8 @@ Env files:
 - `RedisRepository.forEntity<TEntity, TId>(...)`: generic key-value entity store (`findById`, `save`, `deleteById`, `exists`)
 - `KafkaRepository`: `connect`, `emit`, `request`, `close`
 - `KafkaRepository.forTopic<TPayload, TResponse>(...)`: typed topic adapter (`emit`, `request`)
+- `RabbitMqRepository`: `connect`, `emit`, `request`, `close`
+- `RabbitMqRepository.forPattern<TPayload, TResponse>(...)`: typed pattern adapter (`emit`, `request`)
 - `MinioRepository`: `ensureBucket`, `listBuckets`, `putObject`, `getObjectBuffer`, `statObject`, `removeObject`, `presignedGetObject`
 - `MinioRepository.forObject<TValue>(...)`: typed object storage adapter (`ensureBucket`, `put`, `get`, `exists`, `delete`)
 
@@ -100,6 +103,7 @@ import { ConfigModule, EnvConfigRepository } from './platform/modules/config/tra
 import {
   PostgresConnectorModule,
   KafkaConnectorModule,
+  RabbitMqConnectorModule,
   ClickHouseConnectorModule,
   RedisConnectorModule,
 } from '@infinityloop.labs/nest-connectors';
@@ -142,6 +146,10 @@ import {
         },
       }),
     }),
+    RabbitMqConnectorModule.register({
+      urls: ['amqp://guest:guest@localhost:20567'],
+      queue: 'sample-nest-queue',
+    }),
   ],
 })
 export class AppModule {}
@@ -164,6 +172,7 @@ export class OrdersReadService {
 - Scylla CQL: `20042`
 - Redis: `20379`
 - Kafka: `20092`
+- RabbitMQ: `20567`
 - MinIO S3: `20000`
 
 ## Commands

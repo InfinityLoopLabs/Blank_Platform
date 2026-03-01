@@ -7,6 +7,7 @@ Reusable NestJS connectors and generic repositories for:
 - Scylla
 - Redis
 - Kafka
+- RabbitMQ
 - MinIO
 
 ## Install

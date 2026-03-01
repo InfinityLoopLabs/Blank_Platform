@@ -2,6 +2,12 @@
 
 Config-driven CLI runner.
 
+## Architecture
+
+- Core: load config -> find command key -> execute steps in order.
+- Plugin contract: each plugin has `type`, `parse(rawStep, context)`, `execute(payload, context)`.
+- Built-in plugins (4 folders): `add`, `insert`, `remove-line`, `remove`.
+
 ## Usage
 
 ```bash
@@ -53,21 +59,29 @@ module.exports = {
 
 ## Step Types
 
-- `add`: copy folder from `from` to `to` with optional `replace`.
-- `paste`: write `content` to file `to` (`append` by default; also `prepend` or `replace`).
-- `remove`: delete `target` path recursively.
+- `add`: copy file/folder from `from` to `to` with optional `replace`.
+- `insert`: insert `line` after `placeholder` in `file`.
+- `remove-line`: remove a line from `file` by text match.
+- `remove`: delete file/folder at `target`.
 
-## Replace Rules
+## Example With Placeholder
 
-`replace` is an array of objects. Two formats are supported:
-
-- `{ from: "Sample", to: "$name" }`
-- `{ "Sample": "$name" }`
-
-`$name` comes from CLI argument `--name`.
-
-Case is preserved by match:
-
-- `sample` -> `popup`
-- `Sample` -> `Popup`
-- `SAMPLE` -> `POPUP`
+```js
+module.exports = {
+  commands: {
+    patchHooks: [
+      {
+        type: "insert",
+        file: "app/utils/hooks.ts",
+        placeholder: "// Insert Hooks here",
+        line: "createAppActions($name)",
+      },
+      {
+        type: "remove-line",
+        file: "app/utils/hooks.ts",
+        line: "createAppActions($name)",
+      },
+    ],
+  },
+};
+```

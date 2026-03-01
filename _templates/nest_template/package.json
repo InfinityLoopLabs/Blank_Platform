@@ -3,7 +3,6 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
-    "@qdrant/js-client-rest": "^1.13.0",
     "@clickhouse/client": "^1.12.1",
     "@infinityloop.labs/nest-connectors": "file:../../packages/nest-connectors",
     "@nestjs/common": "^10.4.13",
@@ -13,6 +12,9 @@
     "@nestjs/platform-express": "^10.4.13",
     "@nestjs/swagger": "^7.4.2",
     "@nestjs/terminus": "^10.3.0",
+    "@qdrant/js-client-rest": "^1.13.0",
+    "amqp-connection-manager": "^4.1.15",
+    "amqplib": "^0.10.9",
     "cassandra-driver": "^4.8.0",
     "class-transformer": "^0.5.1",
     "class-validator": "^0.14.3",
@@ -23,8 +25,8 @@
     "pg": "^8.16.3",
     "reflect-metadata": "^0.2.2",
     "rxjs": "^7.8.2",
-    "tsconfig-paths": "^3.15.0",
-    "swagger-ui-express": "^5.0.1"
+    "swagger-ui-express": "^5.0.1",
+    "tsconfig-paths": "^3.15.0"
   },
   "devDependencies": {
     "@infinityloop.labs/eslint-config-backend": "*",
@@ -36,7 +38,9 @@
     "eslint-import-resolver-alias": "^1.1.2",
     "jiti": "^1.21.0",
     "nodemon": "^3.1.10",
+    "testcontainers": "^10.16.2",
     "ts-node": "^10.9.2",
+    "tsx": "^4.21.0",
     "typescript": "^5.7.3"
   },
   "scripts": {
@@ -49,6 +53,8 @@
     "start:debug": "nest start --debug --watch",
     "start:prod": "node -r ./register-paths.js dist/main.js",
     "test": "npm run test:domain",
-    "test:domain": "echo 'Domain tests scaffolded; configure jest runtime in next iteration.'"
+    "test:domain": "echo 'Domain tests scaffolded; configure jest runtime in next iteration.'",
+    "test:containers": "node --import tsx --test --test-concurrency=1 tests/integration/connectors/*.spec.ts",
+    "test:rabbitmq:container": "node --import tsx --test tests/integration/connectors/rabbitmq.testcontainer.spec.ts"
   }
 }

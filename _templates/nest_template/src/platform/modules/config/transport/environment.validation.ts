@@ -44,6 +44,9 @@ export const VALIDATION_ENV_KEYS = [
   'KAFKA_CLIENT_ID',
   'KAFKA_GROUP_ID',
   'KAFKA_BROKERS',
+  'RABBITMQ_ENABLED',
+  'RABBITMQ_URLS',
+  'RABBITMQ_QUEUE',
   'MINIO_ENABLED',
   'MINIO_ENDPOINT',
   'MINIO_PORT',
@@ -90,6 +93,7 @@ export function validateEnvironment(source: RuntimeEnvType): RuntimeEnvType {
   const isScyllaEnabled = requiredBoolean(envRepository, 'SCYLLA_ENABLED')
   const isRedisEnabled = requiredBoolean(envRepository, 'REDIS_ENABLED')
   const isKafkaEnabled = requiredBoolean(envRepository, 'KAFKA_ENABLED')
+  const isRabbitMqEnabled = requiredBoolean(envRepository, 'RABBITMQ_ENABLED')
   const isMinioEnabled = requiredBoolean(envRepository, 'MINIO_ENABLED')
   const isNeo4jEnabled = requiredBoolean(envRepository, 'NEO4J_ENABLED')
   const isQdrantEnabled = requiredBoolean(envRepository, 'QDRANT_ENABLED')
@@ -125,6 +129,11 @@ export function validateEnvironment(source: RuntimeEnvType): RuntimeEnvType {
     requiredString(envRepository, 'KAFKA_CLIENT_ID')
     requiredString(envRepository, 'KAFKA_GROUP_ID')
     requiredString(envRepository, 'KAFKA_BROKERS')
+  }
+
+  if (isRabbitMqEnabled) {
+    requiredString(envRepository, 'RABBITMQ_URLS')
+    requiredString(envRepository, 'RABBITMQ_QUEUE')
   }
 
   if (isMinioEnabled) {

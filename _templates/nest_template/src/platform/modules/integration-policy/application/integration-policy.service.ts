@@ -69,6 +69,7 @@ export class IntegrationPolicyService {
     return {
       postgres: build('postgres', true, 'postgres://localhost:20432/app'),
       kafka: build('kafka', true, 'localhost:20092'),
+      rabbitmq: build('rabbitmq', true, 'amqp://localhost:20567'),
       redis: build('redis', true, 'localhost:20379'),
       clickhouse: build('clickhouse', false, 'localhost:20123'),
       scylla: build('scylla', false, 'localhost:20042'),

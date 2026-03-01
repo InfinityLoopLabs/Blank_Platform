@@ -1,20 +1,19 @@
 import path from "node:path";
-import { parseArgs } from "./args/parse-args";
-import { runCommandSteps } from "./commands/run-command-steps";
-import { resolveCommandSteps } from "./commands/resolve-command-steps";
-import { loadConfig } from "./config/load-config";
-import type { VariableMap } from "./commands/types";
+import { parseArgs } from "./args";
+import { loadProjectConfig } from "./config";
+import { runCommandByKey } from "./runtime";
+import type { Variables } from "./types";
+import { builtinPlugins } from "./plugins";
 
-export * from "./args/parse-args";
-export * from "./commands/types";
-export * from "./commands/run-command-steps";
-export * from "./commands/resolve-command-steps";
-export * from "./config/config-types";
-export * from "./config/find-config-path";
-export * from "./config/load-config";
-export * from "./parse-commands/parse-commands-map";
-export * from "./parse-commands/normalize-command-step";
-export * from "./parse-commands/normalize-replace-rules";
+export * from "./types";
+export * from "./args";
+export * from "./config";
+export * from "./runtime";
+export * from "./plugins";
+export * from "./plugins/add";
+export * from "./plugins/insert";
+export * from "./plugins/remove-line";
+export * from "./plugins/remove";
 
 export async function runCli(args: string[]): Promise<number> {
   if (args.includes("--help") || args.includes("-h")) {
@@ -26,19 +25,25 @@ export async function runCli(args: string[]): Promise<number> {
 
   try {
     const options = parseArgs(args);
-    const { config, configPath } = await loadConfig(options.cwd, options.configPath);
-    const steps = resolveCommandSteps(config.commands ?? {}, options.commandKey);
-    const variables: VariableMap = {
+    const { config, configPath } = await loadProjectConfig(options.cwd, options.configPath);
+    const variables: Variables = {
       name: options.name,
     };
 
-    await runCommandSteps(steps, options.cwd, variables);
+    const stepsCount = await runCommandByKey(
+      config,
+      options.commandKey,
+      options.cwd,
+      variables,
+      builtinPlugins,
+      configPath,
+    );
 
     if (configPath) {
       console.log(`Loaded config: ${path.relative(options.cwd, configPath)}`);
     }
     console.log(`Command: ${options.commandKey}`);
-    console.log(`Steps executed: ${steps.length}`);
+    console.log(`Steps executed: ${stepsCount}`);
 
     return 0;
   } catch (error) {

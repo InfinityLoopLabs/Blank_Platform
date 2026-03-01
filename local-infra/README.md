@@ -6,6 +6,7 @@
 - ScyllaDB
 - Redis
 - Kafka (KRaft, single-node)
+- RabbitMQ (AMQP + Management UI)
 - MinIO (S3)
 
 Примечание для Apple Silicon (`M1/M2/M3`): Kafka запускается через `linux/amd64`-эмуляцию, так как Bitnami-образ сейчас без `arm64`-манифеста.
@@ -44,6 +45,8 @@ rm -rf data
 - Scylla CQL: `localhost:20042`
 - Redis: `localhost:20379`
 - Kafka external: `localhost:20092`
+- RabbitMQ AMQP: `localhost:20567`
+- RabbitMQ Management: `http://localhost:20572`
 - MinIO S3 API: `localhost:20000`
 - MinIO Console: `http://localhost:20001`
 
@@ -57,6 +60,8 @@ rm -rf data
 | Scylla CQL | 20042 | 9042 |
 | Redis | 20379 | 6379 |
 | Kafka external | 20092 | 20092 |
+| RabbitMQ AMQP | 20567 | 5672 |
+| RabbitMQ Management | 20572 | 15672 |
 | MinIO S3 API | 20000 | 9000 |
 | MinIO Console | 20001 | 9001 |
 
@@ -90,6 +95,12 @@ Kafka bootstrap servers:
 
 ```text
 localhost:20092
+```
+
+RabbitMQ:
+
+```text
+amqp://${RABBITMQ_DEFAULT_USER}:${RABBITMQ_DEFAULT_PASS}@localhost:20567
 ```
 
 MinIO:

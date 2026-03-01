@@ -20,6 +20,7 @@ import { MinioModule } from '@infrastructure/minio/minio.module'
 import { Neo4jModule } from '@infrastructure/neo4j/neo4j.module'
 import { PostgresModule } from '@infrastructure/postgres/postgres.module'
 import { QdrantModule } from '@infrastructure/qdrant/qdrant.module'
+import { RabbitMqModule } from '@infrastructure/rabbitmq/rabbitmq.module'
 import { RedisModule } from '@infrastructure/redis/redis.module'
 import { ScyllaModule } from '@infrastructure/scylla/scylla.module'
 
@@ -32,6 +33,7 @@ import { ScyllaModule } from '@infrastructure/scylla/scylla.module'
     ScyllaModule,
     RedisModule,
     KafkaModule,
+    RabbitMqModule,
     MinioModule,
     Neo4jModule,
     QdrantModule,
