@@ -11,6 +11,7 @@ const external = [
   '@nestjs/microservices',
   'cassandra-driver',
   'ioredis',
+  'hazelcast-client',
   'minio',
   'neo4j-driver',
   'pg',

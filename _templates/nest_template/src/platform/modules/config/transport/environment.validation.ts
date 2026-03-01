@@ -40,6 +40,9 @@ export const VALIDATION_ENV_KEYS = [
   'REDIS_HOST',
   'REDIS_PORT',
   'REDIS_DB',
+  'HAZELCAST_ENABLED',
+  'HAZELCAST_CLUSTER_NAME',
+  'HAZELCAST_CLUSTER_MEMBERS',
   'KAFKA_ENABLED',
   'KAFKA_CLIENT_ID',
   'KAFKA_GROUP_ID',
@@ -92,6 +95,7 @@ export function validateEnvironment(source: RuntimeEnvType): RuntimeEnvType {
   )
   const isScyllaEnabled = requiredBoolean(envRepository, 'SCYLLA_ENABLED')
   const isRedisEnabled = requiredBoolean(envRepository, 'REDIS_ENABLED')
+  const isHazelcastEnabled = requiredBoolean(envRepository, 'HAZELCAST_ENABLED')
   const isKafkaEnabled = requiredBoolean(envRepository, 'KAFKA_ENABLED')
   const isRabbitMqEnabled = requiredBoolean(envRepository, 'RABBITMQ_ENABLED')
   const isMinioEnabled = requiredBoolean(envRepository, 'MINIO_ENABLED')
@@ -123,6 +127,11 @@ export function validateEnvironment(source: RuntimeEnvType): RuntimeEnvType {
     requiredString(envRepository, 'REDIS_HOST')
     requiredPositiveInt(envRepository, 'REDIS_PORT')
     requiredNonNegativeInt(envRepository, 'REDIS_DB')
+  }
+
+  if (isHazelcastEnabled) {
+    requiredString(envRepository, 'HAZELCAST_CLUSTER_NAME')
+    requiredString(envRepository, 'HAZELCAST_CLUSTER_MEMBERS')
   }
 
   if (isKafkaEnabled) {

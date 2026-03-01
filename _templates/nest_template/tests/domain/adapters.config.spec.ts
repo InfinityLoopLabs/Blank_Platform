@@ -10,6 +10,6 @@ describe('IntegrationPolicyService', () => {
   it('builds capability report', () => {
     const config = IntegrationPolicyService.fromEnv({})
     const report = IntegrationPolicyService.capabilityReport(config)
-    expect(report.length).toBe(7)
+    expect(report.length).toBe(9)
   })
 })

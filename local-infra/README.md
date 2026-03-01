@@ -5,6 +5,7 @@
 - PostgreSQL
 - ScyllaDB
 - Redis
+- Hazelcast
 - Kafka (KRaft, single-node)
 - RabbitMQ (AMQP + Management UI)
 - MinIO (S3)
@@ -44,6 +45,7 @@ rm -rf data
 - ClickHouse Native: `localhost:20010`
 - Scylla CQL: `localhost:20042`
 - Redis: `localhost:20379`
+- Hazelcast: `localhost:20571`
 - Kafka external: `localhost:20092`
 - RabbitMQ AMQP: `localhost:20567`
 - RabbitMQ Management: `http://localhost:20572`
@@ -59,6 +61,7 @@ rm -rf data
 | ClickHouse Native | 20010 | 9000 |
 | Scylla CQL | 20042 | 9042 |
 | Redis | 20379 | 6379 |
+| Hazelcast | 20571 | 5701 |
 | Kafka external | 20092 | 20092 |
 | RabbitMQ AMQP | 20567 | 5672 |
 | RabbitMQ Management | 20572 | 15672 |
@@ -89,6 +92,12 @@ Redis:
 
 ```text
 redis://localhost:20379
+```
+
+Hazelcast:
+
+```text
+localhost:20571
 ```
 
 Kafka bootstrap servers:

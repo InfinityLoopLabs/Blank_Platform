@@ -6,6 +6,7 @@ Reusable NestJS connectors and generic repositories for:
 - ClickHouse
 - Scylla
 - Redis
+- Hazelcast
 - Kafka
 - RabbitMQ
 - MinIO

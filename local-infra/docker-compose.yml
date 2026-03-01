@@ -67,6 +67,15 @@ services:
       timeout: 5s
       retries: 10
 
+  hazelcast:
+    image: hazelcast/hazelcast:5.5.0
+    container_name: local-infra-hazelcast
+    restart: unless-stopped
+    environment:
+      HZ_CLUSTERNAME: ${HAZELCAST_CLUSTER_NAME:-dev}
+    ports:
+      - "20571:5701"
+
   kafka:
     image: public.ecr.aws/bitnami/kafka:latest
     platform: linux/amd64

@@ -15,6 +15,7 @@ Connector smoke test files:
 - `tests/integration/connectors/clickhouse.testcontainer.spec.ts` (`CLICKHOUSE_ENABLED`)
 - `tests/integration/connectors/scylla.testcontainer.spec.ts` (`SCYLLA_ENABLED`)
 - `tests/integration/connectors/redis.testcontainer.spec.ts` (`REDIS_ENABLED`)
+- `tests/integration/connectors/hazelcast.testcontainer.spec.ts` (`HAZELCAST_ENABLED`)
 - `tests/integration/connectors/kafka.testcontainer.spec.ts` (`KAFKA_ENABLED`)
 - `tests/integration/connectors/rabbitmq.testcontainer.spec.ts` (`RABBITMQ_ENABLED`)
 - `tests/integration/connectors/minio.testcontainer.spec.ts` (`MINIO_ENABLED`)

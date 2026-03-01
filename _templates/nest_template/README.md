@@ -12,7 +12,7 @@
 - `src/platform/transport/grpc` gRPC transport scaffold
 - `src/platform/modules/config/{domain,application,ports,adapters,transport}` for replaceable app config source (`env`, `server`, etc.)
 - `@infinityloop.labs/nest-connectors` for reusable connector modules and generic repositories
-- `src/platform/modules/integration-policy/{domain,application,transport}` for integration capabilities config (postgres/kafka/rabbitmq/redis/... flags + endpoints)
+- `src/platform/modules/integration-policy/{domain,application,transport}` for integration capabilities config (postgres/kafka/rabbitmq/hazelcast/redis/... flags + endpoints)
 - `src/platform/modules/observability/{domain,application,ports,adapters,transport}` for sidecar-only OTLP export
 - `src/platform/modules/health/{domain,application,transport}` for health/readiness/health status module
 
@@ -37,6 +37,7 @@ Available modules and exported classes:
 - `ClickHouseConnectorModule` -> `ClickHouseConnector`, `ClickHouseRepository`
 - `ScyllaConnectorModule` -> `ScyllaConnector`, `ScyllaRepository`
 - `RedisConnectorModule` -> `RedisConnector`, `RedisRepository`
+- `HazelcastConnectorModule` -> `HazelcastConnector`, `HazelcastRepository`
 - `KafkaConnectorModule` -> `KafkaConnector`, `KafkaRepository`
 - `RabbitMqConnectorModule` -> `RabbitMqConnector`, `RabbitMqRepository`
 - `MinioConnectorModule` -> `MinioConnector`, `MinioRepository`
@@ -46,7 +47,7 @@ You can import only required connectors in `AppModule`.
 Feature flags in app bootstrap:
 
 - connectors are imported by default; only `false` disables import.
-- supported flags: `POSTGRES_ENABLED`, `CLICKHOUSE_ENABLED`, `SCYLLA_ENABLED`, `REDIS_ENABLED`, `KAFKA_ENABLED`, `RABBITMQ_ENABLED`, `MINIO_ENABLED`.
+- supported flags: `POSTGRES_ENABLED`, `CLICKHOUSE_ENABLED`, `SCYLLA_ENABLED`, `REDIS_ENABLED`, `HAZELCAST_ENABLED`, `KAFKA_ENABLED`, `RABBITMQ_ENABLED`, `MINIO_ENABLED`.
 - if flag equals `false`, module is not imported and its providers are not injectable.
 
 Env files:
@@ -64,6 +65,8 @@ Env files:
 - `ScyllaRepository.forEntity<TEntity, TId>(...)`: generic access (`findById`, `findAll`, `upsert`, `deleteById`)
 - `RedisRepository`: `get`, `set`, `exists`, `del`, `hset`, `hgetall`, `lpush`, `rpop`
 - `RedisRepository.forEntity<TEntity, TId>(...)`: generic key-value entity store (`findById`, `save`, `deleteById`, `exists`)
+- `HazelcastRepository`: `getMap`, `get`, `set`, `exists`, `delete`, `clear`
+- `HazelcastRepository.forEntity<TEntity, TId>(...)`: generic distributed map entity store (`findById`, `save`, `deleteById`, `exists`)
 - `KafkaRepository`: `connect`, `emit`, `request`, `close`
 - `KafkaRepository.forTopic<TPayload, TResponse>(...)`: typed topic adapter (`emit`, `request`)
 - `RabbitMqRepository`: `connect`, `emit`, `request`, `close`
@@ -104,6 +107,7 @@ import {
   PostgresConnectorModule,
   KafkaConnectorModule,
   RabbitMqConnectorModule,
+  HazelcastConnectorModule,
   ClickHouseConnectorModule,
   RedisConnectorModule,
 } from '@infinityloop.labs/nest-connectors';
@@ -132,6 +136,12 @@ import {
       host: 'localhost',
       port: 20379,
       db: 0,
+    }),
+    HazelcastConnectorModule.register({
+      clusterName: 'dev',
+      network: {
+        clusterMembers: ['localhost:20571'],
+      },
     }),
     KafkaConnectorModule.registerAsync({
       imports: [ConfigModule],
@@ -171,6 +181,7 @@ export class OrdersReadService {
 - ClickHouse HTTP: `20123`
 - Scylla CQL: `20042`
 - Redis: `20379`
+- Hazelcast: `20571`
 - Kafka: `20092`
 - RabbitMQ: `20567`
 - MinIO S3: `20000`

@@ -18,6 +18,7 @@
     "cassandra-driver": "^4.8.0",
     "class-transformer": "^0.5.1",
     "class-validator": "^0.14.3",
+    "hazelcast-client": "^5.6.0",
     "ioredis": "^5.7.0",
     "kafkajs": "^2.2.4",
     "minio": "^8.0.6",

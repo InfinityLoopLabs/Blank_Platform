@@ -15,6 +15,7 @@ import {
   ResponseFactory,
 } from '@core/transport/http'
 import { ClickHouseModule } from '@infrastructure/clickhouse/clickhouse.module'
+import { HazelcastModule } from '@infrastructure/hazelcast/hazelcast.module'
 import { KafkaModule } from '@infrastructure/kafka/kafka.module'
 import { MinioModule } from '@infrastructure/minio/minio.module'
 import { Neo4jModule } from '@infrastructure/neo4j/neo4j.module'
@@ -32,6 +33,7 @@ import { ScyllaModule } from '@infrastructure/scylla/scylla.module'
     ClickHouseModule,
     ScyllaModule,
     RedisModule,
+    HazelcastModule,
     KafkaModule,
     RabbitMqModule,
     MinioModule,

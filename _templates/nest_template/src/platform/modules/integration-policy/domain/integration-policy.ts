@@ -10,6 +10,7 @@ export type IntegrationPoliciesType = {
   postgres: IntegrationPolicyType
   kafka: IntegrationPolicyType
   rabbitmq: IntegrationPolicyType
+  hazelcast: IntegrationPolicyType
   redis: IntegrationPolicyType
   clickhouse: IntegrationPolicyType
   scylla: IntegrationPolicyType

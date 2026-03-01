@@ -27,6 +27,7 @@
   "peerDependencies": {
     "amqp-connection-manager": "^4.1.15",
     "amqplib": "^0.10.9",
+    "hazelcast-client": "^5.6.0",
     "@qdrant/js-client-rest": "^1.13.0",
     "@clickhouse/client": "^1.12.1",
     "@nestjs/common": "^10.4.13",
