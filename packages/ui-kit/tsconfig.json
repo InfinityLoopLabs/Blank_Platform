@@ -23,6 +23,12 @@
     },
     /* Bundler mode */
     "moduleResolution": "bundler",
+    "types": [
+      "vite/client",
+      "node",
+      "react",
+      "react-dom"
+    ],
     "allowImportingTsExtensions": true,
     "resolveJsonModule": true,
     "isolatedModules": true,

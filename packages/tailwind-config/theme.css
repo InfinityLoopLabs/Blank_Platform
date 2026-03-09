@@ -1,11 +1,5 @@
 @import "tailwindcss";
 @import "tw-animate-css";
-@plugin "@tailwindcss/typography";
-
-
-@import "tailwindcss";
-@import "tw-animate-css";
-
 @custom-variant dark (&:is(.dark *));
 @plugin "@tailwindcss/typography";
 
@@ -228,4 +222,111 @@
   -webkit-box-orient: vertical;
 }
 
+:root {
+  --font-app-display:
+    "Fraunces Variable",
+    "Fraunces",
+    "Iowan Old Style",
+    "Palatino Linotype",
+    "Book Antiqua",
+    "Times New Roman",
+    serif;
+  --font-app:
+    "Inter Variable",
+    "Inter",
+    "SF Pro Text",
+    "Segoe UI",
+    "Helvetica Neue",
+    Arial,
+    sans-serif;
+  --font-app-mono:
+    "JetBrains Mono",
+    "SFMono-Regular",
+    "Menlo",
+    "Consolas",
+    monospace;
+}
 
+/* Trend typography: expressive display serif + neutral sans body + fluid scale */
+@utility font-app {
+  font-family: var(--font-app);
+}
+
+@utility font-app-display {
+  font-family: var(--font-app-display);
+}
+
+@utility font-app-mono {
+  font-family: var(--font-app-mono);
+}
+
+@utility kicker {
+  font-family: var(--font-app);
+  font-size: clamp(0.7rem, 0.25vw + 0.62rem, 0.88rem);
+  font-weight: 600;
+  line-height: 1.3;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+@utility hero {
+  font-family: var(--font-app-display);
+  font-size: clamp(2.35rem, 5.2vw + 0.9rem, 6.4rem);
+  font-weight: 700;
+  line-height: 0.94;
+  letter-spacing: -0.03em;
+  text-wrap: balance;
+  font-optical-sizing: auto;
+  font-variation-settings: "opsz" 72, "wght" 700;
+}
+
+@utility subhero {
+  font-family: var(--font-app-display);
+  font-size: clamp(1.4rem, 1.4vw + 1rem, 2.1rem);
+  font-weight: 500;
+  line-height: 1.15;
+  letter-spacing: -0.01em;
+  text-wrap: balance;
+}
+
+@utility h2 {
+  font-family: var(--font-app-display);
+  font-size: clamp(1.5rem, 1.25vw + 1.1rem, 2.4rem);
+  font-weight: 650;
+  line-height: 1.08;
+  letter-spacing: -0.02em;
+  text-wrap: balance;
+}
+
+@utility h3 {
+  font-family: var(--font-app);
+  font-size: clamp(1.08rem, 0.65vw + 0.95rem, 1.45rem);
+  font-weight: 640;
+  line-height: 1.25;
+  letter-spacing: -0.01em;
+}
+
+@utility body {
+  font-family: var(--font-app);
+  font-size: clamp(0.98rem, 0.28vw + 0.92rem, 1.14rem);
+  font-weight: 420;
+  line-height: 1.66;
+  letter-spacing: 0;
+}
+
+@utility caption {
+  font-family: var(--font-app);
+  font-size: clamp(0.74rem, 0.15vw + 0.7rem, 0.84rem);
+  font-weight: 560;
+  line-height: 1.3;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+@utility code {
+  font-family: var(--font-app-mono);
+  font-size: clamp(0.76rem, 0.18vw + 0.72rem, 0.9rem);
+  font-weight: 480;
+  line-height: 1.45;
+  letter-spacing: 0;
+}

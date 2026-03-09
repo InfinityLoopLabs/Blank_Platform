@@ -2,6 +2,7 @@
   "name": "npm.piece",
   "version": "1.0.0",
   "private": true,
+  "packageManager": "npm@11.7.0",
   "workspaces": [
     "apps/*",
     "_templates/*",
@@ -11,8 +12,9 @@
     "cli"
   ],
   "scripts": {
-    "build:libs": "turbo run build --filter=@infinityloop.labs/constants-frontend & turbo run build --filter=@infinityloop.labs/event-bus & turbo run build --filter=@infinityloop.labs/common-frontend && turbo run build --filter=@infinityloop.labs/utils && turbo run build --filter=@infinityloop.labs/ui-kit  && turbo run build --filter=@infinityloop.labs/mf-connect  && turbo run build --filter=@infinityloop.labs/locale-downloader",
+    "build:libs": "turbo run build --filter=@infinityloop.labs/constants-frontend && turbo run build --filter=@infinityloop.labs/event-bus && turbo run build --filter=@infinityloop.labs/common-frontend && turbo run build --filter=@infinityloop.labs/utils && turbo run build --filter=@infinityloop.labs/ui-kit && turbo run build --filter=@infinityloop.labs/mf-connect && turbo run build --filter=@infinityloop.labs/locale-downloader",
     "build": "turbo run build",
+    "storybook:ui-kit": "npm --workspace @infinityloop.labs/ui-kit run storybook:dev",
     "prestart": "yarn build:libs",
     "start": "turbo run dev --filter=app_auth & turbo run dev --filter=app_root",
     "test:watch": "turbo run test:watch",
