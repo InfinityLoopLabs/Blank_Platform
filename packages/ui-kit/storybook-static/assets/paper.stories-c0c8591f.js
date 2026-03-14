@@ -1,0 +1,10 @@
+import{j as r}from"./jsx-runtime-9bc08dc0.js";import{K as d}from"./index.es-0af5970b.js";import"./index-0b625b07.js";import"./index-68fbcb4b.js";const j={light:"bg-(--card)",dark:"bg-(--background)"},v="div",t=({as:s,type:b="dark",className:f,children:y,isColored:h,...k})=>{const C=s||v,N=h?"flat-paper--colored border-(--shani-ember-dim) transition-colors":d("border-(--border)",j[b]);return r.jsx(C,{className:d("rounded-[var(--radius)] border px-6 py-4",N,f),...k,children:y})};t.__docgenInfo={description:"",methods:[],displayName:"Paper",props:{type:{defaultValue:{value:"'dark'",computed:!1},required:!1}}};const E={title:"Atoms/Paper",component:t,tags:["autodocs"],render:s=>r.jsx("div",{className:"w-[520px] rounded-[var(--radius)] border border-(--border) bg-(--background) p-6",children:r.jsx(t,{...s})}),args:{className:"max-w-xl",type:"light",isColored:!0,children:r.jsxs("div",{className:"space-y-2",children:[r.jsx("p",{className:"text-lg font-semibold",children:"Paper Header"}),r.jsx("p",{className:"text-sm text-muted-foreground",children:"Flat reusable surface with light/dark mode and optional colored overlay."})]})},argTypes:{type:{control:"select",options:["dark","light"]},isColored:{control:"boolean"}}},e={},o={args:{isColored:!0}},a={args:{type:"dark",isColored:!1}};var l,c,n;e.parameters={...e.parameters,docs:{...(l=e.parameters)==null?void 0:l.docs,source:{originalSource:"{}",...(n=(c=e.parameters)==null?void 0:c.docs)==null?void 0:n.source}}};var p,i,m;o.parameters={...o.parameters,docs:{...(p=o.parameters)==null?void 0:p.docs,source:{originalSource:`{
+  args: {
+    isColored: true
+  }
+}`,...(m=(i=o.parameters)==null?void 0:i.docs)==null?void 0:m.source}}};var u,g,x;a.parameters={...a.parameters,docs:{...(u=a.parameters)==null?void 0:u.docs,source:{originalSource:`{
+  args: {
+    type: 'dark',
+    isColored: false
+  }
+}`,...(x=(g=a.parameters)==null?void 0:g.docs)==null?void 0:x.source}}};const F=["Playground","Colored","FlatDark"];export{o as Colored,a as FlatDark,e as Playground,F as __namedExportsOrder,E as default};

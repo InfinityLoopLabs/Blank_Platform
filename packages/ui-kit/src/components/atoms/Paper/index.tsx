@@ -1,25 +1,56 @@
-import { clsx } from '@infinityloop.labs/utils'
-import { Flex } from '../Flex'
+import type {
+  ComponentPropsWithoutRef,
+  ElementType,
+  PropsWithChildren,
+} from 'react'
 
-export type PaperPropertyType = {
+import { clsx } from '@infinityloop.labs/utils'
+
+const paperStyleDictionary = {
+  light: 'bg-(--card)',
+  dark: 'bg-(--background)',
+} as const
+
+type PaperType = keyof typeof paperStyleDictionary
+
+type PaperBasePropertyType<T extends ElementType> = {
+  as?: T
+  type?: PaperType
   className?: string
-  color?: 'white' | 'gray'
+  isColored?: boolean
 }
 
-export const Paper: FC<PaperPropertyType> = ({
-  children,
+type PaperPropertyType<T extends ElementType> = PropsWithChildren<
+  PaperBasePropertyType<T> &
+    Omit<ComponentPropsWithoutRef<T>, 'as' | 'className' | 'children'>
+>
+
+const defaultElement = 'div'
+
+export const Paper = <T extends ElementType = typeof defaultElement>({
+  as,
+  type = 'dark',
   className,
-  color = 'white',
-}) => (
-  <Flex
-    className={clsx(
-      'rounded-3',
-      {
-        'bg-content-constant': color === 'white',
-        'bg-content-secondary': color === 'gray',
-      },
-      className,
-    )}>
-    {children}
-  </Flex>
-)
+  children,
+  isColored,
+  ...property
+}: PaperPropertyType<T>) => {
+  const Component = (as || defaultElement) as ElementType
+  const coloredClassName =
+    'flat-paper--colored border border-(--shani-ember-dim) rounded-sm transition-colors'
+  const resolvedBackgroundClass = isColored
+    ? coloredClassName
+    : clsx('border-(--border)', paperStyleDictionary[type])
+
+  return (
+    <Component
+      className={clsx(
+        'rounded-(--radius) border px-6 py-4 ',
+        resolvedBackgroundClass,
+        className,
+      )}
+      {...property}>
+      {children}
+    </Component>
+  )
+}

@@ -39,22 +39,39 @@ function Button({
   className,
   variant,
   size,
+  isGlow = false,
   asChild = false,
+  leftIcon,
+  rightIcon,
+  children,
   ...props
 }: React.ComponentProps<'button'> &
   VariantProps<typeof buttonVariants> & {
     asChild?: boolean
+    isGlow?: boolean
+    leftIcon?: React.ReactNode
+    rightIcon?: React.ReactNode
   }) {
   const Comp = asChild ? Slot : 'button'
 
   return (
     <Comp
       data-slot="button"
-      className={cn(buttonVariants({ variant,
-size,
-className }))}
-      {...props}
-    />
+      data-glow={isGlow ? 'on' : 'off'}
+      className={cn(
+        buttonVariants({ variant, size, className }),
+        isGlow &&
+          'neon-pulse-ring shadow-[0_0_20px_color-mix(in_oklab,var(--neon-main)_35%,transparent)]',
+      )}
+      {...props}>
+      {!asChild && leftIcon ? (
+        <span className="inline-flex items-center">{leftIcon}</span>
+      ) : null}
+      {children}
+      {!asChild && rightIcon ? (
+        <span className="inline-flex items-center">{rightIcon}</span>
+      ) : null}
+    </Comp>
   )
 }
 

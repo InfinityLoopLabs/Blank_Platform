@@ -1,6 +1,7 @@
 @import "@infinityloop.labs/tailwind-config/theme.css";
 @source "./components/**/*.{js,jsx,ts,tsx}";
 @source "./stories/**/*.{js,jsx,ts,tsx,mdx}";
+@source "./constants/**/*.{js,jsx,ts,tsx}";
 
 /* Обнуление стилей */
 @layer base {
