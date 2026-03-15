@@ -322,22 +322,14 @@
   }
 }
 
-@utility required-highlight {
+@utility required-indicator {
   &:required {
-    border-color: color-mix(in oklab, var(--cautionary) 55%, var(--border));
-    background-color: color-mix(in oklab, var(--background) 92%, var(--cautionary));
+    border-color: color-mix(in oklab, var(--foreground) 18%, var(--border));
+    background-color: var(--background);
   }
 
   &:required::placeholder {
-    color: color-mix(in oklab, var(--cautionary) 70%, var(--muted-foreground));
-  }
-
-  &:required:invalid {
-    border-color: var(--destructive);
-  }
-
-  &:required:invalid:focus-visible {
-    box-shadow: 0 0 0 3px color-mix(in oklab, var(--destructive) 35%, transparent);
+    color: color-mix(in oklab, var(--foreground) 24%, var(--muted-foreground));
   }
 }
 

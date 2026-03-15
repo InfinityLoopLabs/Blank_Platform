@@ -4,7 +4,10 @@ type InputSharedPropertyType = {
     isTextarea?: boolean;
     isResizableX?: boolean;
     isResizableY?: boolean;
-    textareaRows?: number;
+    textareaRowsCount?: number;
+    isError?: boolean;
+    label?: React.ReactNode;
+    errorText?: React.ReactNode;
 };
 type SingleLineInputPropertyType = InputSharedPropertyType & React.ComponentProps<'input'> & {
     isTextarea?: false;

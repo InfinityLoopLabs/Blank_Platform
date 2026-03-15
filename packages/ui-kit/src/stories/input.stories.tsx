@@ -15,26 +15,48 @@ const meta: Meta = {
     ),
   ],
   args: {
+    label: "",
     placeholder: "Type here...",
     required: false,
     disabled: false,
+    isError: false,
+    errorText: "error the field is required",
     isTextarea: false,
+    textareaRowsCount: 4,
     isResizableX: false,
     isResizableY: false,
-    textareaRows: 4,
   },
   argTypes: {
+    label: {
+      control: "text",
+    },
+    required: {
+      control: "boolean",
+    },
+    disabled: {
+      control: "boolean",
+    },
+    isError: {
+      control: "boolean",
+    },
+    errorText: {
+      control: "text",
+      if: { arg: "isError", truthy: true },
+    },
     isTextarea: {
       control: "boolean",
     },
+    textareaRowsCount: {
+      control: { type: "number", min: 1, max: 20, step: 1 },
+      if: { arg: "isTextarea", truthy: true },
+    },
     isResizableX: {
       control: "boolean",
+      if: { arg: "isTextarea", truthy: true },
     },
     isResizableY: {
       control: "boolean",
-    },
-    textareaRows: {
-      control: { type: "number", min: 1, max: 20, step: 1 },
+      if: { arg: "isTextarea", truthy: true },
     },
   },
 }
