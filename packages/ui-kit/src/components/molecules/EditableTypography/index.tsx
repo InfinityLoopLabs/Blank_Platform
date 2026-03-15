@@ -94,7 +94,7 @@ export const EditableTypography = ({
           value={resolvedTextValue}
           placeholder={placeholder}
           className={clsx(
-            'relative h-full w-full border-0 bg-transparent px-0 py-0 font-infinityloop',
+            'relative m-0 block h-auto w-full border-0 bg-transparent p-0 font-infinityloop',
             getTypographyClassName(typography),
             getPlaceholderTypographyClassName(typography),
             'appearance-none outline-none shadow-none',
@@ -116,7 +116,7 @@ export const EditableTypography = ({
         typography={typography}
         element={element}
         className={clsx(
-          'block h-full w-full cursor-text px-0 pt-[6px] pb-[2px]',
+          'block w-full cursor-text px-0',
           !isEditModeDisabled && 'hover:opacity-90',
         )}
         onClick={handleEnableEditMode}>
