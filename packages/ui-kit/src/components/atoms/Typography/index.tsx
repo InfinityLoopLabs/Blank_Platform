@@ -38,8 +38,9 @@ export type TypographyType =
   | 'Regular14'
   | 'Regular12'
   | 'Mono16'
-  | 'ButtonLabel'
-  | 'InputPlaceholder'
+  | 'Action'
+  | 'Subheader'
+  | 'Caption'
 
 type ElementType =
   | 'a'
@@ -100,12 +101,25 @@ const typographyToTailwindClass: Record<TypographyType, string> = {
 
   Mono16: 'font-mono text-16 leading-24 font-400',
 
-  // Matches default button text style.
-  ButtonLabel: 'text-sm font-medium',
-  // Matches input placeholder typography including muted color.
-  InputPlaceholder: 'text-base md:text-sm text-muted-foreground',
+  // For interactive UI text (buttons, compact actions).
+  Action: 'text-sm font-medium',
+  // For secondary/supporting text (placeholder, subheader, helper text).
+  Subheader: 'text-base md:text-sm text-muted-foreground',
+  // For short captions and lightweight labels.
+  Caption: 'text-xs uppercase tracking-[0.08em] text-muted-foreground',
 }
 /* Карта классов: Конец */
+
+const placeholderTypographyToTailwindClass: Partial<Record<TypographyType, string>> = {
+  Subheader:
+    'placeholder:text-base md:placeholder:text-sm placeholder:text-muted-foreground',
+}
+
+export const getTypographyClassName = (typography: TypographyType) =>
+  typographyToTailwindClass[typography]
+
+export const getPlaceholderTypographyClassName = (typography: TypographyType) =>
+  placeholderTypographyToTailwindClass[typography] ?? ''
 
 type OwnPropertyType = {
   typography: TypographyType
@@ -122,7 +136,7 @@ export const Typography: FC<OwnPropertyType> = ({
 }) => {
   const className = clsx(
     'font-infinityloop',
-    typographyToTailwindClass[typography],
+    getTypographyClassName(typography),
     clsname,
   )
 

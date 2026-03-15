@@ -152,6 +152,17 @@ const preview: Preview = {
     },
   ],
   parameters: {
+    options: {
+      storySort: {
+        order: [
+          "Decision",
+          ["First"],
+          "Design",
+          ["Color Palette", "Typography", "Custom CSS"],
+          "Atoms",
+        ],
+      },
+    },
     actions: { argTypesRegex: "^on[A-Z].*" },
     controls: {
       matchers: {

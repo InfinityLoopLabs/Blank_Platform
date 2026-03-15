@@ -101,7 +101,7 @@ function TypographyScalePreview() {
 }
 
 const meta = {
-  title: "Design/Typography Trend",
+  title: "Design/Typography/Trend",
   component: TypographyScalePreview,
   tags: ["autodocs"],
   parameters: {
@@ -110,6 +110,6 @@ const meta = {
 } satisfies Meta<typeof TypographyScalePreview>
 
 export default meta
-type Story = StoryObj<typeof meta>
+type StoryType = StoryObj<typeof meta>
 
-export const EditorialContrast: Story = {}
+export const EditorialContrast: StoryType = {}

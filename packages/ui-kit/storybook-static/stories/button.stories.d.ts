@@ -1,7 +1,7 @@
 import type { StoryObj } from "@storybook/react";
 declare const meta: {
     title: string;
-    component: ({ icon, leftIcon, rightIcon, onClick, animation, color, size, className, children, ...property }: import('../../../../node_modules/react').ButtonHTMLAttributes<HTMLButtonElement> & {
+    component: ({ icon, leftIcon, rightIcon, onClick, animation, color, size, className, children, style, ...property }: import('../../../../node_modules/react').ButtonHTMLAttributes<HTMLButtonElement> & {
         icon?: import('../../../../node_modules/react').ReactNode;
         leftIcon?: import('../../../../node_modules/react').ReactNode;
         rightIcon?: import('../../../../node_modules/react').ReactNode;

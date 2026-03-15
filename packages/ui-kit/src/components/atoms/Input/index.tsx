@@ -1,5 +1,9 @@
 import * as React from 'react'
 
+import {
+  getPlaceholderTypographyClassName,
+  getTypographyClassName,
+} from '@/components/atoms/Typography'
 import { cn } from '@/lib/utils'
 
 type InputSharedPropertyType = {
@@ -42,7 +46,10 @@ const getTextareaResizeClassName = (
 }
 
 const commonClassName =
-  'file:text-foreground placeholder:text-muted-foreground selection:bg-primary selection:text-primary-foreground border-border text-foreground caret-foreground w-full min-w-0 rounded-md border bg-background text-base shadow-xs field-transition required-indicator outline-none file:inline-flex file:h-7 file:border-0 file:bg-transparent file:text-sm file:font-medium disabled:pointer-events-none disabled:cursor-not-allowed disabled:opacity-50 md:text-sm'
+  'file:text-foreground selection:bg-primary selection:text-primary-foreground border-border text-foreground caret-foreground w-full min-w-0 rounded-md border bg-background text-base shadow-xs field-transition required-indicator outline-none file:inline-flex file:h-7 file:border-0 file:bg-transparent file:text-sm file:font-medium disabled:pointer-events-none disabled:cursor-not-allowed disabled:opacity-50 md:text-sm'
+
+const subheaderPlaceholderClassName = getPlaceholderTypographyClassName('Subheader')
+const subheaderTypographyClassName = getTypographyClassName('Subheader')
 
 const numberInputAllowedKeys = new Set([
   'Backspace',
@@ -82,7 +89,10 @@ function Input(property: InputPropertyType) {
         {label ? (
           <label
             htmlFor={textareaProperty.id}
-            className="inline-flex items-center gap-1 text-sm font-medium text-foreground">
+            className={cn(
+              'inline-flex items-center gap-1',
+              subheaderTypographyClassName,
+            )}>
             {label}
             {required ? (
               <span aria-hidden className="text-cautionary">
@@ -97,6 +107,7 @@ function Input(property: InputPropertyType) {
           aria-invalid={isInvalid ? true : ariaInvalid}
           className={cn(
             commonClassName,
+            subheaderPlaceholderClassName,
             'h-auto px-3 py-2 leading-5 overflow-y-auto',
             'focus-ring-3',
             'aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive',
@@ -134,6 +145,7 @@ function Input(property: InputPropertyType) {
   const isInvalid = isError || ariaInvalid === true || ariaInvalid === 'true'
   const visibleErrorText = isError ? errorText : undefined
   const isNumberType = type === 'number'
+  const isCheckboxType = type === 'checkbox'
 
   const handleNumberWheel = (event: React.WheelEvent<HTMLInputElement>) => {
     onWheel?.(event)
@@ -196,12 +208,63 @@ function Input(property: InputPropertyType) {
     event.preventDefault()
   }
 
+  if (isCheckboxType) {
+    const checkboxInput = (
+      <input
+        type="checkbox"
+        data-slot="input"
+        aria-invalid={isInvalid ? true : ariaInvalid}
+        className={cn(
+          'size-4 shrink-0 rounded-sm border border-border bg-background text-primary field-transition',
+          'focus-ring-3',
+          'aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive',
+          'disabled:pointer-events-none disabled:cursor-not-allowed disabled:opacity-50',
+          className,
+        )}
+        onWheel={onWheel}
+        onKeyDown={onKeyDown}
+        {...restInputProperty}
+      />
+    )
+
+    return (
+      <div className="w-full space-y-2">
+        {label ? (
+          <label
+            htmlFor={inputProperty.id}
+            className={cn(
+              'inline-flex cursor-pointer items-center gap-2',
+              subheaderTypographyClassName,
+            )}>
+            {checkboxInput}
+            <span className="inline-flex items-center gap-1">
+              {label}
+              {required ? (
+                <span aria-hidden className="text-cautionary">
+                  *
+                </span>
+              ) : null}
+            </span>
+          </label>
+        ) : (
+          checkboxInput
+        )}
+        {visibleErrorText ? (
+          <p className="text-sm text-destructive">{visibleErrorText}</p>
+        ) : null}
+      </div>
+    )
+  }
+
   return (
     <div className="w-full space-y-2">
       {label ? (
         <label
           htmlFor={inputProperty.id}
-          className="inline-flex items-center gap-1 text-sm font-medium text-foreground">
+          className={cn(
+            'inline-flex items-center gap-1',
+            subheaderTypographyClassName,
+          )}>
           {label}
           {required ? (
             <span aria-hidden className="text-cautionary">
@@ -216,6 +279,7 @@ function Input(property: InputPropertyType) {
         aria-invalid={isInvalid ? true : ariaInvalid}
         className={cn(
           commonClassName,
+          subheaderPlaceholderClassName,
           'h-9 px-3 py-1 resize-none',
           'focus-ring-3',
           'aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive',

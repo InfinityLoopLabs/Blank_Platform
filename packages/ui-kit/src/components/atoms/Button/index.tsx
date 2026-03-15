@@ -7,6 +7,7 @@ import type {
 } from 'react'
 
 import { clsx } from '@infinityloop.labs/utils'
+import { getTypographyClassName } from '@/components/atoms/Typography'
 
 type ButtonAnimationType = 'default' | 'active'
 type ButtonSizeType = 'default' | 'sm' | 'lg' | 'icon' | 'icon-sm' | 'icon-lg'
@@ -162,7 +163,11 @@ export const Button = ({
       ) : null}
 
       {resolvedLeftIcon ? <span className="relative z-10">{resolvedLeftIcon}</span> : null}
-      {children ? <span className="relative z-10">{children}</span> : null}
+      {children ? (
+        <span className={clsx('relative z-10', getTypographyClassName('Action'))}>
+          {children}
+        </span>
+      ) : null}
       {rightIcon ? <span className="relative z-10">{rightIcon}</span> : null}
     </button>
   )

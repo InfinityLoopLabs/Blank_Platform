@@ -12,5 +12,5 @@ type ButtonPropertyType = PropsWithChildren<ButtonHTMLAttributes<HTMLButtonEleme
     color?: ButtonColorType;
     size?: ButtonSizeType;
 }>;
-export declare const Button: ({ icon, leftIcon, rightIcon, onClick, animation, color, size, className, children, ...property }: ButtonPropertyType) => import('../../../../../../node_modules/react/jsx-runtime').JSX.Element;
+export declare const Button: ({ icon, leftIcon, rightIcon, onClick, animation, color, size, className, children, style, ...property }: ButtonPropertyType) => import('../../../../../../node_modules/react/jsx-runtime').JSX.Element;
 export {};

@@ -33,7 +33,7 @@ const meta: Meta = {
     },
     type: {
       control: "select",
-      options: ["text", "number", "email", "password"],
+      options: ["text", "number", "email", "password", "checkbox"],
       if: { arg: "isTextarea", truthy: false },
     },
     required: {

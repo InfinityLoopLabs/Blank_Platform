@@ -9,5 +9,5 @@ declare const meta: {
     };
 };
 export default meta;
-type Story = StoryObj<typeof meta>;
-export declare const EditorialContrast: Story;
+type StoryType = StoryObj<typeof meta>;
+export declare const EditorialContrast: StoryType;
