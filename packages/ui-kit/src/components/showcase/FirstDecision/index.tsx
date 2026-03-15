@@ -25,7 +25,8 @@ export const FirstDecision = ({
         <p className="text-2xl font-semibold tracking-tight">Пополнить счет</p>
         <Button
           size="icon"
-          color="primary"
+          color="accent"
+          variant="outline"
           animation="default"
           className="transition-none hover:scale-100 active:scale-100"
           aria-label="Close"
@@ -60,7 +61,9 @@ export const FirstDecision = ({
       />
 
       <Flex className="w-full gap-3" justify-content="flex-end">
-        <Button color="secondary">{cancelText}</Button>
+        <Button color="primary" variant="text">
+          {cancelText}
+        </Button>
         <Button color="constructive" animation="active">
           {acceptText}
         </Button>

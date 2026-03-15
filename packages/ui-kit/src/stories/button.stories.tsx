@@ -1,7 +1,6 @@
 import type { Meta, StoryObj } from "@storybook/react"
-import { ArrowRight, Sparkles } from "lucide-react"
 
-import { BUTTON_COLOR_OPTIONS, Button } from "@/components/atoms/Button"
+import { BUTTON_COLOR_OPTIONS, BUTTON_VARIANT_OPTIONS, Button } from "@/components/atoms/Button"
 
 const buttonColorRows = [
   ["primary", "secondary", "accent", "muted"],
@@ -16,6 +15,7 @@ const meta = {
   args: {
     animation: "default",
     size: "default",
+    variant: "filled",
     color: "chart-1",
   },
   argTypes: {
@@ -26,6 +26,10 @@ const meta = {
     color: {
       control: "select",
       options: BUTTON_COLOR_OPTIONS,
+    },
+    variant: {
+      control: "select",
+      options: BUTTON_VARIANT_OPTIONS,
     },
     size: {
       control: "select",
@@ -40,21 +44,45 @@ type Story = StoryObj<typeof meta>
 export const AllColors: Story = {
   render: args => (
     <div className="w-full max-w-5xl rounded-xl border border-(--border) bg-(--card) p-4">
-      <div className="flex flex-col gap-3">
-        {buttonColorRows.map((row, rowIndex) => (
-          <div className="flex flex-wrap gap-3" key={rowIndex}>
-            {row.map(color => (
-              <Button
-                {...args}
-                color={color}
-                key={color}
-                leftIcon={<Sparkles className="size-4" />}
-                rightIcon={<ArrowRight className="size-4" />}>
-                {color}
-              </Button>
-            ))}
-          </div>
-        ))}
+      <div className="flex flex-col gap-6">
+        <div className="space-y-3">
+          <p className="text-sm font-semibold uppercase tracking-wide text-muted-foreground">Filled</p>
+          {buttonColorRows.map((row, rowIndex) => (
+            <div className="flex flex-wrap gap-3" key={`filled-${rowIndex}`}>
+              {row.map(color => (
+                <Button {...args} variant="filled" color={color} key={`filled-${color}`}>
+                  {color}
+                </Button>
+              ))}
+            </div>
+          ))}
+        </div>
+
+        <div className="space-y-3">
+          <p className="text-sm font-semibold uppercase tracking-wide text-muted-foreground">Outline</p>
+          {buttonColorRows.map((row, rowIndex) => (
+            <div className="flex flex-wrap gap-3" key={`outline-${rowIndex}`}>
+              {row.map(color => (
+                <Button {...args} variant="outline" color={color} key={`outline-${color}`}>
+                  {color}
+                </Button>
+              ))}
+            </div>
+          ))}
+        </div>
+
+        <div className="space-y-3">
+          <p className="text-sm font-semibold uppercase tracking-wide text-muted-foreground">Text</p>
+          {buttonColorRows.map((row, rowIndex) => (
+            <div className="flex flex-wrap gap-3" key={`text-${rowIndex}`}>
+              {row.map(color => (
+                <Button {...args} variant="text" color={color} key={`text-${color}`}>
+                  {color}
+                </Button>
+              ))}
+            </div>
+          ))}
+        </div>
       </div>
     </div>
   ),

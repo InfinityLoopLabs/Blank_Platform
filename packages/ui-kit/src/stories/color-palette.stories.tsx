@@ -124,7 +124,6 @@ function Swatch({ token, values }: { token: ColorToken; values: Record<string, s
 function TokenBlock({ values }: { values: Record<string, string> }) {
   return (
     <section style={{ borderTop: "1px solid var(--border)", padding: 12 }}>
-      <h3 style={{ margin: "0 0 10px", fontSize: 22, fontWeight: 700, letterSpacing: "0.06em" }}>TOKENS</h3>
       <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
         {tokenRows.map((row, index) => (
           <div
@@ -159,9 +158,6 @@ function ThemePalette({ dark = false }: { dark?: boolean }) {
         overflow: "hidden",
       }}
     >
-      <div style={{ padding: 14, fontSize: 24, fontWeight: 800, letterSpacing: "0.06em" }}>
-        {dark ? "DARK .DARK" : "LIGHT :ROOT"}
-      </div>
       <TokenBlock values={values} />
     </div>
   )
@@ -178,7 +174,7 @@ function TailwindPalettePage() {
       }}
     >
       <h1 style={{ margin: "0 0 14px", fontSize: 34, fontWeight: 800, color: "#64748b" }}>
-        Цветовая палитра из токенов (Light + Dark)
+        Цветовая палитра
       </h1>
       <div
         style={{

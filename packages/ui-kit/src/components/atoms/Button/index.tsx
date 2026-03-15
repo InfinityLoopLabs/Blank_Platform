@@ -11,6 +11,8 @@ import { getTypographyClassName } from '@/components/atoms/Typography'
 
 type ButtonAnimationType = 'default' | 'active'
 type ButtonSizeType = 'default' | 'sm' | 'lg' | 'icon' | 'icon-sm' | 'icon-lg'
+export const BUTTON_VARIANT_OPTIONS = ['filled', 'outline', 'text'] as const
+export type ButtonVariantType = (typeof BUTTON_VARIANT_OPTIONS)[number]
 export const BUTTON_COLOR_OPTIONS = [
   'primary',
   'secondary',
@@ -35,6 +37,7 @@ type ButtonPropertyType = PropsWithChildren<
     onClick?: (event: MouseEvent<HTMLButtonElement>) => void
     animation?: ButtonAnimationType
     color?: ButtonColorType
+    variant?: ButtonVariantType
     size?: ButtonSizeType
   }
 >
@@ -48,7 +51,7 @@ const sizeClassDictionary: Record<ButtonSizeType, string> = {
   'icon-lg': 'size-10 p-0',
 }
 
-const colorClassDictionary: Record<ButtonColorType, string> = {
+const filledColorClassDictionary: Record<ButtonColorType, string> = {
   primary: 'bg-primary text-primary-foreground hover:bg-primary/90 focus:ring-primary/60',
   secondary: 'bg-secondary text-secondary-foreground hover:bg-secondary/85 focus:ring-secondary/60',
   accent: 'bg-accent text-accent-foreground hover:bg-accent/85 focus:ring-accent/60',
@@ -64,6 +67,51 @@ const colorClassDictionary: Record<ButtonColorType, string> = {
   'chart-3': 'bg-(--chart-3) text-white hover:brightness-110 focus:ring-(--chart-3)',
   'chart-4': 'bg-(--chart-4) text-black hover:brightness-110 focus:ring-(--chart-4)',
   'chart-5': 'bg-(--chart-5) text-black hover:brightness-110 focus:ring-(--chart-5)',
+}
+
+const outlineColorClassDictionary: Record<ButtonColorType, string> = {
+  primary: 'border border-primary bg-transparent text-primary hover:bg-primary/10 focus:ring-primary/60',
+  secondary:
+    'border border-secondary bg-transparent text-secondary hover:bg-secondary/30 focus:ring-secondary/60',
+  accent: 'border border-accent bg-transparent text-accent hover:bg-accent/30 focus:ring-accent/60',
+  muted: 'border border-muted bg-transparent text-muted hover:bg-muted/50 focus:ring-ring/60',
+  constructive:
+    'border border-constructive bg-transparent text-constructive hover:bg-constructive/10 focus:ring-constructive/45',
+  cautionary:
+    'border border-cautionary bg-transparent text-cautionary hover:bg-cautionary/20 focus:ring-cautionary/45',
+  destructive:
+    'border border-destructive bg-transparent text-destructive hover:bg-destructive/10 focus:ring-destructive/45',
+  'chart-1':
+    'border border-(--chart-1) bg-transparent text-(--chart-1) hover:bg-(--chart-1)/10 focus:ring-(--chart-1)',
+  'chart-2':
+    'border border-(--chart-2) bg-transparent text-(--chart-2) hover:bg-(--chart-2)/10 focus:ring-(--chart-2)',
+  'chart-3':
+    'border border-(--chart-3) bg-transparent text-(--chart-3) hover:bg-(--chart-3)/10 focus:ring-(--chart-3)',
+  'chart-4':
+    'border border-(--chart-4) bg-transparent text-(--chart-4) hover:bg-(--chart-4)/10 focus:ring-(--chart-4)',
+  'chart-5':
+    'border border-(--chart-5) bg-transparent text-(--chart-5) hover:bg-(--chart-5)/10 focus:ring-(--chart-5)',
+}
+
+const textColorClassDictionary: Record<ButtonColorType, string> = {
+  primary: 'bg-transparent text-primary hover:bg-primary/10 focus:ring-primary/60',
+  secondary: 'bg-transparent text-secondary hover:bg-secondary/30 focus:ring-secondary/60',
+  accent: 'bg-transparent text-accent hover:bg-accent/30 focus:ring-accent/60',
+  muted: 'bg-transparent text-muted hover:bg-muted/50 focus:ring-ring/60',
+  constructive: 'bg-transparent text-constructive hover:bg-constructive/10 focus:ring-constructive/45',
+  cautionary: 'bg-transparent text-cautionary hover:bg-cautionary/20 focus:ring-cautionary/45',
+  destructive: 'bg-transparent text-destructive hover:bg-destructive/10 focus:ring-destructive/45',
+  'chart-1': 'bg-transparent text-(--chart-1) hover:bg-(--chart-1)/10 focus:ring-(--chart-1)',
+  'chart-2': 'bg-transparent text-(--chart-2) hover:bg-(--chart-2)/10 focus:ring-(--chart-2)',
+  'chart-3': 'bg-transparent text-(--chart-3) hover:bg-(--chart-3)/10 focus:ring-(--chart-3)',
+  'chart-4': 'bg-transparent text-(--chart-4) hover:bg-(--chart-4)/10 focus:ring-(--chart-4)',
+  'chart-5': 'bg-transparent text-(--chart-5) hover:bg-(--chart-5)/10 focus:ring-(--chart-5)',
+}
+
+const colorClassByVariantDictionary: Record<ButtonVariantType, Record<ButtonColorType, string>> = {
+  filled: filledColorClassDictionary,
+  outline: outlineColorClassDictionary,
+  text: textColorClassDictionary,
 }
 
 const glowColorByButtonColor: Record<ButtonColorType, string> = {
@@ -88,6 +136,7 @@ export const Button = ({
   onClick,
   animation = 'default',
   color = 'chart-1',
+  variant = 'filled',
   size = 'default',
   className,
   children,
@@ -95,7 +144,7 @@ export const Button = ({
   ...property
 }: ButtonPropertyType) => {
   const resolvedLeftIcon = leftIcon ?? icon
-  const isDecorated = color === 'chart-1'
+  const isDecorated = color === 'chart-1' && variant === 'filled'
   const glowColor = glowColorByButtonColor[color]
   const resolvedStyle = {
     '--button-glow-color': glowColor,
@@ -107,6 +156,7 @@ export const Button = ({
       onClick={onClick}
       data-animation={animation}
       data-color={color}
+      data-variant={variant}
       style={resolvedStyle}
       className={clsx(
         'group relative inline-flex cursor-pointer items-center justify-center gap-2 overflow-hidden rounded-(--radius) font-medium',
@@ -114,7 +164,7 @@ export const Button = ({
         'focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-(--card)',
         'disabled:pointer-events-none disabled:opacity-50',
         sizeClassDictionary[size],
-        colorClassDictionary[color],
+        colorClassByVariantDictionary[variant][color],
         animation === 'active' && 'pulse-ring',
         className,
       )}

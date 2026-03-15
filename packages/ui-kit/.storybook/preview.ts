@@ -155,8 +155,8 @@ const preview: Preview = {
     options: {
       storySort: {
         order: [
-          "Decision",
-          ["First"],
+          "Showcase",
+          ["Form Example"],
           "Design",
           ["Color Palette", "Typography", "Custom CSS"],
           "Atoms",

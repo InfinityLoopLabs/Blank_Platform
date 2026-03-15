@@ -1,9 +1,9 @@
 import type { Meta, StoryObj } from '@storybook/react'
 
-import { FirstDecision } from '@/components/decision/FirstDecision'
+import { FirstDecision } from '@/components/showcase/FirstDecision'
 
 const meta = {
-  title: 'Decision/Form Example',
+  title: 'Showcase/Form Example',
   component: FirstDecision,
   parameters: {
     docs: { disable: true },

@@ -1,4 +1,4 @@
-import React, { FC, AnchorHTMLAttributes } from 'react'
+import React, { type ElementType, type HTMLAttributes } from 'react'
 import { clsx } from '@infinityloop.labs/utils'
 
 export type TypographyType =
@@ -41,18 +41,6 @@ export type TypographyType =
   | 'Action'
   | 'Subheader'
   | 'Caption'
-
-type ElementType =
-  | 'a'
-  | 'div'
-  | 'h1'
-  | 'h2'
-  | 'h3'
-  | 'h4'
-  | 'h5'
-  | 'h6'
-  | 'p'
-  | 'span'
 
 /* Карта классов: Начало */
 const typographyToTailwindClass: Record<TypographyType, string> = {
@@ -110,7 +98,9 @@ const typographyToTailwindClass: Record<TypographyType, string> = {
 }
 /* Карта классов: Конец */
 
-const placeholderTypographyToTailwindClass: Partial<Record<TypographyType, string>> = {
+const placeholderTypographyToTailwindClass: Partial<
+  Record<TypographyType, string>
+> = {
   Subheader:
     'placeholder:text-base md:placeholder:text-sm placeholder:text-muted-foreground',
 }
@@ -125,15 +115,15 @@ type OwnPropertyType = {
   typography: TypographyType
   element?: ElementType
   className?: string
-} & AnchorHTMLAttributes<HTMLAnchorElement>
+} & HTMLAttributes<HTMLElement>
 
-export const Typography: FC<OwnPropertyType> = ({
+export const Typography = ({
   typography,
   element = 'span',
   className: clsname = '',
   children,
   ...props
-}) => {
+}: OwnPropertyType) => {
   const className = clsx(
     'font-infinityloop',
     getTypographyClassName(typography),
