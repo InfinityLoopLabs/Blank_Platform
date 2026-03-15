@@ -1,7 +1,7 @@
 import Color from 'color';
 import { Slider } from 'radix-ui';
 import { type ComponentProps, type HTMLAttributes } from '../../../../../../../node_modules/react';
-import { Button } from '../../../../components/ui/button';
+import { Button } from '../../../../components/atoms/Button';
 import { SelectTrigger } from '../../../../components/ui/select';
 interface ColorPickerContextValue {
     hue: number;

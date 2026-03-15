@@ -20,8 +20,8 @@ declare const meta: {
     }) => import('../../../../node_modules/react/jsx-runtime').JSX.Element;
     args: {
         className: string;
-        type: "light";
-        isColored: true;
+        type: "dark";
+        isColored: false;
         children: import('../../../../node_modules/react/jsx-runtime').JSX.Element;
     };
     argTypes: {
@@ -36,6 +36,4 @@ declare const meta: {
 };
 export default meta;
 type Story = StoryObj<typeof meta>;
-export declare const Playground: Story;
-export declare const Colored: Story;
-export declare const FlatDark: Story;
+export declare const AllVariations: Story;

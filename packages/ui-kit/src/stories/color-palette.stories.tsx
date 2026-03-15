@@ -7,152 +7,25 @@ type ColorToken = {
   purpose: string
 }
 
-type ColorGroup = {
-  title: string
-  tokens: ColorToken[]
-}
+const coreTokens: ColorToken[] = [
+  { name: "background", varName: "--background", textVarName: "--foreground", purpose: "Основной фон приложения." },
+  { name: "foreground", varName: "--foreground", textVarName: "--background", purpose: "Цвет основного текста." },
+  { name: "primary", varName: "--primary", textVarName: "--primary-foreground", purpose: "Главные CTA и акценты." },
+  { name: "secondary", varName: "--secondary", textVarName: "--secondary-foreground", purpose: "Вторичные действия." },
+  { name: "accent", varName: "--accent", textVarName: "--accent-foreground", purpose: "Hover и выделения." },
+  { name: "muted", varName: "--muted", textVarName: "--muted-foreground", purpose: "Приглушенные поверхности." },
+  { name: "destructive", varName: "--destructive", textVarName: "--background", purpose: "Удаление и ошибки." },
+  { name: "success", varName: "--success", textVarName: "--success-foreground", purpose: "Успешные состояния." },
+  { name: "warn", varName: "--warn", textVarName: "--warn-foreground", purpose: "Предупреждение / риск." },
+  { name: "ring", varName: "--ring", textVarName: "--background", purpose: "Фокус и outline." },
+]
 
-const colorGroups: ColorGroup[] = [
-  {
-    title: "Base",
-    tokens: [
-      {
-        name: "background",
-        varName: "--background",
-        textVarName: "--foreground",
-        purpose: "Базовый фон приложения и страниц.",
-      },
-      {
-        name: "foreground",
-        varName: "--foreground",
-        textVarName: "--background",
-        purpose: "Основной цвет текста и иконок.",
-      },
-      {
-        name: "border",
-        varName: "--border",
-        textVarName: "--foreground",
-        purpose: "Рамки, разделители и контуры блоков.",
-      },
-      {
-        name: "input",
-        varName: "--input",
-        textVarName: "--foreground",
-        purpose: "Фон и/или рамка полей ввода.",
-      },
-      {
-        name: "ring",
-        varName: "--ring",
-        textVarName: "--background",
-        purpose: "Фокус-обводка интерактивных элементов.",
-      },
-    ],
-  },
-  {
-    title: "Semantic",
-    tokens: [
-      {
-        name: "primary",
-        varName: "--primary",
-        textVarName: "--primary-foreground",
-        purpose: "Главные CTA-кнопки и ключевые акценты.",
-      },
-      {
-        name: "secondary",
-        varName: "--secondary",
-        textVarName: "--secondary-foreground",
-        purpose: "Вторичные кнопки и нейтральные действия.",
-      },
-      {
-        name: "muted",
-        varName: "--muted",
-        textVarName: "--muted-foreground",
-        purpose: "Приглушенные подложки и второстепенный контент.",
-      },
-      {
-        name: "accent",
-        varName: "--accent",
-        textVarName: "--accent-foreground",
-        purpose: "Hover/selected состояния и локальные акценты.",
-      },
-      {
-        name: "destructive",
-        varName: "--destructive",
-        textVarName: "--background",
-        purpose: "Опасные действия: delete/reset/critical.",
-      },
-    ],
-  },
-  {
-    title: "Surface",
-    tokens: [
-      {
-        name: "card",
-        varName: "--card",
-        textVarName: "--card-foreground",
-        purpose: "Фон карточек и контейнеров контента.",
-      },
-      {
-        name: "popover",
-        varName: "--popover",
-        textVarName: "--popover-foreground",
-        purpose: "Фон выпадающих меню, тултипов и попапов.",
-      },
-      {
-        name: "sidebar",
-        varName: "--sidebar",
-        textVarName: "--sidebar-foreground",
-        purpose: "База боковой навигации.",
-      },
-      {
-        name: "sidebar-primary",
-        varName: "--sidebar-primary",
-        textVarName: "--sidebar-primary-foreground",
-        purpose: "Активный пункт в sidebar.",
-      },
-      {
-        name: "sidebar-accent",
-        varName: "--sidebar-accent",
-        textVarName: "--sidebar-accent-foreground",
-        purpose: "Hover/secondary акцент в sidebar.",
-      },
-    ],
-  },
-  {
-    title: "Charts",
-    tokens: [
-      {
-        name: "chart-1",
-        varName: "--chart-1",
-        textVarName: "--background",
-        purpose: "Серия данных #1 на графиках.",
-      },
-      {
-        name: "chart-2",
-        varName: "--chart-2",
-        textVarName: "--background",
-        purpose: "Серия данных #2 на графиках.",
-      },
-      {
-        name: "chart-3",
-        varName: "--chart-3",
-        textVarName: "--background",
-        purpose: "Серия данных #3 на графиках.",
-      },
-      {
-        name: "chart-4",
-        varName: "--chart-4",
-        textVarName: "--background",
-        purpose: "Серия данных #4 на графиках.",
-      },
-      {
-        name: "chart-5",
-        varName: "--chart-5",
-        textVarName: "--background",
-        purpose: "Серия данных #5 на графиках.",
-      },
-    ],
-  },
+const chartTokens: ColorToken[] = [
+  { name: "chart-1", varName: "--chart-1", textVarName: "--background", purpose: "Серия #1." },
+  { name: "chart-2", varName: "--chart-2", textVarName: "--background", purpose: "Серия #2." },
+  { name: "chart-3", varName: "--chart-3", textVarName: "--background", purpose: "Серия #3." },
+  { name: "chart-4", varName: "--chart-4", textVarName: "--background", purpose: "Серия #4." },
+  { name: "chart-5", varName: "--chart-5", textVarName: "--background", purpose: "Серия #5." },
 ]
 
 const lightThemeVars: Record<string, string> = {
@@ -170,23 +43,21 @@ const lightThemeVars: Record<string, string> = {
   "--muted-foreground": "oklch(0.556 0 0)",
   "--accent": "oklch(0.97 0 0)",
   "--accent-foreground": "oklch(0.205 0 0)",
-  "--destructive": "oklch(0.704 0.191 22.216)",
+  "--destructive": "oklch(0.577 0.245 27.325)",
+  "--success": "oklch(0.74 0.17 155)",
+  "--success-foreground": "oklch(0.24 0.06 160)",
+  "--warning": "oklch(0.84 0.16 84)",
+  "--warning-foreground": "oklch(0.28 0.07 46)",
+  "--warn": "oklch(0.84 0.16 84)",
+  "--warn-foreground": "oklch(0.28 0.07 46)",
   "--border": "oklch(0.922 0 0)",
   "--input": "oklch(0.922 0 0)",
   "--ring": "oklch(0.708 0 0)",
-  "--chart-1": "oklch(0.488 0.243 264.376)",
-  "--chart-2": "oklch(0.696 0.17 162.48)",
-  "--chart-3": "oklch(0.769 0.188 70.08)",
-  "--chart-4": "oklch(0.627 0.265 303.9)",
-  "--chart-5": "oklch(0.645 0.246 16.439)",
-  "--sidebar": "oklch(0.985 0 0)",
-  "--sidebar-foreground": "oklch(0.145 0 0)",
-  "--sidebar-primary": "oklch(0.488 0.243 264.376)",
-  "--sidebar-primary-foreground": "oklch(0.985 0 0)",
-  "--sidebar-accent": "oklch(0.97 0 0)",
-  "--sidebar-accent-foreground": "oklch(0.205 0 0)",
-  "--sidebar-border": "oklch(0.922 0 0)",
-  "--sidebar-ring": "oklch(0.708 0 0)",
+  "--chart-1": "oklch(0.75 0.25 45)",
+  "--chart-2": "oklch(0.6 0.118 184.704)",
+  "--chart-3": "oklch(0.398 0.07 227.392)",
+  "--chart-4": "oklch(0.828 0.189 84.429)",
+  "--chart-5": "oklch(0.769 0.188 70.08)",
 }
 
 const darkThemeVars: Record<string, string> = {
@@ -202,74 +73,76 @@ const darkThemeVars: Record<string, string> = {
   "--secondary-foreground": "oklch(0.985 0 0)",
   "--muted": "oklch(0.269 0 0)",
   "--muted-foreground": "oklch(0.708 0 0)",
-  "--accent": "oklch(0.269 0 0)",
+  "--accent": "oklch(0.371 0 0)",
   "--accent-foreground": "oklch(0.985 0 0)",
   "--destructive": "oklch(0.704 0.191 22.216)",
+  "--success": "oklch(0.43 0.11 155)",
+  "--success-foreground": "oklch(0.98 0.02 164)",
+  "--warning": "oklch(0.41 0.11 46)",
+  "--warning-foreground": "oklch(0.99 0.02 95)",
+  "--warn": "oklch(0.41 0.11 46)",
+  "--warn-foreground": "oklch(0.99 0.02 95)",
   "--border": "oklch(1 0 0 / 10%)",
   "--input": "oklch(1 0 0 / 15%)",
   "--ring": "oklch(0.556 0 0)",
-  "--chart-1": "oklch(0.488 0.243 264.376)",
+  "--chart-1": "oklch(0.75 0.25 45)",
   "--chart-2": "oklch(0.696 0.17 162.48)",
   "--chart-3": "oklch(0.769 0.188 70.08)",
   "--chart-4": "oklch(0.627 0.265 303.9)",
   "--chart-5": "oklch(0.645 0.246 16.439)",
-  "--sidebar": "oklch(0.205 0 0)",
-  "--sidebar-foreground": "oklch(0.985 0 0)",
-  "--sidebar-primary": "oklch(0.488 0.243 264.376)",
-  "--sidebar-primary-foreground": "oklch(0.985 0 0)",
-  "--sidebar-accent": "oklch(0.269 0 0)",
-  "--sidebar-accent-foreground": "oklch(0.985 0 0)",
-  "--sidebar-border": "oklch(1 0 0 / 10%)",
-  "--sidebar-ring": "oklch(0.556 0 0)",
 }
 
-function Swatch({ token }: { token: ColorToken }) {
+function Swatch({ token, values }: { token: ColorToken; values: Record<string, string> }) {
+  const tokenValue = values[token.varName] ?? `var(${token.varName})`
+
   return (
     <div
       style={{
         border: "1px solid var(--border)",
-        borderRadius: 10,
+        borderRadius: 14,
         overflow: "hidden",
-        background: "var(--card)",
+        background: "transparent",
       }}
     >
       <div
         style={{
-          height: 68,
+          height: 54,
           backgroundColor: `var(${token.varName})`,
           color: token.textVarName ? `var(${token.textVarName})` : "var(--foreground)",
-          display: "flex",
-          alignItems: "center",
-          paddingInline: 12,
-          fontSize: 12,
-          fontWeight: 600,
-          letterSpacing: "0.02em",
         }}
-      >
-        Aa
-      </div>
-      <div style={{ padding: 10, fontSize: 12, lineHeight: 1.4 }}>
-        <div style={{ color: "var(--foreground)", fontWeight: 600 }}>{token.name}</div>
-        <div style={{ color: "var(--muted-foreground)", fontFamily: "monospace" }}>{token.varName}</div>
-        <div style={{ color: "var(--muted-foreground)", marginTop: 6 }}>{token.purpose}</div>
+      />
+      <div style={{ padding: 10, fontSize: 11, lineHeight: 1.3 }}>
+        <div style={{ color: "var(--foreground)", fontWeight: 700, fontSize: 14 }}>{token.name}</div>
+        <div style={{ color: "var(--muted-foreground)", fontFamily: "monospace", fontSize: 11 }}>
+          {tokenValue}
+        </div>
+        <div style={{ color: "var(--muted-foreground)", marginTop: 4, fontSize: 11 }}>{token.purpose}</div>
       </div>
     </div>
   )
 }
 
-function PaletteSection({ title, tokens }: ColorGroup) {
+function PaletteSection({
+  title,
+  tokens,
+  values,
+}: {
+  title: string
+  tokens: ColorToken[]
+  values: Record<string, string>
+}) {
   return (
-    <section style={{ marginBottom: 20 }}>
-      <h3 style={{ margin: "0 0 10px", fontSize: 14, fontWeight: 700 }}>{title}</h3>
+    <section style={{ borderTop: "1px solid var(--border)", padding: 12 }}>
+      <h3 style={{ margin: "0 0 10px", fontSize: 22, fontWeight: 700, letterSpacing: "0.06em" }}>{title}</h3>
       <div
         style={{
           display: "grid",
-          gridTemplateColumns: "repeat(auto-fill, minmax(180px, 1fr))",
+          gridTemplateColumns: "repeat(3, minmax(0, 1fr))",
           gap: 10,
         }}
       >
         {tokens.map(token => (
-          <Swatch key={token.name} token={token} />
+          <Swatch key={token.name} token={token} values={values} />
         ))}
       </div>
     </section>
@@ -277,23 +150,24 @@ function PaletteSection({ title, tokens }: ColorGroup) {
 }
 
 function ThemePalette({ dark = false }: { dark?: boolean }) {
+  const values = dark ? darkThemeVars : lightThemeVars
+
   return (
     <div
       style={{
-        ...(dark ? darkThemeVars : lightThemeVars),
+        ...values,
         background: "var(--background)",
         color: "var(--foreground)",
         border: "1px solid var(--border)",
-        borderRadius: 14,
-        padding: 16,
+        borderRadius: 20,
+        overflow: "hidden",
       }}
     >
-      <h2 style={{ margin: "0 0 16px", fontSize: 16, fontWeight: 800 }}>
-        {dark ? "Dark theme" : "Light theme"}
-      </h2>
-      {colorGroups.map(group => (
-        <PaletteSection key={group.title} title={group.title} tokens={group.tokens} />
-      ))}
+      <div style={{ padding: 14, fontSize: 24, fontWeight: 800, letterSpacing: "0.06em" }}>
+        {dark ? "DARK .DARK" : "LIGHT :ROOT"}
+      </div>
+      <PaletteSection title="CORE" tokens={coreTokens} values={values} />
+      <PaletteSection title="CHART" tokens={chartTokens} values={values} />
     </div>
   )
 }
@@ -302,14 +176,29 @@ function TailwindPalettePage() {
   return (
     <div
       style={{
-        display: "grid",
-        gap: 16,
-        gridTemplateColumns: "repeat(auto-fit, minmax(420px, 1fr))",
+        background: "#f8fafc",
+        color: "#0f172a",
+        minHeight: "100vh",
         padding: 16,
       }}
     >
-      <ThemePalette />
-      <ThemePalette dark />
+      <h1 style={{ margin: "0 0 14px", fontSize: 34, fontWeight: 800, color: "#64748b" }}>
+        Цветовая палитра из токенов (Light + Dark)
+      </h1>
+      <div
+        style={{
+          display: "grid",
+          gap: 12,
+          gridTemplateColumns: "repeat(auto-fit, minmax(520px, 1fr))",
+          alignItems: "start",
+          maxWidth: 1440,
+          width: "100%",
+          margin: "0 auto",
+        }}
+      >
+        <ThemePalette />
+        <ThemePalette dark />
+      </div>
     </div>
   )
 }

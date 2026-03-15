@@ -1,13 +1,17 @@
-import * as React from '../../../../../../node_modules/react';
-import { type VariantProps } from 'class-variance-authority';
-declare const buttonVariants: (props?: ({
-    variant?: "link" | "default" | "destructive" | "outline" | "secondary" | "ghost" | null | undefined;
-    size?: "default" | "sm" | "lg" | "icon" | "icon-sm" | "icon-lg" | null | undefined;
-} & import("class-variance-authority/types").ClassProp) | undefined) => string;
-declare function Button({ className, variant, size, isGlow, asChild, leftIcon, rightIcon, children, ...props }: React.ComponentProps<'button'> & VariantProps<typeof buttonVariants> & {
-    asChild?: boolean;
+import type { ButtonHTMLAttributes, MouseEvent, PropsWithChildren, ReactNode } from '../../../../../../node_modules/react';
+type ButtonStateType = 'default' | 'active';
+type ButtonVariantType = 'default' | 'destructive' | 'outline' | 'secondary' | 'ghost' | 'link';
+type ButtonSizeType = 'default' | 'sm' | 'lg' | 'icon' | 'icon-sm' | 'icon-lg';
+type ButtonPropertyType = PropsWithChildren<ButtonHTMLAttributes<HTMLButtonElement> & {
+    icon?: ReactNode;
+    leftIcon?: ReactNode;
+    rightIcon?: ReactNode;
+    onClick?: (event: MouseEvent<HTMLButtonElement>) => void;
+    state?: ButtonStateType;
+    variant?: ButtonVariantType;
+    size?: ButtonSizeType;
     isGlow?: boolean;
-    leftIcon?: React.ReactNode;
-    rightIcon?: React.ReactNode;
-}): import('../../../../../../node_modules/react/jsx-runtime').JSX.Element;
-export { Button, buttonVariants };
+    isFullWidth?: boolean;
+}>;
+export declare const Button: ({ icon, leftIcon, rightIcon, onClick, state, variant, size, isGlow, isFullWidth, className, children, ...property }: ButtonPropertyType) => import('../../../../../../node_modules/react/jsx-runtime').JSX.Element;
+export {};
