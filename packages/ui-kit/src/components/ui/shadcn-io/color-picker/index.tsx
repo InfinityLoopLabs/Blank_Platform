@@ -16,7 +16,7 @@ import {
   useState,
 } from 'react';
 import { Button } from '@/components/atoms/Button';
-import { Input } from '@/components/ui/input';
+import { Input } from '@/components/atoms/Input';
 import {
   Select,
   SelectContent,

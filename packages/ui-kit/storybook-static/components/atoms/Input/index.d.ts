@@ -1,3 +1,17 @@
 import * as React from '../../../../../../node_modules/react';
-declare function Input({ className, type, ...props }: React.ComponentProps<'input'>): import('../../../../../../node_modules/react/jsx-runtime').JSX.Element;
+type InputSharedPropertyType = {
+    className?: string;
+    isTextarea?: boolean;
+    isResizableX?: boolean;
+    isResizableY?: boolean;
+    textareaRows?: number;
+};
+type SingleLineInputPropertyType = InputSharedPropertyType & React.ComponentProps<'input'> & {
+    isTextarea?: false;
+};
+type MultiLineInputPropertyType = InputSharedPropertyType & Omit<React.ComponentProps<'textarea'>, 'rows' | 'type'> & {
+    isTextarea: true;
+};
+type InputPropertyType = SingleLineInputPropertyType | MultiLineInputPropertyType;
+declare function Input(property: InputPropertyType): import('../../../../../../node_modules/react/jsx-runtime').JSX.Element;
 export { Input };

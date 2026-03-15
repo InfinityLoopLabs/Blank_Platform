@@ -311,6 +311,36 @@
   letter-spacing: 0;
 }
 
+@utility field-transition {
+  transition-property: color, box-shadow;
+}
+
+@utility focus-ring-3 {
+  &:focus-visible {
+    border-color: var(--ring);
+    box-shadow: 0 0 0 3px color-mix(in oklab, var(--ring) 50%, transparent);
+  }
+}
+
+@utility required-highlight {
+  &:required {
+    border-color: color-mix(in oklab, var(--cautionary) 55%, var(--border));
+    background-color: color-mix(in oklab, var(--background) 92%, var(--cautionary));
+  }
+
+  &:required::placeholder {
+    color: color-mix(in oklab, var(--cautionary) 70%, var(--muted-foreground));
+  }
+
+  &:required:invalid {
+    border-color: var(--destructive);
+  }
+
+  &:required:invalid:focus-visible {
+    box-shadow: 0 0 0 3px color-mix(in oklab, var(--destructive) 35%, transparent);
+  }
+}
+
 @layer components {
   .paper--colored {
     position: relative;

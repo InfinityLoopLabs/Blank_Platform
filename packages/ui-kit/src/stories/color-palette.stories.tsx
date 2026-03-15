@@ -9,6 +9,8 @@ type ColorToken = {
 
 const tokenRows: ColorToken[][] = [
   [
+    { name: "background", varName: "--background", textVarName: "--foreground", purpose: "Базовый фон приложения." },
+    { name: "foreground", varName: "--foreground", textVarName: "--background", purpose: "Основной цвет текста/контента." },
     { name: "primary", varName: "--primary", textVarName: "--primary-foreground", purpose: "Главные CTA и акценты." },
     { name: "secondary", varName: "--secondary", textVarName: "--secondary-foreground", purpose: "Вторичные действия." },
     { name: "accent", varName: "--accent", textVarName: "--accent-foreground", purpose: "Hover и выделения." },
