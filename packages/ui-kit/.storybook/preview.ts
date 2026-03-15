@@ -1,17 +1,14 @@
 import type { Preview } from "@storybook/react"
-import { UPDATE_GLOBALS } from "@storybook/core-events"
-import { addons } from "@storybook/preview-api"
 import React from "react"
+import { Moon, Sun } from "lucide-react"
+import { useGlobals } from "@storybook/preview-api"
 import type { Root } from "react-dom/client"
 import { createRoot } from "react-dom/client"
-import { Moon, Sun } from "lucide-react"
 
 import { Toggle } from "../src/components/atoms/Toggle"
-
 import "../src/index.css"
 
 type ThemeMode = "light" | "dark"
-type BackgroundMode = "light" | "dark" | "clear"
 
 const THEME_STORAGE_KEY = "ui-kit-storybook-theme"
 const THEME_TOGGLE_ID = "ui-kit-theme-toggle"
@@ -19,7 +16,7 @@ const LIGHT_CANVAS_COLOR = "#f8fafc"
 const DARK_CANVAS_COLOR = "#0f172a"
 const CLEAR_CANVAS_VALUE = "transparent"
 
-const resolveInitialTheme = (): ThemeMode => {
+const readStoredTheme = (): ThemeMode => {
   if (typeof window === "undefined") {
     return "dark"
   }
@@ -33,47 +30,17 @@ const resolveInitialTheme = (): ThemeMode => {
   return prefersDark ? "dark" : "light"
 }
 
-const resolveBackgroundMode = (backgroundValue: unknown): BackgroundMode | null => {
-  if (backgroundValue === "light" || backgroundValue === "dark") {
-    return backgroundValue
+const writeStoredTheme = (theme: ThemeMode) => {
+  if (typeof window === "undefined") {
+    return
   }
 
-  if (backgroundValue === "clear") {
-    return "dark"
-  }
-
-  if (backgroundValue === LIGHT_CANVAS_COLOR) {
-    return "light"
-  }
-
-  if (backgroundValue === DARK_CANVAS_COLOR) {
-    return "dark"
-  }
-
-  if (backgroundValue === CLEAR_CANVAS_VALUE) {
-    return "dark"
-  }
-
-  return null
+  window.localStorage.setItem(THEME_STORAGE_KEY, theme)
 }
 
-const syncStorybookBackgroundGlobals = (theme: ThemeMode) => {
-  const channel = addons.getChannel()
-  const syncedBackgroundMode: BackgroundMode = theme === "dark" ? "dark" : "light"
-  const syncedBackgroundValue = theme === "dark" ? DARK_CANVAS_COLOR : LIGHT_CANVAS_COLOR
-  currentBackgroundMode = syncedBackgroundMode
+const applyTheme = (theme: ThemeMode) => {
+  const syncedBackground = theme === "dark" ? DARK_CANVAS_COLOR : LIGHT_CANVAS_COLOR
 
-  channel.emit(UPDATE_GLOBALS, {
-    globals: {
-      backgrounds: {
-        value: syncedBackgroundValue,
-        grid: true,
-      },
-    },
-  })
-}
-
-const applyTheme = (theme: ThemeMode, backgroundMode: BackgroundMode | null) => {
   document.body.classList.remove("dark")
   document.documentElement.classList.remove("dark")
   document.body.style.colorScheme = theme
@@ -84,25 +51,17 @@ const applyTheme = (theme: ThemeMode, backgroundMode: BackgroundMode | null) => 
     document.documentElement.classList.add("dark")
   }
 
-  const syncedBackground =
-    backgroundMode === "light" ? LIGHT_CANVAS_COLOR : theme === "dark" ? DARK_CANVAS_COLOR : LIGHT_CANVAS_COLOR
   document.body.style.backgroundColor = syncedBackground
   document.documentElement.style.backgroundColor = syncedBackground
 }
 
-const themeToggleContainerStyle: Partial<CSSStyleDeclaration> = {
-  position: "fixed",
-  top: "12px",
-  right: "12px",
-  zIndex: "9999",
-  padding: "4px 8px",
-  borderRadius: "999px",
-  border: "1px solid var(--border)",
-  background: "color-mix(in oklab, var(--background) 90%, transparent)",
-  backdropFilter: "blur(8px)",
-}
-
-const renderThemeToggle = (theme: ThemeMode, onToggle: () => void) => {
+const ThemeToggleOverlay = ({
+  theme,
+  onToggle,
+}: {
+  theme: ThemeMode
+  onToggle: () => void
+}) => {
   const iconStyle: React.CSSProperties = {
     display: "inline-flex",
     alignItems: "center",
@@ -115,6 +74,15 @@ const renderThemeToggle = (theme: ThemeMode, onToggle: () => void) => {
     "div",
     {
       style: {
+        position: "fixed",
+        top: "12px",
+        right: "12px",
+        zIndex: "9999",
+        padding: "4px 8px",
+        borderRadius: "999px",
+        border: "1px solid var(--border)",
+        background: "color-mix(in oklab, var(--background) 90%, transparent)",
+        backdropFilter: "blur(8px)",
         display: "inline-flex",
         alignItems: "center",
         gap: "8px",
@@ -147,12 +115,15 @@ const renderThemeToggle = (theme: ThemeMode, onToggle: () => void) => {
 
 let themeToggleRoot: Root | null = null
 
-const ensureThemeToggle = (theme: ThemeMode, onToggle: () => void) => {
-  let container = document.getElementById(THEME_TOGGLE_ID) as HTMLDivElement | null
+const renderThemeToggle = (theme: ThemeMode, onToggle: () => void) => {
+  if (typeof document === "undefined") {
+    return
+  }
+
+  let container = document.getElementById(THEME_TOGGLE_ID)
   if (!container) {
     container = document.createElement("div")
     container.id = THEME_TOGGLE_ID
-    Object.assign(container.style, themeToggleContainerStyle)
     document.body.appendChild(container)
   }
 
@@ -160,11 +131,8 @@ const ensureThemeToggle = (theme: ThemeMode, onToggle: () => void) => {
     themeToggleRoot = createRoot(container)
   }
 
-  themeToggleRoot.render(renderThemeToggle(theme, onToggle))
+  themeToggleRoot.render(React.createElement(ThemeToggleOverlay, { theme, onToggle }))
 }
-
-let currentTheme: ThemeMode = "dark"
-let currentBackgroundMode: BackgroundMode | null = null
 
 const preview: Preview = {
   initialGlobals: {
@@ -174,41 +142,49 @@ const preview: Preview = {
     },
   },
   decorators: [
-    (Story, context) => {
-      if (typeof window !== "undefined") {
-        if (!window.localStorage.getItem(THEME_STORAGE_KEY)) {
-          currentTheme = resolveInitialTheme()
-          window.localStorage.setItem(THEME_STORAGE_KEY, currentTheme)
-        } else {
-          const storedTheme = window.localStorage.getItem(THEME_STORAGE_KEY)
-          currentTheme = storedTheme === "light" ? "light" : "dark"
+    Story => {
+      const [globals, updateGlobals] = useGlobals()
+      const theme = readStoredTheme()
+      const targetBackgroundValue = theme === "dark" ? DARK_CANVAS_COLOR : LIGHT_CANVAS_COLOR
+
+      const backgroundGlobals = (globals as { backgrounds?: { value?: unknown; grid?: unknown } }).backgrounds
+      const backgroundValue = backgroundGlobals?.value
+      const gridEnabled = backgroundGlobals?.grid === true
+
+      const onToggleTheme = React.useCallback(() => {
+        const currentTheme = readStoredTheme()
+        const nextTheme: ThemeMode = currentTheme === "dark" ? "light" : "dark"
+        const nextBackgroundValue = nextTheme === "dark" ? DARK_CANVAS_COLOR : LIGHT_CANVAS_COLOR
+
+        writeStoredTheme(nextTheme)
+        applyTheme(nextTheme)
+        updateGlobals({
+          backgrounds: {
+            value: nextBackgroundValue,
+            grid: true,
+          },
+        })
+      }, [updateGlobals])
+
+      React.useEffect(() => {
+        applyTheme(theme)
+        renderThemeToggle(theme, onToggleTheme)
+      }, [theme, onToggleTheme])
+
+      React.useEffect(() => {
+        const isClearBackground = backgroundValue === "clear" || backgroundValue === CLEAR_CANVAS_VALUE
+
+        if (isClearBackground || backgroundValue !== targetBackgroundValue || !gridEnabled) {
+          updateGlobals({
+            backgrounds: {
+              value: targetBackgroundValue,
+              grid: true,
+            },
+          })
         }
+      }, [backgroundValue, gridEnabled, targetBackgroundValue, updateGlobals])
 
-        const rawBackgroundValue = context.globals?.backgrounds?.value
-        const resolvedBackgroundMode = resolveBackgroundMode(rawBackgroundValue)
-        const isClearBackground = rawBackgroundValue === "clear" || rawBackgroundValue === CLEAR_CANVAS_VALUE
-        const gridEnabled = context.globals?.backgrounds?.grid === true
-
-        if (isClearBackground || resolvedBackgroundMode !== currentTheme || !gridEnabled) {
-          syncStorybookBackgroundGlobals(currentTheme)
-        }
-
-        currentBackgroundMode = currentTheme
-        applyTheme(currentTheme, currentBackgroundMode)
-
-        const onToggleTheme = () => {
-          currentTheme = currentTheme === "dark" ? "light" : "dark"
-          window.localStorage.setItem(THEME_STORAGE_KEY, currentTheme)
-          syncStorybookBackgroundGlobals(currentTheme)
-          currentBackgroundMode = currentTheme
-          applyTheme(currentTheme, currentBackgroundMode)
-          ensureThemeToggle(currentTheme, onToggleTheme)
-        }
-
-        ensureThemeToggle(currentTheme, onToggleTheme)
-      }
-
-      return Story()
+      return React.createElement(Story)
     },
   ],
   parameters: {
