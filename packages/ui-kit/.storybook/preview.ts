@@ -1,6 +1,12 @@
 import type { Preview } from "@storybook/react"
 import { UPDATE_GLOBALS } from "@storybook/core-events"
 import { addons } from "@storybook/preview-api"
+import React from "react"
+import type { Root } from "react-dom/client"
+import { createRoot } from "react-dom/client"
+import { Moon, Sun } from "lucide-react"
+
+import { Toggle } from "../src/components/atoms/Toggle"
 
 import "../src/index.css"
 
@@ -9,9 +15,9 @@ type BackgroundMode = "light" | "dark" | "clear"
 
 const THEME_STORAGE_KEY = "ui-kit-storybook-theme"
 const THEME_TOGGLE_ID = "ui-kit-theme-toggle"
-const THEME_TOGGLE_BUTTON_ID = "ui-kit-theme-toggle-button"
 const LIGHT_CANVAS_COLOR = "#f8fafc"
 const DARK_CANVAS_COLOR = "#0f172a"
+const CLEAR_CANVAS_VALUE = "transparent"
 
 const resolveInitialTheme = (): ThemeMode => {
   if (typeof window === "undefined") {
@@ -28,8 +34,12 @@ const resolveInitialTheme = (): ThemeMode => {
 }
 
 const resolveBackgroundMode = (backgroundValue: unknown): BackgroundMode | null => {
-  if (backgroundValue === "light" || backgroundValue === "dark" || backgroundValue === "clear") {
+  if (backgroundValue === "light" || backgroundValue === "dark") {
     return backgroundValue
+  }
+
+  if (backgroundValue === "clear") {
+    return "dark"
   }
 
   if (backgroundValue === LIGHT_CANVAS_COLOR) {
@@ -40,8 +50,8 @@ const resolveBackgroundMode = (backgroundValue: unknown): BackgroundMode | null 
     return "dark"
   }
 
-  if (backgroundValue === "transparent") {
-    return "clear"
+  if (backgroundValue === CLEAR_CANVAS_VALUE) {
+    return "dark"
   }
 
   return null
@@ -74,65 +84,83 @@ const applyTheme = (theme: ThemeMode, backgroundMode: BackgroundMode | null) => 
     document.documentElement.classList.add("dark")
   }
 
-  if (backgroundMode === "clear") {
-    document.body.style.backgroundColor = "transparent"
-    document.documentElement.style.backgroundColor = "transparent"
-    return
-  }
-
-  const syncedBackground = theme === "dark" ? DARK_CANVAS_COLOR : LIGHT_CANVAS_COLOR
+  const syncedBackground =
+    backgroundMode === "light" ? LIGHT_CANVAS_COLOR : theme === "dark" ? DARK_CANVAS_COLOR : LIGHT_CANVAS_COLOR
   document.body.style.backgroundColor = syncedBackground
   document.documentElement.style.backgroundColor = syncedBackground
 }
 
-const updateToggleButtonLabel = (theme: ThemeMode) => {
-  const button = document.getElementById(THEME_TOGGLE_BUTTON_ID) as HTMLButtonElement | null
-  if (!button) {
-    return
-  }
-
-  button.textContent = theme === "dark" ? "Dark" : "Light"
-  button.setAttribute("aria-label", `Switch to ${theme === "dark" ? "light" : "dark"} theme`)
+const themeToggleContainerStyle: Partial<CSSStyleDeclaration> = {
+  position: "fixed",
+  top: "12px",
+  right: "12px",
+  zIndex: "9999",
+  padding: "4px 8px",
+  borderRadius: "999px",
+  border: "1px solid var(--border)",
+  background: "color-mix(in oklab, var(--background) 90%, transparent)",
+  backdropFilter: "blur(8px)",
 }
 
-const ensureThemeToggle = (theme: ThemeMode, onToggle: () => void) => {
-  if (document.getElementById(THEME_TOGGLE_ID)) {
-    updateToggleButtonLabel(theme)
-    return
+const renderThemeToggle = (theme: ThemeMode, onToggle: () => void) => {
+  const iconStyle: React.CSSProperties = {
+    display: "inline-flex",
+    alignItems: "center",
+    justifyContent: "center",
+    transition: "opacity 180ms ease",
+    color: "var(--foreground)",
   }
 
-  const container = document.createElement("div")
-  container.id = THEME_TOGGLE_ID
-  container.style.position = "fixed"
-  container.style.top = "12px"
-  container.style.right = "12px"
-  container.style.zIndex = "9999"
-  container.style.padding = "4px"
-  container.style.borderRadius = "999px"
-  container.style.border = "1px solid var(--border)"
-  container.style.background = "color-mix(in oklab, var(--background) 90%, transparent)"
-  container.style.backdropFilter = "blur(8px)"
+  return React.createElement(
+    "div",
+    {
+      style: {
+        display: "inline-flex",
+        alignItems: "center",
+        gap: "8px",
+      },
+    },
+    React.createElement(Sun, {
+      size: 14,
+      style: {
+        ...iconStyle,
+        opacity: theme === "light" ? 1 : 0.5,
+      },
+      "aria-hidden": true,
+    }),
+    React.createElement(Toggle, {
+      checked: theme === "dark",
+      onChange: onToggle,
+      className: "gap-0",
+      "aria-label": `Switch to ${theme === "dark" ? "light" : "dark"} theme`,
+    }),
+    React.createElement(Moon, {
+      size: 14,
+      style: {
+        ...iconStyle,
+        opacity: theme === "dark" ? 1 : 0.5,
+      },
+      "aria-hidden": true,
+    }),
+  )
+}
 
-  const button = document.createElement("button")
-  button.id = THEME_TOGGLE_BUTTON_ID
-  button.type = "button"
-  button.style.minWidth = "72px"
-  button.style.height = "30px"
-  button.style.padding = "0 12px"
-  button.style.borderRadius = "999px"
-  button.style.border = "1px solid var(--border)"
-  button.style.background = "var(--card)"
-  button.style.color = "var(--foreground)"
-  button.style.cursor = "pointer"
-  button.style.fontSize = "12px"
-  button.style.fontWeight = "600"
-  button.style.lineHeight = "1"
-  button.style.fontFamily = "var(--font-app, ui-sans-serif, system-ui, sans-serif)"
-  button.addEventListener("click", onToggle)
+let themeToggleRoot: Root | null = null
 
-  container.appendChild(button)
-  document.body.appendChild(container)
-  updateToggleButtonLabel(theme)
+const ensureThemeToggle = (theme: ThemeMode, onToggle: () => void) => {
+  let container = document.getElementById(THEME_TOGGLE_ID) as HTMLDivElement | null
+  if (!container) {
+    container = document.createElement("div")
+    container.id = THEME_TOGGLE_ID
+    Object.assign(container.style, themeToggleContainerStyle)
+    document.body.appendChild(container)
+  }
+
+  if (!themeToggleRoot) {
+    themeToggleRoot = createRoot(container)
+  }
+
+  themeToggleRoot.render(renderThemeToggle(theme, onToggle))
 }
 
 let currentTheme: ThemeMode = "dark"
@@ -148,8 +176,6 @@ const preview: Preview = {
   decorators: [
     (Story, context) => {
       if (typeof window !== "undefined") {
-        currentBackgroundMode = resolveBackgroundMode(context.globals?.backgrounds?.value)
-
         if (!window.localStorage.getItem(THEME_STORAGE_KEY)) {
           currentTheme = resolveInitialTheme()
           window.localStorage.setItem(THEME_STORAGE_KEY, currentTheme)
@@ -158,14 +184,28 @@ const preview: Preview = {
           currentTheme = storedTheme === "light" ? "light" : "dark"
         }
 
+        const rawBackgroundValue = context.globals?.backgrounds?.value
+        const resolvedBackgroundMode = resolveBackgroundMode(rawBackgroundValue)
+        const isClearBackground = rawBackgroundValue === "clear" || rawBackgroundValue === CLEAR_CANVAS_VALUE
+        const gridEnabled = context.globals?.backgrounds?.grid === true
+
+        if (isClearBackground || resolvedBackgroundMode !== currentTheme || !gridEnabled) {
+          syncStorybookBackgroundGlobals(currentTheme)
+        }
+
+        currentBackgroundMode = currentTheme
         applyTheme(currentTheme, currentBackgroundMode)
-        ensureThemeToggle(currentTheme, () => {
+
+        const onToggleTheme = () => {
           currentTheme = currentTheme === "dark" ? "light" : "dark"
           window.localStorage.setItem(THEME_STORAGE_KEY, currentTheme)
           syncStorybookBackgroundGlobals(currentTheme)
+          currentBackgroundMode = currentTheme
           applyTheme(currentTheme, currentBackgroundMode)
-          updateToggleButtonLabel(currentTheme)
-        })
+          ensureThemeToggle(currentTheme, onToggleTheme)
+        }
+
+        ensureThemeToggle(currentTheme, onToggleTheme)
       }
 
       return Story()
@@ -194,7 +234,7 @@ const preview: Preview = {
       options: {
         light: { name: "Light", value: LIGHT_CANVAS_COLOR },
         dark: { name: "Dark", value: DARK_CANVAS_COLOR },
-        clear: { name: "Clear", value: "transparent" },
+        clear: { name: "Clear", value: CLEAR_CANVAS_VALUE },
       },
     },
     layout: "centered",
