@@ -61,6 +61,7 @@ const parseMaskSizePercentage = (
     if (!match) {
       return undefined
     }
+
     return Number(match[1])
   }
   const parsedWidth = parsePercentageValue(widthValue)
@@ -76,6 +77,7 @@ const parseMaskSizePercentage = (
       height: 100,
     }
   }
+
   return {
     width: Math.max(0, parsedWidth),
     height: Math.max(0, parsedHeight),
@@ -89,6 +91,7 @@ const getMaskOverlayPlacementByMaskSizeAndPosition = (
   const { width, height } = parseMaskSizePercentage(maskSize)
   const x = ((100 - width) * maskPositionValue.x) / 100
   const y = ((100 - height) * maskPositionValue.y) / 100
+
   return {
     x,
     y,
@@ -111,7 +114,8 @@ const MaskOverlayShape = ({
   placement: MaskOverlayPlacementType
 }) => {
   const hasFill = Boolean(fillColor)
-  const hasStroke = Boolean(strokeColor) && Boolean(strokeWidth && strokeWidth > 0)
+  const hasStroke =
+    Boolean(strokeColor) && Boolean(strokeWidth && strokeWidth > 0)
   if (!hasFill && !hasStroke) {
     return null
   }
@@ -175,6 +179,10 @@ type ImagePropertyType = Omit<
   maskFillColor?: string
   maskStrokeColor?: string
   maskStrokeWidth?: number
+  isTopShadeVisible?: boolean
+  topShadeColor?: string
+  isBottomShadeVisible?: boolean
+  bottomShadeColor?: string
 }
 
 export const Image = ({
@@ -193,6 +201,10 @@ export const Image = ({
   maskFillColor,
   maskStrokeColor,
   maskStrokeWidth = 1,
+  isTopShadeVisible = false,
+  topShadeColor,
+  isBottomShadeVisible = false,
+  bottomShadeColor,
   alt = '',
   style,
   ...property
@@ -318,6 +330,8 @@ export const Image = ({
     : undefined
   const isMaskOverlayVisible =
     isMasked && (Boolean(maskFillColor) || Boolean(maskStrokeColor))
+  const resolvedShadeColor =
+    topShadeColor ?? bottomShadeColor ?? maskFillColor ?? 'var(--background)'
 
   return (
     <div
@@ -350,6 +364,34 @@ export const Image = ({
         className={cn('block h-full w-full object-cover select-none')}
         {...property}
       />
+      {isTopShadeVisible ? (
+        <div
+          aria-hidden
+          className="pointer-events-none absolute inset-x-0 top-0 h-[10%]"
+          style={{
+            backgroundColor: resolvedShadeColor,
+            opacity: 0.65,
+            WebkitMaskImage:
+              'linear-gradient(to bottom, rgba(0, 0, 0, 1), rgba(0, 0, 0, 0))',
+            maskImage:
+              'linear-gradient(to bottom, rgba(0, 0, 0, 1), rgba(0, 0, 0, 0))',
+          }}
+        />
+      ) : null}
+      {isBottomShadeVisible ? (
+        <div
+          aria-hidden
+          className="pointer-events-none absolute inset-x-0 bottom-0 h-[10%]"
+          style={{
+            backgroundColor: resolvedShadeColor,
+            opacity: 0.65,
+            WebkitMaskImage:
+              'linear-gradient(to top, rgba(0, 0, 0, 1), rgba(0, 0, 0, 0))',
+            maskImage:
+              'linear-gradient(to top, rgba(0, 0, 0, 1), rgba(0, 0, 0, 0))',
+          }}
+        />
+      ) : null}
       {isMaskOverlayVisible ? (
         <svg
           aria-hidden

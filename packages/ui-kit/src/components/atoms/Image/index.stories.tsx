@@ -100,6 +100,10 @@ const meta = {
     maskFillColor: undefined,
     maskStrokeColor: undefined,
     maskStrokeWidth: 1,
+    isTopShadeVisible: false,
+    topShadeColor: undefined,
+    isBottomShadeVisible: false,
+    bottomShadeColor: undefined,
     src: mockImageUrl,
   },
   argTypes: {
@@ -167,6 +171,18 @@ const meta = {
         max: 24,
         step: 0.5,
       },
+    },
+    isTopShadeVisible: {
+      control: 'boolean',
+    },
+    topShadeColor: {
+      control: 'color',
+    },
+    isBottomShadeVisible: {
+      control: 'boolean',
+    },
+    bottomShadeColor: {
+      control: 'color',
     },
     onCropPositionChange: {
       table: {

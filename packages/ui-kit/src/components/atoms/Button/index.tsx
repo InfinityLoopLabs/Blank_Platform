@@ -7,10 +7,17 @@ import type {
 } from 'react'
 
 import { clsx } from '@infinityloop.labs/utils'
+import { LoaderCircle } from 'lucide-react'
 import { getTypographyClassName } from '@/components/atoms/Typography'
 
-type ButtonAnimationType = 'default' | 'active'
+type ButtonAnimationType = 'default' | 'active' | 'loading'
 type ButtonSizeType =
+  | 's'
+  | 'm'
+  | 'l'
+  | 'icon-s'
+  | 'icon-m'
+  | 'icon-l'
   | 'default'
   | 'sm'
   | 'lg'
@@ -43,6 +50,7 @@ type ButtonPropertyType = PropsWithChildren<
     rightIcon?: ReactNode
     onClick?: (event: MouseEvent<HTMLButtonElement>) => void
     animation?: ButtonAnimationType
+    isLoading?: boolean
     color?: ButtonColorType
     variant?: ButtonVariantType
     size?: ButtonSizeType
@@ -50,6 +58,12 @@ type ButtonPropertyType = PropsWithChildren<
 >
 
 const sizeClassDictionary: Record<ButtonSizeType, string> = {
+  s: 'h-8 gap-1.5 px-3 text-xs has-[>svg]:px-2.5',
+  m: 'h-9 px-4 py-2 text-sm has-[>svg]:px-3',
+  l: 'h-10 px-6 text-sm has-[>svg]:px-4',
+  'icon-s': 'size-8 p-0',
+  'icon-m': 'size-9 p-0',
+  'icon-l': 'size-10 p-0',
   default: 'h-9 px-4 py-2 text-sm has-[>svg]:px-3',
   sm: 'h-8 gap-1.5 px-3 text-xs has-[>svg]:px-2.5',
   lg: 'h-10 px-6 text-sm has-[>svg]:px-4',
@@ -57,6 +71,22 @@ const sizeClassDictionary: Record<ButtonSizeType, string> = {
   'icon-sm': 'size-8 p-0',
   'icon-lg': 'size-10 p-0',
   'icon-circle': 'size-9 rounded-full p-0',
+}
+
+const loadingIconSizeClassDictionary: Record<ButtonSizeType, string> = {
+  s: 'size-[14px]',
+  m: 'size-4',
+  l: 'size-[18px]',
+  'icon-s': 'size-[14px]',
+  'icon-m': 'size-4',
+  'icon-l': 'size-[18px]',
+  default: 'size-4',
+  sm: 'size-[14px]',
+  lg: 'size-[18px]',
+  icon: 'size-4',
+  'icon-sm': 'size-[14px]',
+  'icon-lg': 'size-[18px]',
+  'icon-circle': 'size-4',
 }
 
 const filledColorClassDictionary: Record<ButtonColorType, string> = {
@@ -143,28 +173,41 @@ export const Button = ({
   rightIcon,
   onClick,
   animation = 'default',
+  isLoading = false,
   color = 'chart-1',
   variant = 'filled',
-  size = 'default',
+  size = 'm',
   className,
   children,
   style,
   ...property
 }: ButtonPropertyType) => {
   const resolvedLeftIcon = leftIcon ?? icon
-  const isDecorated = color === 'chart-1' && variant === 'filled'
+  const isLoadingState = isLoading || animation === 'loading'
+  const isDecorated = color === 'chart-1' && variant === 'filled' && !isLoadingState
+  const hasLeftIcon = Boolean(resolvedLeftIcon)
+  const hasRightIcon = Boolean(rightIcon)
+  const shouldShowLeftLoadingIcon = isLoadingState && hasLeftIcon
+  const shouldShowRightLoadingIcon = isLoadingState && hasRightIcon
+  const shouldShowCenterLoadingIcon =
+    isLoadingState && !shouldShowLeftLoadingIcon && !shouldShowRightLoadingIcon
   const glowColor = glowColorByButtonColor[color]
   const resolvedStyle = {
     '--button-glow-color': glowColor,
     ...style,
   } as CSSProperties
+  const loadingIconClassName = clsx(
+    loadingIconSizeClassDictionary[size],
+    'animate-spin text-current/70',
+  )
 
   return (
     <button
       onClick={onClick}
-      data-animation={animation}
+      data-animation={isLoadingState ? 'loading' : animation}
       data-color={color}
       data-variant={variant}
+      aria-busy={isLoadingState || undefined}
       style={resolvedStyle}
       className={clsx(
         'group relative inline-flex cursor-pointer items-center justify-center gap-2 overflow-hidden rounded-(--radius) font-medium',
@@ -173,7 +216,8 @@ export const Button = ({
         'disabled:pointer-events-none disabled:opacity-50',
         sizeClassDictionary[size],
         colorClassByVariantDictionary[variant][color],
-        animation === 'active' && 'pulse-ring',
+        animation === 'active' && !isLoadingState && 'pulse-ring',
+        isLoadingState && 'cursor-progress',
         className,
       )}
       {...property}>
@@ -219,14 +263,54 @@ export const Button = ({
           />
         </>
       ) : null}
+      {isLoadingState ? (
+        <div
+          aria-hidden="true"
+          className={clsx(
+            'pointer-events-none absolute inset-0 rounded-[inherit]',
+            'bg-gradient-to-r from-white/0 via-white/18 to-white/0 opacity-70',
+            'loading-wave',
+          )}
+        />
+      ) : null}
 
-      {resolvedLeftIcon ? <span className="relative z-10">{resolvedLeftIcon}</span> : null}
+      {hasLeftIcon ? (
+        <span className="relative z-10 inline-flex items-center justify-center">
+          {shouldShowLeftLoadingIcon ? (
+            <LoaderCircle aria-hidden="true" className={loadingIconClassName} />
+          ) : (
+            resolvedLeftIcon
+          )}
+        </span>
+      ) : null}
+
       {children ? (
-        <span className={clsx('relative z-10', getTypographyClassName('Action'))}>
+        <span
+          className={clsx(
+            'relative z-10',
+            getTypographyClassName('Action'),
+            shouldShowCenterLoadingIcon && 'opacity-0',
+          )}>
           {children}
         </span>
       ) : null}
-      {rightIcon ? <span className="relative z-10">{rightIcon}</span> : null}
+
+      {hasRightIcon ? (
+        <span className="relative z-10 inline-flex items-center justify-center">
+          {shouldShowRightLoadingIcon ? (
+            <LoaderCircle aria-hidden="true" className={loadingIconClassName} />
+          ) : (
+            rightIcon
+          )}
+        </span>
+      ) : null}
+
+      {shouldShowCenterLoadingIcon ? (
+        <span className="pointer-events-none absolute inset-0 z-20 inline-flex items-center justify-center">
+          <LoaderCircle aria-hidden="true" className={loadingIconClassName} />
+          <span className="sr-only">Loading</span>
+        </span>
+      ) : null}
     </button>
   )
 }

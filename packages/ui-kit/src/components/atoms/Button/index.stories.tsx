@@ -14,7 +14,8 @@ const meta = {
   tags: ["autodocs"],
   args: {
     animation: "default",
-    size: "default",
+    isLoading: false,
+    size: "m",
     variant: "filled",
     color: "chart-1",
   },
@@ -22,6 +23,9 @@ const meta = {
     animation: {
       control: "select",
       options: ["default", "active"],
+    },
+    isLoading: {
+      control: "boolean",
     },
     color: {
       control: "select",
@@ -33,7 +37,7 @@ const meta = {
     },
     size: {
       control: "select",
-      options: ["default", "sm", "lg", "icon", "icon-sm", "icon-lg", "icon-circle"],
+      options: ["s", "m", "l", "icon-s", "icon-m", "icon-l", "icon-circle"],
     },
   },
 } satisfies Meta<typeof Button>
