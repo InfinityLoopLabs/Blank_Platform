@@ -1,26 +1,31 @@
 import type { Meta, StoryObj } from "@storybook/react"
 import { ArrowRight, Sparkles } from "lucide-react"
 
-import { Button } from "@/components/atoms/Button"
+import { BUTTON_COLOR_OPTIONS, Button } from "@/components/atoms/Button"
+
+const buttonColorRows = [
+  ["primary", "secondary", "accent", "muted"],
+  ["constructive", "cautionary", "destructive"],
+  ["chart-1", "chart-2", "chart-3", "chart-4", "chart-5"],
+] as const
 
 const meta = {
   title: "Atoms/Button",
   component: Button,
   tags: ["autodocs"],
   args: {
-    children: "Infinityloop",
-    state: "default",
-    variant: "default",
+    animation: "default",
     size: "default",
+    color: "chart-1",
   },
   argTypes: {
-    state: {
+    animation: {
       control: "select",
       options: ["default", "active"],
     },
-    variant: {
+    color: {
       control: "select",
-      options: ["default", "destructive", "outline", "secondary", "ghost", "link"],
+      options: BUTTON_COLOR_OPTIONS,
     },
     size: {
       control: "select",
@@ -32,65 +37,25 @@ const meta = {
 export default meta
 type Story = StoryObj<typeof meta>
 
-export const Playground: Story = {}
-
-export const Active: Story = {
-  args: {
-    state: "active",
-    children: "Infinityloop",
-  },
-}
-
-export const Outline: Story = {
-  args: {
-    variant: "outline",
-    children: "Outline",
-    state: "default",
-  },
-}
-
-export const Destructive: Story = {
-  args: {
-    variant: "destructive",
-    children: "Delete",
-  },
-}
-
-export const Secondary: Story = {
-  args: {
-    variant: "secondary",
-    children: "Secondary",
-  },
-}
-
-export const Ghost: Story = {
-  args: {
-    variant: "ghost",
-    children: "Ghost",
-  },
-}
-
-export const Link: Story = {
-  args: {
-    variant: "link",
-    children: "Learn more",
-  },
-}
-
-export const LogoSquare: Story = {
-  args: {
-    children: "∞",
-    size: "icon",
-    state: "active",
-    className: "text-lg font-bold",
-    "aria-label": "Infinity logo button",
-  },
-}
-
-export const WithBothIcons: Story = {
-  args: {
-    children: "Infinityloop",
-    leftIcon: <Sparkles className="size-4" />,
-    rightIcon: <ArrowRight className="size-4" />,
-  },
+export const AllColors: Story = {
+  render: args => (
+    <div className="w-full max-w-5xl rounded-xl border border-(--border) bg-(--card) p-4">
+      <div className="flex flex-col gap-3">
+        {buttonColorRows.map((row, rowIndex) => (
+          <div className="flex flex-wrap gap-3" key={rowIndex}>
+            {row.map(color => (
+              <Button
+                {...args}
+                color={color}
+                key={color}
+                leftIcon={<Sparkles className="size-4" />}
+                rightIcon={<ArrowRight className="size-4" />}>
+                {color}
+              </Button>
+            ))}
+          </div>
+        ))}
+      </div>
+    </div>
+  ),
 }

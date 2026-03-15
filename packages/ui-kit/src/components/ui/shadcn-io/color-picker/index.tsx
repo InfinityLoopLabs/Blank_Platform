@@ -297,9 +297,9 @@ export const ColorPickerEyeDropper = ({
   return (
     <Button
       className={cn('shrink-0 text-muted-foreground', className)}
+      color="secondary"
       onClick={handleEyeDropper}
       size="icon"
-      variant="outline"
       type="button"
       {...(props as any)}
     >

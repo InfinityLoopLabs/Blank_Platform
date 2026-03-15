@@ -2,15 +2,23 @@ import type { ButtonHTMLAttributes, MouseEvent, PropsWithChildren, ReactNode } f
 
 import { clsx } from '@infinityloop.labs/utils'
 
-type ButtonStateType = 'default' | 'active'
-type ButtonVariantType =
-  | 'default'
-  | 'destructive'
-  | 'outline'
-  | 'secondary'
-  | 'ghost'
-  | 'link'
+type ButtonAnimationType = 'default' | 'active'
 type ButtonSizeType = 'default' | 'sm' | 'lg' | 'icon' | 'icon-sm' | 'icon-lg'
+export const BUTTON_COLOR_OPTIONS = [
+  'primary',
+  'secondary',
+  'accent',
+  'muted',
+  'constructive',
+  'cautionary',
+  'destructive',
+  'chart-1',
+  'chart-2',
+  'chart-3',
+  'chart-4',
+  'chart-5',
+] as const
+export type ButtonColorType = (typeof BUTTON_COLOR_OPTIONS)[number]
 
 type ButtonPropertyType = PropsWithChildren<
   ButtonHTMLAttributes<HTMLButtonElement> & {
@@ -18,11 +26,9 @@ type ButtonPropertyType = PropsWithChildren<
     leftIcon?: ReactNode
     rightIcon?: ReactNode
     onClick?: (event: MouseEvent<HTMLButtonElement>) => void
-    state?: ButtonStateType
-    variant?: ButtonVariantType
+    animation?: ButtonAnimationType
+    color?: ButtonColorType
     size?: ButtonSizeType
-    isGlow?: boolean
-    isFullWidth?: boolean
   }
 >
 
@@ -35,15 +41,21 @@ const sizeClassDictionary: Record<ButtonSizeType, string> = {
   'icon-lg': 'size-10 p-0',
 }
 
-const variantClassDictionary: Record<ButtonVariantType, string> = {
-  default: 'bg-(--chart-1) text-(--background) hover:brightness-110',
-  destructive:
-    'bg-destructive text-white hover:bg-destructive/90 focus-visible:ring-destructive/20',
-  outline:
-    'border border-(--border) bg-(--card) text-(--foreground) hover:bg-(--muted)',
-  secondary: 'bg-secondary text-secondary-foreground hover:bg-secondary/80',
-  ghost: 'hover:bg-accent hover:text-accent-foreground',
-  link: 'text-primary underline-offset-4 hover:underline',
+const colorClassDictionary: Record<ButtonColorType, string> = {
+  primary: 'bg-primary text-primary-foreground hover:bg-primary/90 focus:ring-primary/60',
+  secondary: 'bg-secondary text-secondary-foreground hover:bg-secondary/85 focus:ring-secondary/60',
+  accent: 'bg-accent text-accent-foreground hover:bg-accent/85 focus:ring-accent/60',
+  muted: 'bg-muted text-foreground hover:bg-muted/85 focus:ring-ring/60',
+  constructive:
+    'bg-constructive text-constructive-foreground hover:bg-constructive/90 focus:ring-constructive/45',
+  cautionary:
+    'bg-cautionary text-cautionary-foreground hover:bg-cautionary/90 focus:ring-cautionary/45',
+  destructive: 'bg-destructive text-white hover:bg-destructive/90 focus:ring-destructive/45',
+  'chart-1': 'bg-(--chart-1) text-black hover:brightness-110 focus:ring-(--chart-1)',
+  'chart-2': 'bg-(--chart-2) text-black hover:brightness-110 focus:ring-(--chart-2)',
+  'chart-3': 'bg-(--chart-3) text-white hover:brightness-110 focus:ring-(--chart-3)',
+  'chart-4': 'bg-(--chart-4) text-black hover:brightness-110 focus:ring-(--chart-4)',
+  'chart-5': 'bg-(--chart-5) text-black hover:brightness-110 focus:ring-(--chart-5)',
 }
 
 export const Button = ({
@@ -51,33 +63,29 @@ export const Button = ({
   leftIcon,
   rightIcon,
   onClick,
-  state = 'default',
-  variant = 'default',
+  animation = 'default',
+  color = 'chart-1',
   size = 'default',
-  isGlow = false,
-  isFullWidth = false,
   className,
   children,
   ...property
 }: ButtonPropertyType) => {
-  const resolvedState: ButtonStateType = state === 'active' || isGlow ? 'active' : 'default'
   const resolvedLeftIcon = leftIcon ?? icon
-  const isDecorated = variant === 'default'
+  const isDecorated = color === 'chart-1'
 
   return (
     <button
       onClick={onClick}
-      data-state={resolvedState}
-      data-variant={variant}
+      data-animation={animation}
+      data-color={color}
       className={clsx(
         'group relative inline-flex cursor-pointer items-center justify-center gap-2 overflow-hidden rounded-(--radius) font-medium',
         'transition-all duration-300 hover:scale-[1.02] active:scale-[0.98]',
-        'focus:outline-none focus:ring-2 focus:ring-(--chart-1) focus:ring-offset-2 focus:ring-offset-(--card)',
+        'focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-(--card)',
         'disabled:pointer-events-none disabled:opacity-50',
         sizeClassDictionary[size],
-        variantClassDictionary[variant],
-        isFullWidth && 'w-full',
-        resolvedState === 'active' && variant === 'default' && 'pulse-ring',
+        colorClassDictionary[color],
+        animation === 'active' && color === 'chart-1' && 'pulse-ring',
         className,
       )}
       {...property}>

@@ -7,25 +7,25 @@ type ColorToken = {
   purpose: string
 }
 
-const coreTokens: ColorToken[] = [
-  { name: "background", varName: "--background", textVarName: "--foreground", purpose: "Основной фон приложения." },
-  { name: "foreground", varName: "--foreground", textVarName: "--background", purpose: "Цвет основного текста." },
-  { name: "primary", varName: "--primary", textVarName: "--primary-foreground", purpose: "Главные CTA и акценты." },
-  { name: "secondary", varName: "--secondary", textVarName: "--secondary-foreground", purpose: "Вторичные действия." },
-  { name: "accent", varName: "--accent", textVarName: "--accent-foreground", purpose: "Hover и выделения." },
-  { name: "muted", varName: "--muted", textVarName: "--muted-foreground", purpose: "Приглушенные поверхности." },
-  { name: "destructive", varName: "--destructive", textVarName: "--background", purpose: "Удаление и ошибки." },
-  { name: "success", varName: "--success", textVarName: "--success-foreground", purpose: "Успешные состояния." },
-  { name: "warn", varName: "--warn", textVarName: "--warn-foreground", purpose: "Предупреждение / риск." },
-  { name: "ring", varName: "--ring", textVarName: "--background", purpose: "Фокус и outline." },
-]
-
-const chartTokens: ColorToken[] = [
-  { name: "chart-1", varName: "--chart-1", textVarName: "--background", purpose: "Серия #1." },
-  { name: "chart-2", varName: "--chart-2", textVarName: "--background", purpose: "Серия #2." },
-  { name: "chart-3", varName: "--chart-3", textVarName: "--background", purpose: "Серия #3." },
-  { name: "chart-4", varName: "--chart-4", textVarName: "--background", purpose: "Серия #4." },
-  { name: "chart-5", varName: "--chart-5", textVarName: "--background", purpose: "Серия #5." },
+const tokenRows: ColorToken[][] = [
+  [
+    { name: "primary", varName: "--primary", textVarName: "--primary-foreground", purpose: "Главные CTA и акценты." },
+    { name: "secondary", varName: "--secondary", textVarName: "--secondary-foreground", purpose: "Вторичные действия." },
+    { name: "accent", varName: "--accent", textVarName: "--accent-foreground", purpose: "Hover и выделения." },
+    { name: "muted", varName: "--muted", textVarName: "--muted-foreground", purpose: "Приглушенные поверхности." },
+  ],
+  [
+    { name: "constructive", varName: "--constructive", textVarName: "--constructive-foreground", purpose: "Созидательные действия и позитивный flow." },
+    { name: "cautionary", varName: "--cautionary", textVarName: "--cautionary-foreground", purpose: "Внимание и предостережение." },
+    { name: "destructive", varName: "--destructive", textVarName: "--background", purpose: "Удаление и ошибки." },
+  ],
+  [
+    { name: "chart-1", varName: "--chart-1", textVarName: "--background", purpose: "Серия #1." },
+    { name: "chart-2", varName: "--chart-2", textVarName: "--background", purpose: "Серия #2." },
+    { name: "chart-3", varName: "--chart-3", textVarName: "--background", purpose: "Серия #3." },
+    { name: "chart-4", varName: "--chart-4", textVarName: "--background", purpose: "Серия #4." },
+    { name: "chart-5", varName: "--chart-5", textVarName: "--background", purpose: "Серия #5." },
+  ],
 ]
 
 const lightThemeVars: Record<string, string> = {
@@ -44,12 +44,10 @@ const lightThemeVars: Record<string, string> = {
   "--accent": "oklch(0.97 0 0)",
   "--accent-foreground": "oklch(0.205 0 0)",
   "--destructive": "oklch(0.577 0.245 27.325)",
-  "--success": "oklch(0.74 0.17 155)",
-  "--success-foreground": "oklch(0.24 0.06 160)",
-  "--warning": "oklch(0.84 0.16 84)",
-  "--warning-foreground": "oklch(0.28 0.07 46)",
-  "--warn": "oklch(0.84 0.16 84)",
-  "--warn-foreground": "oklch(0.28 0.07 46)",
+  "--constructive": "#009635",
+  "--constructive-foreground": "#ffffff",
+  "--cautionary": "#fcd015",
+  "--cautionary-foreground": "#111111",
   "--border": "oklch(0.922 0 0)",
   "--input": "oklch(0.922 0 0)",
   "--ring": "oklch(0.708 0 0)",
@@ -75,13 +73,11 @@ const darkThemeVars: Record<string, string> = {
   "--muted-foreground": "oklch(0.708 0 0)",
   "--accent": "oklch(0.371 0 0)",
   "--accent-foreground": "oklch(0.985 0 0)",
-  "--destructive": "oklch(0.704 0.191 22.216)",
-  "--success": "oklch(0.43 0.11 155)",
-  "--success-foreground": "oklch(0.98 0.02 164)",
-  "--warning": "oklch(0.41 0.11 46)",
-  "--warning-foreground": "oklch(0.99 0.02 95)",
-  "--warn": "oklch(0.41 0.11 46)",
-  "--warn-foreground": "oklch(0.99 0.02 95)",
+  "--destructive": "oklch(0.577 0.245 27.325)",
+  "--constructive": "#009635",
+  "--constructive-foreground": "#ffffff",
+  "--cautionary": "#fcd015",
+  "--cautionary-foreground": "#111111",
   "--border": "oklch(1 0 0 / 10%)",
   "--input": "oklch(1 0 0 / 15%)",
   "--ring": "oklch(0.556 0 0)",
@@ -122,27 +118,24 @@ function Swatch({ token, values }: { token: ColorToken; values: Record<string, s
   )
 }
 
-function PaletteSection({
-  title,
-  tokens,
-  values,
-}: {
-  title: string
-  tokens: ColorToken[]
-  values: Record<string, string>
-}) {
+function TokenBlock({ values }: { values: Record<string, string> }) {
   return (
     <section style={{ borderTop: "1px solid var(--border)", padding: 12 }}>
-      <h3 style={{ margin: "0 0 10px", fontSize: 22, fontWeight: 700, letterSpacing: "0.06em" }}>{title}</h3>
-      <div
-        style={{
-          display: "grid",
-          gridTemplateColumns: "repeat(3, minmax(0, 1fr))",
-          gap: 10,
-        }}
-      >
-        {tokens.map(token => (
-          <Swatch key={token.name} token={token} values={values} />
+      <h3 style={{ margin: "0 0 10px", fontSize: 22, fontWeight: 700, letterSpacing: "0.06em" }}>TOKENS</h3>
+      <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
+        {tokenRows.map((row, index) => (
+          <div
+            key={index}
+            style={{
+              display: "grid",
+              gridTemplateColumns: `repeat(${row.length}, minmax(0, 1fr))`,
+              gap: 10,
+            }}
+          >
+            {row.map(token => (
+              <Swatch key={token.name} token={token} values={values} />
+            ))}
+          </div>
         ))}
       </div>
     </section>
@@ -166,8 +159,7 @@ function ThemePalette({ dark = false }: { dark?: boolean }) {
       <div style={{ padding: 14, fontSize: 24, fontWeight: 800, letterSpacing: "0.06em" }}>
         {dark ? "DARK .DARK" : "LIGHT :ROOT"}
       </div>
-      <PaletteSection title="CORE" tokens={coreTokens} values={values} />
-      <PaletteSection title="CHART" tokens={chartTokens} values={values} />
+      <TokenBlock values={values} />
     </div>
   )
 }
