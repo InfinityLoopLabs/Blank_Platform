@@ -1,4 +1,6 @@
 import type { Preview } from "@storybook/react"
+import { UPDATE_GLOBALS } from "@storybook/core-events"
+import { addons } from "@storybook/preview-api"
 
 import "../src/index.css"
 
@@ -30,7 +32,35 @@ const resolveBackgroundMode = (backgroundValue: unknown): BackgroundMode | null 
     return backgroundValue
   }
 
+  if (backgroundValue === LIGHT_CANVAS_COLOR) {
+    return "light"
+  }
+
+  if (backgroundValue === DARK_CANVAS_COLOR) {
+    return "dark"
+  }
+
+  if (backgroundValue === "transparent") {
+    return "clear"
+  }
+
   return null
+}
+
+const syncStorybookBackgroundGlobals = (theme: ThemeMode) => {
+  const channel = addons.getChannel()
+  const syncedBackgroundMode: BackgroundMode = theme === "dark" ? "dark" : "light"
+  const syncedBackgroundValue = theme === "dark" ? DARK_CANVAS_COLOR : LIGHT_CANVAS_COLOR
+  currentBackgroundMode = syncedBackgroundMode
+
+  channel.emit(UPDATE_GLOBALS, {
+    globals: {
+      backgrounds: {
+        value: syncedBackgroundValue,
+        grid: true,
+      },
+    },
+  })
 }
 
 const applyTheme = (theme: ThemeMode, backgroundMode: BackgroundMode | null) => {
@@ -47,18 +77,6 @@ const applyTheme = (theme: ThemeMode, backgroundMode: BackgroundMode | null) => 
   if (backgroundMode === "clear") {
     document.body.style.backgroundColor = "transparent"
     document.documentElement.style.backgroundColor = "transparent"
-    return
-  }
-
-  if (backgroundMode === "light") {
-    document.body.style.backgroundColor = LIGHT_CANVAS_COLOR
-    document.documentElement.style.backgroundColor = LIGHT_CANVAS_COLOR
-    return
-  }
-
-  if (backgroundMode === "dark") {
-    document.body.style.backgroundColor = DARK_CANVAS_COLOR
-    document.documentElement.style.backgroundColor = DARK_CANVAS_COLOR
     return
   }
 
@@ -123,7 +141,8 @@ let currentBackgroundMode: BackgroundMode | null = null
 const preview: Preview = {
   initialGlobals: {
     backgrounds: {
-      value: "clear",
+      value: DARK_CANVAS_COLOR,
+      grid: true,
     },
   },
   decorators: [
@@ -143,6 +162,7 @@ const preview: Preview = {
         ensureThemeToggle(currentTheme, () => {
           currentTheme = currentTheme === "dark" ? "light" : "dark"
           window.localStorage.setItem(THEME_STORAGE_KEY, currentTheme)
+          syncStorybookBackgroundGlobals(currentTheme)
           applyTheme(currentTheme, currentBackgroundMode)
           updateToggleButtonLabel(currentTheme)
         })

@@ -17,6 +17,8 @@ const meta: Meta = {
   args: {
     label: "Email",
     type: "text",
+    variant: "outline",
+    typography: "Subheader",
     placeholder: "Type here...",
     required: false,
     disabled: false,
@@ -35,6 +37,13 @@ const meta: Meta = {
       control: "select",
       options: ["text", "number", "email", "password", "checkbox"],
       if: { arg: "isTextarea", truthy: false },
+    },
+    variant: {
+      control: "select",
+      options: ["outline", "text"],
+    },
+    typography: {
+      control: "text",
     },
     required: {
       control: "boolean",

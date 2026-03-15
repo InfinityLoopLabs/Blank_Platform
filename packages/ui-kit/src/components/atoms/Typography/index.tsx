@@ -98,6 +98,10 @@ const typographyToTailwindClass: Record<TypographyType, string> = {
 }
 /* Карта классов: Конец */
 
+export const TYPOGRAPHY_OPTIONS = Object.keys(
+  typographyToTailwindClass,
+) as TypographyType[]
+
 const placeholderTypographyToTailwindClass: Partial<
   Record<TypographyType, string>
 > = {

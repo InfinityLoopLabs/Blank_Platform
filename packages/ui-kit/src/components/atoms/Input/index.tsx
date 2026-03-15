@@ -3,11 +3,16 @@ import * as React from 'react'
 import {
   getPlaceholderTypographyClassName,
   getTypographyClassName,
+  type TypographyType,
 } from '@/components/atoms/Typography'
 import { cn } from '@/lib/utils'
 
+export type InputVariantType = 'outline' | 'text'
+
 type InputSharedPropertyType = {
   className?: string
+  variant?: InputVariantType
+  typography?: TypographyType
   isTextarea?: boolean
   isResizableX?: boolean
   isResizableY?: boolean
@@ -46,10 +51,14 @@ const getTextareaResizeClassName = (
 }
 
 const commonClassName =
-  'file:text-foreground selection:bg-primary selection:text-primary-foreground border-border text-foreground caret-foreground w-full min-w-0 rounded-md border bg-background text-base shadow-xs field-transition required-indicator outline-none file:inline-flex file:h-7 file:border-0 file:bg-transparent file:text-sm file:font-medium disabled:pointer-events-none disabled:cursor-not-allowed disabled:opacity-50 md:text-sm'
+  'file:text-foreground selection:bg-primary selection:text-primary-foreground caret-foreground w-full min-w-0 field-transition required-indicator outline-none file:inline-flex file:h-7 file:border-0 file:bg-transparent file:text-sm file:font-medium disabled:pointer-events-none disabled:cursor-not-allowed disabled:opacity-50'
 
-const subheaderPlaceholderClassName = getPlaceholderTypographyClassName('Subheader')
-const subheaderTypographyClassName = getTypographyClassName('Subheader')
+const inputVariantClassNameDictionary: Record<InputVariantType, string> = {
+  outline: 'rounded-md border border-border bg-background shadow-xs',
+  text: 'rounded-none border-0 border-b border-border bg-transparent shadow-none',
+}
+
+const labelTypographyClassName = getTypographyClassName('Subheader')
 
 const numberInputAllowedKeys = new Set([
   'Backspace',
@@ -70,6 +79,8 @@ function Input(property: InputPropertyType) {
     const {
       className,
       isTextarea: _isTextarea,
+      variant = 'outline',
+      typography = 'Subheader',
       isResizableX = false,
       isResizableY = false,
       textareaRowsCount = 4,
@@ -81,6 +92,8 @@ function Input(property: InputPropertyType) {
       ...textareaProperty
     } = property
     void _isTextarea
+    const typographyClassName = getTypographyClassName(typography)
+    const placeholderTypographyClassName = getPlaceholderTypographyClassName(typography)
     const isInvalid = isError || ariaInvalid === true || ariaInvalid === 'true'
     const visibleErrorText = isError ? errorText : undefined
 
@@ -91,7 +104,7 @@ function Input(property: InputPropertyType) {
             htmlFor={textareaProperty.id}
             className={cn(
               'inline-flex items-center gap-1',
-              subheaderTypographyClassName,
+              labelTypographyClassName,
             )}>
             {label}
             {required ? (
@@ -107,9 +120,11 @@ function Input(property: InputPropertyType) {
           aria-invalid={isInvalid ? true : ariaInvalid}
           className={cn(
             commonClassName,
-            subheaderPlaceholderClassName,
-            'h-auto px-3 py-2 leading-5 overflow-y-auto',
-            'focus-ring-3',
+            typographyClassName,
+            placeholderTypographyClassName,
+            inputVariantClassNameDictionary[variant],
+            'h-auto py-2 leading-5 overflow-y-auto',
+            variant === 'outline' ? 'px-3 focus-ring-3' : 'px-0 focus:outline-none',
             'aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive',
             getTextareaResizeClassName(isResizableX, isResizableY),
             className,
@@ -126,6 +141,8 @@ function Input(property: InputPropertyType) {
   const {
     className,
     isTextarea: _isTextarea,
+    variant = 'outline',
+    typography = 'Subheader',
     isResizableX: _isResizableX,
     isResizableY: _isResizableY,
     textareaRowsCount: _textareaRowsCount,
@@ -142,6 +159,8 @@ function Input(property: InputPropertyType) {
   void _isResizableX
   void _isResizableY
   void _textareaRowsCount
+  const typographyClassName = getTypographyClassName(typography)
+  const placeholderTypographyClassName = getPlaceholderTypographyClassName(typography)
   const isInvalid = isError || ariaInvalid === true || ariaInvalid === 'true'
   const visibleErrorText = isError ? errorText : undefined
   const isNumberType = type === 'number'
@@ -234,7 +253,7 @@ function Input(property: InputPropertyType) {
             htmlFor={inputProperty.id}
             className={cn(
               'inline-flex cursor-pointer items-center gap-2',
-              subheaderTypographyClassName,
+              labelTypographyClassName,
             )}>
             {checkboxInput}
             <span className="inline-flex items-center gap-1">
@@ -263,7 +282,7 @@ function Input(property: InputPropertyType) {
           htmlFor={inputProperty.id}
           className={cn(
             'inline-flex items-center gap-1',
-            subheaderTypographyClassName,
+            labelTypographyClassName,
           )}>
           {label}
           {required ? (
@@ -279,9 +298,11 @@ function Input(property: InputPropertyType) {
         aria-invalid={isInvalid ? true : ariaInvalid}
         className={cn(
           commonClassName,
-          subheaderPlaceholderClassName,
-          'h-9 px-3 py-1 resize-none',
-          'focus-ring-3',
+          typographyClassName,
+          placeholderTypographyClassName,
+          inputVariantClassNameDictionary[variant],
+          'h-9 py-1 resize-none',
+          variant === 'outline' ? 'px-3 focus-ring-3' : 'px-0 focus:outline-none',
           'aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive',
           className,
         )}

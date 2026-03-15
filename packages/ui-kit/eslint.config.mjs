@@ -27,4 +27,10 @@ export default [
       // Add any react-refresh specific rules here if needed
     },
   },
+  {
+    files: ["src/**/*.stories.@(js|jsx|ts|tsx)"],
+    rules: {
+      "import/no-default-export": "off",
+    },
+  },
 ];

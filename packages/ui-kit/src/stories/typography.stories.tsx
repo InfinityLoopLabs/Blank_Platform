@@ -59,6 +59,9 @@ export default meta
 type StoryType = StoryObj<typeof meta>
 
 export const Guide: StoryType = {
+  args: {
+    typography: 'Action',
+  },
   render: () => <TypographyShowcase />,
 }
 

@@ -4,3 +4,5 @@ export * from './Typography';
 export * from './Paper';
 export * from './Button';
 export * from './Input';
+export * from './Dropdown';
+export * from './Toggle';

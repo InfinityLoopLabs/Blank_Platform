@@ -1,6 +1,10 @@
 import * as React from '../../../../../../node_modules/react';
+import { type TypographyType } from '../../../components/atoms/Typography';
+export type InputVariantType = 'outline' | 'text';
 type InputSharedPropertyType = {
     className?: string;
+    variant?: InputVariantType;
+    typography?: TypographyType;
     isTextarea?: boolean;
     isResizableX?: boolean;
     isResizableY?: boolean;

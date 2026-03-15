@@ -2,11 +2,14 @@ import type { StoryObj } from '@storybook/react';
 import { type TypographyType } from '../components/atoms/Typography';
 declare const meta: {
     title: string;
-    component: import('../../../../node_modules/react').FC<{
-        typography: TypographyType;
-        element?: "div" | "a" | "h1" | "h2" | "h3" | "h4" | "h5" | "h6" | "p" | "span";
-        className?: string;
-    } & import('../../../../node_modules/react').AnchorHTMLAttributes<HTMLAnchorElement>>;
+    component: {
+        ({ typography, element, className: clsname, children, ...props }: {
+            typography: TypographyType;
+            element?: import('../../../../node_modules/react').ElementType;
+            className?: string;
+        } & import('../../../../node_modules/react').HTMLAttributes<HTMLElement>): import('../../../../node_modules/react').ReactElement<any, string | import('../../../../node_modules/react').JSXElementConstructor<any>>;
+        displayName: string;
+    };
     tags: string[];
 };
 export default meta;
