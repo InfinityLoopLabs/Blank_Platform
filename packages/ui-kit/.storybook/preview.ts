@@ -14,7 +14,6 @@ const THEME_STORAGE_KEY = "ui-kit-storybook-theme"
 const THEME_TOGGLE_ID = "ui-kit-theme-toggle"
 const LIGHT_CANVAS_COLOR = "#f8fafc"
 const DARK_CANVAS_COLOR = "#0f172a"
-const CLEAR_CANVAS_VALUE = "transparent"
 
 const readStoredTheme = (): ThemeMode => {
   if (typeof window === "undefined") {
@@ -180,12 +179,12 @@ const preview: Preview = {
       }, [backgroundGlobals, gridEnabled, updateGlobals])
 
       React.useEffect(() => {
-        const isClearBackground = backgroundValue === "clear" || backgroundValue === CLEAR_CANVAS_VALUE
-        if (!isClearBackground) {
+        const targetBackgroundValue = theme === "dark" ? DARK_CANVAS_COLOR : LIGHT_CANVAS_COLOR
+        const isBackgroundSynced = backgroundValue === targetBackgroundValue
+
+        if (isBackgroundSynced && gridEnabled) {
           return
         }
-
-        const targetBackgroundValue = theme === "dark" ? DARK_CANVAS_COLOR : LIGHT_CANVAS_COLOR
 
         updateGlobals({
           backgrounds: {
@@ -194,7 +193,7 @@ const preview: Preview = {
             grid: true,
           },
         })
-      }, [backgroundGlobals, backgroundValue, theme, updateGlobals])
+      }, [backgroundGlobals, backgroundValue, gridEnabled, theme, updateGlobals])
 
       return React.createElement(Story)
     },
@@ -222,7 +221,6 @@ const preview: Preview = {
       options: {
         light: { name: "Light", value: LIGHT_CANVAS_COLOR },
         dark: { name: "Dark", value: DARK_CANVAS_COLOR },
-        clear: { name: "Clear", value: CLEAR_CANVAS_VALUE },
       },
     },
     layout: "centered",

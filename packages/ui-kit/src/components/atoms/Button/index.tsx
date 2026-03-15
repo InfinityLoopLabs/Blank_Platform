@@ -10,7 +10,14 @@ import { clsx } from '@infinityloop.labs/utils'
 import { getTypographyClassName } from '@/components/atoms/Typography'
 
 type ButtonAnimationType = 'default' | 'active'
-type ButtonSizeType = 'default' | 'sm' | 'lg' | 'icon' | 'icon-sm' | 'icon-lg'
+type ButtonSizeType =
+  | 'default'
+  | 'sm'
+  | 'lg'
+  | 'icon'
+  | 'icon-sm'
+  | 'icon-lg'
+  | 'icon-circle'
 export const BUTTON_VARIANT_OPTIONS = ['filled', 'outline', 'text'] as const
 export type ButtonVariantType = (typeof BUTTON_VARIANT_OPTIONS)[number]
 export const BUTTON_COLOR_OPTIONS = [
@@ -49,6 +56,7 @@ const sizeClassDictionary: Record<ButtonSizeType, string> = {
   icon: 'size-9 p-0',
   'icon-sm': 'size-8 p-0',
   'icon-lg': 'size-10 p-0',
+  'icon-circle': 'size-9 rounded-full p-0',
 }
 
 const filledColorClassDictionary: Record<ButtonColorType, string> = {
