@@ -3,15 +3,22 @@ import type { ElementType } from 'react'
 
 import { clsx } from '@infinityloop.labs/utils'
 
-import { Input } from '@/components/atoms/Input'
-import { Typography, type TypographyType } from '@/components/atoms/Typography'
+import {
+  getPlaceholderTypographyClassName,
+  getTypographyClassName,
+  Typography,
+  type TypographyType,
+} from '@/components/atoms/Typography'
 
 type EditableTypographyPropertyType = {
   className?: string
   typography?: TypographyType
   element?: ElementType
   isEditModeDisabled?: boolean
-  inputProps?: React.ComponentProps<typeof Input>
+  value?: string
+  defaultValue?: string
+  placeholder?: string
+  onValueChange?: (value: string) => void
   children?: React.ReactNode
 }
 
@@ -22,6 +29,7 @@ const toStringValue = (value: unknown): string => {
   if (Array.isArray(value)) {
     return value.join(', ')
   }
+
   return String(value)
 }
 
@@ -30,19 +38,20 @@ export const EditableTypography = ({
   typography = 'Subheader',
   element = 'span',
   isEditModeDisabled = false,
-  inputProps,
+  value,
+  defaultValue,
+  placeholder,
+  onValueChange,
   children,
 }: EditableTypographyPropertyType) => {
   const [isEditModeOn, setIsEditModeOn] = React.useState(false)
   const [localTextValue, setLocalTextValue] = React.useState(() =>
-    toStringValue(inputProps?.defaultValue),
+    toStringValue(defaultValue),
   )
 
-  const inputTypographyVariant = (inputProps?.typography ?? typography) as TypographyType
-
-  const isExternallyControlled = inputProps?.value !== undefined
+  const isExternallyControlled = value !== undefined
   const resolvedTextValue = isExternallyControlled
-    ? toStringValue(inputProps?.value)
+    ? toStringValue(value)
     : localTextValue
 
   React.useEffect(() => {
@@ -58,29 +67,20 @@ export const EditableTypography = ({
     setIsEditModeOn(true)
   }
 
-  const handleInputBlur = (
-    event: React.FocusEvent<HTMLInputElement | HTMLTextAreaElement>,
-  ) => {
+  const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const nextValue = event.currentTarget.value
     if (!isExternallyControlled) {
-      setLocalTextValue(event.currentTarget.value)
+      setLocalTextValue(nextValue)
     }
-    inputProps?.onBlur?.(event as never)
+    onValueChange?.(nextValue)
+  }
+
+  const handleInputBlur = () => {
     setIsEditModeOn(false)
   }
 
-  const handleInputKeyDown = (
-    event: React.KeyboardEvent<HTMLInputElement | HTMLTextAreaElement>,
-  ) => {
-    inputProps?.onKeyDown?.(event as never)
-
-    if (event.defaultPrevented || inputProps?.isTextarea) {
-      return
-    }
-
+  const handleInputKeyDown = (event: React.KeyboardEvent<HTMLInputElement>) => {
     if (event.key === 'Enter' || event.key === 'Escape') {
-      if (!isExternallyControlled) {
-        setLocalTextValue((event.currentTarget as HTMLInputElement).value)
-      }
       setIsEditModeOn(false)
       ;(event.currentTarget as HTMLInputElement).blur()
     }
@@ -88,17 +88,21 @@ export const EditableTypography = ({
 
   if (isEditModeOn && !isEditModeDisabled) {
     return (
-      <div className={clsx('w-full', className)}>
-        <Input
-          {...inputProps}
+      <div className={clsx('relative h-9 w-full', className)}>
+        <input
           autoFocus
-          variant="text"
-          typography={inputTypographyVariant}
-          {...(isExternallyControlled
-            ? {}
-            : {
-                defaultValue: resolvedTextValue,
-              })}
+          value={resolvedTextValue}
+          placeholder={placeholder}
+          className={clsx(
+            'relative h-full w-full border-0 bg-transparent px-0 py-0 font-infinityloop',
+            getTypographyClassName(typography),
+            getPlaceholderTypographyClassName(typography),
+            'appearance-none outline-none shadow-none',
+            'outline-none focus:outline-none focus-visible:outline-none',
+            'focus:shadow-none focus-visible:shadow-none',
+            'ring-0 focus:ring-0 focus-visible:ring-0 focus-visible:ring-offset-0',
+          )}
+          onChange={handleInputChange}
           onBlur={handleInputBlur}
           onKeyDown={handleInputKeyDown}
         />
@@ -107,17 +111,17 @@ export const EditableTypography = ({
   }
 
   return (
-    <Typography
-      typography={typography}
-      element={element}
-      className={clsx(
-        'block w-full cursor-text py-0',
-        !isEditModeDisabled && 'hover:opacity-90',
-        className,
-      )}
-      onClick={handleEnableEditMode}
-    >
-      {resolvedTextValue || children || inputProps?.placeholder || 'Click to edit'}
-    </Typography>
+    <div className={clsx('relative h-9 w-full', className)}>
+      <Typography
+        typography={typography}
+        element={element}
+        className={clsx(
+          'block h-full w-full cursor-text px-0 pt-[6px] pb-[2px]',
+          !isEditModeDisabled && 'hover:opacity-90',
+        )}
+        onClick={handleEnableEditMode}>
+        {resolvedTextValue || children || placeholder || 'Click to edit'}
+      </Typography>
+    </div>
   )
 }

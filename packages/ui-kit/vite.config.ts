@@ -15,6 +15,7 @@ export default defineConfig({
     // генерация файла `index.d.ts`
     dts({
       insertTypesEntry: true,
+      exclude: ['src/**/*.stories.*', 'src/showcase/**', 'src/stories/**'],
     }),
   ],
   server: {

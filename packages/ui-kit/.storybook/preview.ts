@@ -144,45 +144,57 @@ const preview: Preview = {
   decorators: [
     Story => {
       const [globals, updateGlobals] = useGlobals()
-      const theme = readStoredTheme()
-      const targetBackgroundValue = theme === "dark" ? DARK_CANVAS_COLOR : LIGHT_CANVAS_COLOR
+      const [theme, setTheme] = React.useState<ThemeMode>(() => readStoredTheme())
+      const isGridInitializedRef = React.useRef(false)
 
       const backgroundGlobals = (globals as { backgrounds?: { value?: unknown; grid?: unknown } }).backgrounds
       const backgroundValue = backgroundGlobals?.value
       const gridEnabled = backgroundGlobals?.grid === true
 
       const onToggleTheme = React.useCallback(() => {
-        const currentTheme = readStoredTheme()
-        const nextTheme: ThemeMode = currentTheme === "dark" ? "light" : "dark"
-        const nextBackgroundValue = nextTheme === "dark" ? DARK_CANVAS_COLOR : LIGHT_CANVAS_COLOR
-
-        writeStoredTheme(nextTheme)
-        applyTheme(nextTheme)
-        updateGlobals({
-          backgrounds: {
-            value: nextBackgroundValue,
-            grid: true,
-          },
-        })
-      }, [updateGlobals])
+        setTheme(previousTheme => (previousTheme === "dark" ? "light" : "dark"))
+      }, [])
 
       React.useEffect(() => {
+        writeStoredTheme(theme)
         applyTheme(theme)
         renderThemeToggle(theme, onToggleTheme)
       }, [theme, onToggleTheme])
 
       React.useEffect(() => {
-        const isClearBackground = backgroundValue === "clear" || backgroundValue === CLEAR_CANVAS_VALUE
-
-        if (isClearBackground || backgroundValue !== targetBackgroundValue || !gridEnabled) {
-          updateGlobals({
-            backgrounds: {
-              value: targetBackgroundValue,
-              grid: true,
-            },
-          })
+        if (isGridInitializedRef.current) {
+          return
         }
-      }, [backgroundValue, gridEnabled, targetBackgroundValue, updateGlobals])
+
+        isGridInitializedRef.current = true
+        if (gridEnabled) {
+          return
+        }
+
+        updateGlobals({
+          backgrounds: {
+            ...(backgroundGlobals ?? {}),
+            grid: true,
+          },
+        })
+      }, [backgroundGlobals, gridEnabled, updateGlobals])
+
+      React.useEffect(() => {
+        const isClearBackground = backgroundValue === "clear" || backgroundValue === CLEAR_CANVAS_VALUE
+        if (!isClearBackground) {
+          return
+        }
+
+        const targetBackgroundValue = theme === "dark" ? DARK_CANVAS_COLOR : LIGHT_CANVAS_COLOR
+
+        updateGlobals({
+          backgrounds: {
+            ...(backgroundGlobals ?? {}),
+            value: targetBackgroundValue,
+            grid: true,
+          },
+        })
+      }, [backgroundGlobals, backgroundValue, theme, updateGlobals])
 
       return React.createElement(Story)
     },
