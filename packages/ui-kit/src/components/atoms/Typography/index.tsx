@@ -38,6 +38,8 @@ export type TypographyType =
   | 'Regular14'
   | 'Regular12'
   | 'Mono16'
+  | 'ButtonLabel'
+  | 'InputPlaceholder'
 
 type ElementType =
   | 'a'
@@ -97,6 +99,11 @@ const typographyToTailwindClass: Record<TypographyType, string> = {
   Regular12: 'text-12 leading-16 font-400',
 
   Mono16: 'font-mono text-16 leading-24 font-400',
+
+  // Matches default button text style.
+  ButtonLabel: 'text-sm font-medium',
+  // Matches input placeholder typography including muted color.
+  InputPlaceholder: 'text-base md:text-sm text-muted-foreground',
 }
 /* Карта классов: Конец */
 

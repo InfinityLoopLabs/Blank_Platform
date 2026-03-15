@@ -1,4 +1,10 @@
-import type { ButtonHTMLAttributes, MouseEvent, PropsWithChildren, ReactNode } from 'react'
+import type {
+  ButtonHTMLAttributes,
+  CSSProperties,
+  MouseEvent,
+  PropsWithChildren,
+  ReactNode,
+} from 'react'
 
 import { clsx } from '@infinityloop.labs/utils'
 
@@ -50,12 +56,28 @@ const colorClassDictionary: Record<ButtonColorType, string> = {
     'bg-constructive text-constructive-foreground hover:bg-constructive/90 focus:ring-constructive/45',
   cautionary:
     'bg-cautionary text-cautionary-foreground hover:bg-cautionary/90 focus:ring-cautionary/45',
-  destructive: 'bg-destructive text-white hover:bg-destructive/90 focus:ring-destructive/45',
+  destructive:
+    'bg-destructive text-white hover:bg-destructive/90 focus:ring-destructive/45',
   'chart-1': 'bg-(--chart-1) text-black hover:brightness-110 focus:ring-(--chart-1)',
   'chart-2': 'bg-(--chart-2) text-black hover:brightness-110 focus:ring-(--chart-2)',
   'chart-3': 'bg-(--chart-3) text-white hover:brightness-110 focus:ring-(--chart-3)',
   'chart-4': 'bg-(--chart-4) text-black hover:brightness-110 focus:ring-(--chart-4)',
   'chart-5': 'bg-(--chart-5) text-black hover:brightness-110 focus:ring-(--chart-5)',
+}
+
+const glowColorByButtonColor: Record<ButtonColorType, string> = {
+  primary: 'var(--primary)',
+  secondary: 'var(--secondary)',
+  accent: 'var(--accent)',
+  muted: 'var(--muted)',
+  constructive: 'var(--constructive)',
+  cautionary: 'var(--cautionary)',
+  destructive: 'var(--destructive)',
+  'chart-1': 'var(--chart-1)',
+  'chart-2': 'var(--chart-2)',
+  'chart-3': 'var(--chart-3)',
+  'chart-4': 'var(--chart-4)',
+  'chart-5': 'var(--chart-5)',
 }
 
 export const Button = ({
@@ -68,16 +90,23 @@ export const Button = ({
   size = 'default',
   className,
   children,
+  style,
   ...property
 }: ButtonPropertyType) => {
   const resolvedLeftIcon = leftIcon ?? icon
   const isDecorated = color === 'chart-1'
+  const glowColor = glowColorByButtonColor[color]
+  const resolvedStyle = {
+    '--button-glow-color': glowColor,
+    ...style,
+  } as CSSProperties
 
   return (
     <button
       onClick={onClick}
       data-animation={animation}
       data-color={color}
+      style={resolvedStyle}
       className={clsx(
         'group relative inline-flex cursor-pointer items-center justify-center gap-2 overflow-hidden rounded-(--radius) font-medium',
         'transition-all duration-300 hover:scale-[1.02] active:scale-[0.98]',
@@ -85,7 +114,7 @@ export const Button = ({
         'disabled:pointer-events-none disabled:opacity-50',
         sizeClassDictionary[size],
         colorClassDictionary[color],
-        animation === 'active' && color === 'chart-1' && 'pulse-ring',
+        animation === 'active' && 'pulse-ring',
         className,
       )}
       {...property}>

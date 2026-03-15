@@ -392,18 +392,18 @@
 @keyframes pulse-ring {
   0% {
     box-shadow:
-      0 0 0 0 color-mix(in oklab, var(--chart-1) 45%, transparent),
-      0 0 8px color-mix(in oklab, var(--chart-1) 55%, transparent);
+      0 0 0 0 color-mix(in oklab, var(--button-glow-color, var(--chart-1)) 45%, transparent),
+      0 0 8px color-mix(in oklab, var(--button-glow-color, var(--chart-1)) 55%, transparent);
   }
   50% {
     box-shadow:
       0 0 0 8px transparent,
-      0 0 16px color-mix(in oklab, var(--chart-1) 70%, transparent);
+      0 0 16px color-mix(in oklab, var(--button-glow-color, var(--chart-1)) 70%, transparent);
   }
   100% {
     box-shadow:
       0 0 0 0 transparent,
-      0 0 8px color-mix(in oklab, var(--chart-1) 55%, transparent);
+      0 0 8px color-mix(in oklab, var(--button-glow-color, var(--chart-1)) 55%, transparent);
   }
 }
 

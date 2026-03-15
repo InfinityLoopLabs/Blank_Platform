@@ -15,7 +15,8 @@ const meta: Meta = {
     ),
   ],
   args: {
-    label: "",
+    label: "Email",
+    type: "text",
     placeholder: "Type here...",
     required: false,
     disabled: false,
@@ -29,6 +30,11 @@ const meta: Meta = {
   argTypes: {
     label: {
       control: "text",
+    },
+    type: {
+      control: "select",
+      options: ["text", "number", "email", "password"],
+      if: { arg: "isTextarea", truthy: false },
     },
     required: {
       control: "boolean",
