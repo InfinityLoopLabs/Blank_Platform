@@ -37,7 +37,7 @@ export const Paper = <T extends ElementType = typeof defaultElement>({
 }: PaperPropertyType<T>) => {
   const Component = (as || defaultElement) as ElementType
   const coloredClassName =
-    'flat-paper--colored border border-(--primary) rounded-sm transition-colors'
+    'paper--colored border border-(--border) rounded-sm bg-(--card) transition-colors'
   const resolvedBackgroundClass = isColored
     ? coloredClassName
     : clsx('border-(--border)', paperStyleDictionary[type])

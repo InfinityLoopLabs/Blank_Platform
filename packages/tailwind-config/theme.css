@@ -312,37 +312,37 @@
 }
 
 @layer components {
-  .flat-paper--colored {
+  .paper--colored {
     position: relative;
     overflow: hidden;
     isolation: isolate;
     background-color: transparent;
   }
 
-  .flat-paper--colored::before,
-  .flat-paper--colored::after {
+  .paper--colored::before,
+  .paper--colored::after {
     content: "";
     position: absolute;
     inset: 0;
     pointer-events: none;
   }
 
-  .flat-paper--colored::before {
-    background-color: color-mix(in oklab, var(--primary) 14%, transparent);
+  .paper--colored::before {
+    background-color: color-mix(in oklab, var(--card) 16%, transparent);
     z-index: 0;
   }
 
-  .flat-paper--colored::after {
+  .paper--colored::after {
     background-color: color-mix(in oklab, black 30%, transparent);
     z-index: 1;
     transition: background-color 200ms ease;
   }
 
-  .flat-paper--colored:hover::after {
-    background-color: color-mix(in oklab, var(--accent) 10%, transparent);
+  .paper--colored:hover::after {
+    background-color: color-mix(in oklab, var(--card) 10%, transparent);
   }
 
-  .flat-paper--colored > * {
+  .paper--colored > * {
     position: relative;
     z-index: 2;
   }

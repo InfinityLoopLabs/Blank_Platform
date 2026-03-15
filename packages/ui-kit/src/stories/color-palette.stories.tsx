@@ -13,6 +13,7 @@ const tokenRows: ColorToken[][] = [
     { name: "secondary", varName: "--secondary", textVarName: "--secondary-foreground", purpose: "Вторичные действия." },
     { name: "accent", varName: "--accent", textVarName: "--accent-foreground", purpose: "Hover и выделения." },
     { name: "muted", varName: "--muted", textVarName: "--muted-foreground", purpose: "Приглушенные поверхности." },
+    { name: "card", varName: "--card", textVarName: "--card-foreground", purpose: "Поверхности Paper/Modal." },
   ],
   [
     { name: "constructive", varName: "--constructive", textVarName: "--constructive-foreground", purpose: "Созидательные действия и позитивный flow." },
