@@ -54,7 +54,7 @@ const typographyToTailwindClass: Record<TypographyType, string> = {
   CompactHeader: 'text-base font-semibold tracking-tight',
   Action: 'text-sm font-medium',
   Subheader: 'text-base md:text-sm',
-  Body: 'text-base leading-relaxed',
+  Body: 'text-sm leading-relaxed',
   BodySmall: 'text-sm leading-relaxed',
   Caption: 'text-xs uppercase tracking-[0.08em]',
   CompactCaption: 'text-xs',
