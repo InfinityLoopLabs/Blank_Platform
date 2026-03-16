@@ -2,7 +2,10 @@ import { useArgs } from '@storybook/preview-api'
 import type { Meta, StoryObj } from '@storybook/react'
 
 import { Paper } from '@/components/atoms/Paper'
-import { TYPOGRAPHY_OPTIONS } from '@/components/atoms/Typography'
+import {
+  TYPOGRAPHY_COLOR_OPTIONS,
+  TYPOGRAPHY_OPTIONS,
+} from '@/components/atoms/Typography'
 import { EditableTypography } from '@/components/molecules/EditableTypography'
 
 const elementOptions = ['span', 'p', 'div', 'h1', 'h2', 'h3', 'h4'] as const
@@ -30,6 +33,10 @@ const meta = {
     typography: {
       control: 'select',
       options: TYPOGRAPHY_OPTIONS,
+    },
+    color: {
+      control: 'select',
+      options: TYPOGRAPHY_COLOR_OPTIONS,
     },
     element: {
       control: 'select',

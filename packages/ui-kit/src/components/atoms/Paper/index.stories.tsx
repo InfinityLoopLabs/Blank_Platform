@@ -10,10 +10,16 @@ const meta = {
   render: args => (
     <Paper {...args}>
       <div className="space-y-2">
-        <Typography typography="Heading" element="h4" isLoading={Boolean(args.isLoading)}>
+        <Typography
+          typography="Heading"
+          element="h4"
+          isLoading={Boolean(args.isLoading)}>
           Infinity Loop Surface Title
         </Typography>
-        <Typography typography="Subheader" element="p" isLoading={Boolean(args.isLoading)}>
+        <Typography
+          typography="Subheader"
+          element="p"
+          isLoading={Boolean(args.isLoading)}>
           This content is controlled by Paper storybook controls.
         </Typography>
       </div>
@@ -23,14 +29,18 @@ const meta = {
     className: 'w-[600px]',
     type: 'dark',
     isColored: false,
+    isRoundedCornersDisabled: false,
     isLoading: false,
   },
   argTypes: {
     type: {
       control: 'select',
-      options: ['dark', 'light'],
+      options: ['dark', 'light', 'gradient'],
     },
     isColored: {
+      control: 'boolean',
+    },
+    isRoundedCornersDisabled: {
       control: 'boolean',
     },
     isLoading: {

@@ -4,9 +4,11 @@ import type { ElementType } from 'react'
 import { clsx } from '@infinityloop.labs/utils'
 
 import {
+  getDefaultColorByTypography,
   getPlaceholderTypographyClassName,
   getTypographyClassName,
   Typography,
+  type TypographyColorType,
   type TypographyType,
 } from '@/components/atoms/Typography'
 
@@ -14,6 +16,7 @@ type EditableTypographyPropertyType = {
   className?: string
   typography?: TypographyType
   element?: ElementType
+  color?: TypographyColorType
   isEditModeDisabled?: boolean
   isLoading?: boolean
   value?: string
@@ -38,6 +41,7 @@ export const EditableTypography = ({
   className,
   typography = 'Subheader',
   element = 'span',
+  color,
   isEditModeDisabled = false,
   isLoading = false,
   value,
@@ -50,6 +54,7 @@ export const EditableTypography = ({
   const [localTextValue, setLocalTextValue] = React.useState(() =>
     toStringValue(defaultValue),
   )
+  const resolvedColor = color ?? getDefaultColorByTypography(typography)
 
   const isExternallyControlled = value !== undefined
   const resolvedTextValue = isExternallyControlled
@@ -95,6 +100,10 @@ export const EditableTypography = ({
           autoFocus
           value={resolvedTextValue}
           placeholder={placeholder}
+          style={{
+            color: `var(--${resolvedColor})`,
+            caretColor: `var(--${resolvedColor})`,
+          }}
           className={clsx(
             'relative m-0 block h-auto w-full border-0 bg-transparent p-0 font-infinityloop',
             getTypographyClassName(typography),
@@ -117,6 +126,7 @@ export const EditableTypography = ({
       <Typography
         typography={typography}
         element={element}
+        color={resolvedColor}
         isLoading={isLoading}
         className={clsx(
           'block w-full px-0',
