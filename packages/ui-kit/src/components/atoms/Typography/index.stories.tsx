@@ -186,6 +186,7 @@ const meta = {
     )
   },
   args: {
+    typography: 'Heading',
     element: undefined,
     isLoading: false,
     color: undefined,

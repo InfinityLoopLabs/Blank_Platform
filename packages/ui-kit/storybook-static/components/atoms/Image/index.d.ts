@@ -22,8 +22,9 @@ export type ImageCropPositionValueType = {
     y: number;
 };
 export declare const getImageMaskUrlByType: (maskType: number) => string | undefined;
-type ImagePropertyType = Omit<React.ImgHTMLAttributes<HTMLImageElement>, 'className'> & {
+export type ImagePropertyType = Omit<React.ImgHTMLAttributes<HTMLImageElement>, 'className'> & {
     className?: string;
+    isLoading?: boolean;
     maskType?: ImageMaskType;
     isEditModeDisabled?: boolean;
     imagePosition?: string;
@@ -43,5 +44,4 @@ type ImagePropertyType = Omit<React.ImgHTMLAttributes<HTMLImageElement>, 'classN
     isBottomShadeVisible?: boolean;
     bottomShadeColor?: string;
 };
-export declare const Image: ({ className, maskType, isEditModeDisabled, imagePosition, isSquareCrop, cropX, cropY, cropPositionValue, defaultCropPositionValue, onCropPositionChange, maskSize, maskPositionValue, maskFillColor, maskStrokeColor, maskStrokeWidth, isTopShadeVisible, topShadeColor, isBottomShadeVisible, bottomShadeColor, alt, style, ...property }: ImagePropertyType) => import('../../../../../../node_modules/react/jsx-runtime').JSX.Element;
-export {};
+export declare const Image: ({ className, isLoading, maskType, isEditModeDisabled, imagePosition, isSquareCrop, cropX, cropY, cropPositionValue, defaultCropPositionValue, onCropPositionChange, maskSize, maskPositionValue, maskFillColor, maskStrokeColor, maskStrokeWidth, isTopShadeVisible, topShadeColor, isBottomShadeVisible, bottomShadeColor, alt, style, ...property }: ImagePropertyType) => import('../../../../../../node_modules/react/jsx-runtime').JSX.Element;

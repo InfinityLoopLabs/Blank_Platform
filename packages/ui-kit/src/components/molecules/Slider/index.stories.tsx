@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/react'
 
-import { Slider } from '@/components/atoms/Slider'
+import { Slider } from '@/components/molecules/Slider'
 import { StoreSlide } from '@/components/molecules/SlideTemplates'
 
 const demoSlides = [
@@ -45,7 +45,7 @@ const demoSlides = [
 ].map(slide => <StoreSlide key={slide.id} {...slide} />)
 
 const meta = {
-  title: 'Atoms/Slider',
+  title: 'Molecules/Slider',
   component: Slider,
   tags: ['autodocs'],
   decorators: [

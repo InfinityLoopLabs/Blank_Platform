@@ -160,11 +160,12 @@ const MaskOverlayShape = ({
   return null
 }
 
-type ImagePropertyType = Omit<
+export type ImagePropertyType = Omit<
   React.ImgHTMLAttributes<HTMLImageElement>,
   'className'
 > & {
   className?: string
+  isLoading?: boolean
   maskType?: ImageMaskType
   isEditModeDisabled?: boolean
   imagePosition?: string
@@ -187,6 +188,7 @@ type ImagePropertyType = Omit<
 
 export const Image = ({
   className,
+  isLoading = false,
   maskType = 0,
   isEditModeDisabled = true,
   imagePosition,
@@ -222,11 +224,15 @@ export const Image = ({
   const resolvedMaskUrl = getImageMaskUrlByType(maskType)
   const isMasked = Boolean(resolvedMaskUrl)
   const rawMaskPositionValue = maskPositionValue
-  const resolvedMaskPositionX = Number.isFinite(rawMaskPositionValue?.x)
-    ? Math.min(100, Math.max(0, rawMaskPositionValue.x))
+  const rawMaskPositionX = rawMaskPositionValue?.x
+  const rawMaskPositionY = rawMaskPositionValue?.y
+  const resolvedMaskPositionX =
+    typeof rawMaskPositionX === 'number' && Number.isFinite(rawMaskPositionX)
+    ? Math.min(100, Math.max(0, rawMaskPositionX))
     : 50
-  const resolvedMaskPositionY = Number.isFinite(rawMaskPositionValue?.y)
-    ? Math.min(100, Math.max(0, rawMaskPositionValue.y))
+  const resolvedMaskPositionY =
+    typeof rawMaskPositionY === 'number' && Number.isFinite(rawMaskPositionY)
+    ? Math.min(100, Math.max(0, rawMaskPositionY))
     : 50
   const resolvedMaskPosition = `${resolvedMaskPositionX}% ${resolvedMaskPositionY}%`
   const resolvedMaskPositionValue = {
@@ -280,7 +286,7 @@ export const Image = ({
     [applyCropPositionValue],
   )
 
-  const isCropPositionEditable = !isEditModeDisabled
+  const isCropPositionEditable = !isEditModeDisabled && !isLoading
 
   React.useEffect(() => {
     if (isCropPositionEditable) {
@@ -336,6 +342,7 @@ export const Image = ({
   return (
     <div
       ref={rootReference}
+      aria-busy={isLoading || undefined}
       style={containerStyle}
       onPointerDown={onPointerDown}
       onPointerMove={onPointerMove}
@@ -345,6 +352,7 @@ export const Image = ({
         'relative overflow-hidden',
         isSquareCrop && 'aspect-square',
         isMasked ? 'rounded-none' : 'rounded-(--radius)',
+        isLoading && 'relative overflow-hidden',
         isCropPositionEditable
           ? cn(
               'touch-none',
@@ -361,9 +369,22 @@ export const Image = ({
           objectPosition: resolvedImagePosition,
           ...style,
         }}
-        className={cn('block h-full w-full object-cover select-none')}
+        className={cn(
+          'block h-full w-full object-cover select-none',
+          isLoading && 'opacity-0',
+        )}
         {...property}
       />
+      {isLoading ? (
+        <div
+          aria-hidden="true"
+          className={cn(
+            'pointer-events-none absolute inset-0 rounded-[inherit]',
+            'loading-wave-overlay',
+            'loading-wave',
+          )}
+        />
+      ) : null}
       {isTopShadeVisible ? (
         <div
           aria-hidden

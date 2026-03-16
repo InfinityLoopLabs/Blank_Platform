@@ -1,7 +1,8 @@
 import * as React from 'react'
 
+import { Image, type ImagePropertyType } from '@/components/atoms/Image'
 import { Paper } from '@/components/atoms/Paper'
-import { getTypographyClassName } from '@/components/atoms/Typography'
+import { Typography } from '@/components/atoms/Typography'
 import { EditableTypography } from '@/components/molecules/EditableTypography'
 import { cn } from '@/lib/utils'
 
@@ -19,6 +20,8 @@ type StoreSlidePropertyType = Omit<
   setModelEnabled?: boolean
   coverImageSrc: string
   coverImageAlt?: string
+  isImageLoading?: boolean
+  imageProps?: Omit<ImagePropertyType, 'src' | 'alt' | 'className'>
   imageAccept?: string
   onImageChange?: (payload: StoreSlideImageChangePayloadType) => void
   brandName: React.ReactNode
@@ -45,6 +48,8 @@ export const StoreSlide = ({
   setModelEnabled,
   coverImageSrc,
   coverImageAlt = 'Slide cover image',
+  isImageLoading,
+  imageProps,
   imageAccept = 'image/*',
   onImageChange,
   brandName,
@@ -58,6 +63,15 @@ export const StoreSlide = ({
   ...property
 }: StoreSlidePropertyType) => {
   const isSetModeResolvedEnabled = isSetModeEnabled || Boolean(setModelEnabled)
+  const {
+    isEditModeDisabled: isImageEditModeDisabled,
+    isLoading: isImageLoadingFromProps,
+    ...restImageProperty
+  } = imageProps ?? {}
+  const isImageResolvedLoading =
+    isImageLoading ?? isImageLoadingFromProps ?? false
+  const isImageResolvedEditModeDisabled =
+    isImageEditModeDisabled ?? !isSetModeResolvedEnabled
   const resolvedTagText = tagText ?? toEditableText(badgeText)
   const fileInputReference = React.useRef<HTMLInputElement | null>(null)
   const lastObjectUrlReference = React.useRef<string | null>(null)
@@ -114,6 +128,9 @@ export const StoreSlide = ({
   )
 
   const onPickImageClick = () => {
+    if (isImageResolvedLoading) {
+      return
+    }
     fileInputReference.current?.click()
   }
 
@@ -146,10 +163,16 @@ export const StoreSlide = ({
       )}
       {...property}>
       <div className="relative h-[41%] min-h-[240px] w-full overflow-hidden">
-        <img
+        <Image
           alt={coverImageAlt}
           src={localCoverImageSrc}
-          className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-[1.025]"
+          isLoading={isImageResolvedLoading}
+          isEditModeDisabled={isImageResolvedEditModeDisabled}
+          className={cn(
+            'h-full w-full',
+            '[&>img]:transition-transform [&>img]:duration-500 group-hover:[&>img]:scale-[1.025]',
+          )}
+          {...restImageProperty}
         />
 
         <div className="pointer-events-none absolute inset-x-0 bottom-0 h-20 bg-gradient-to-t from-card to-transparent" />
@@ -160,7 +183,13 @@ export const StoreSlide = ({
               'absolute top-4 left-4 rounded-md bg-destructive px-2 py-1 text-xs font-semibold text-destructive-foreground',
               'uppercase tracking-wide',
             )}>
-            {resolvedTagText}
+            <Typography
+              typography="CompactCaption"
+              element="span"
+              className="font-semibold uppercase tracking-wide"
+              style={{ color: 'var(--destructive-foreground)' }}>
+              {resolvedTagText}
+            </Typography>
           </span>
         ) : null}
 
@@ -176,8 +205,10 @@ export const StoreSlide = ({
             <button
               type="button"
               onClick={onPickImageClick}
+              disabled={isImageResolvedLoading}
               className={cn(
                 'absolute top-4 right-4 rounded-md bg-background/85 px-3 py-1.5 text-xs font-medium text-foreground shadow-md backdrop-blur',
+                'disabled:cursor-not-allowed disabled:opacity-60',
                 'transition-opacity hover:opacity-90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-(--chart-1)/50',
               )}>
               Upload image
@@ -191,12 +222,7 @@ export const StoreSlide = ({
         type="gradient"
         isRoundedCornersDisabled
         className={cn('relative flex flex-1 flex-col gap-3 border-0 p-6')}>
-        <div
-          className={cn(
-            'inline-flex items-center gap-2 uppercase',
-            getTypographyClassName('CompactCaption'),
-            'font-semibold tracking-wide',
-          )}>
+        <div className="inline-flex items-center gap-2 uppercase">
           {brandIcon ? (
             <span className="inline-flex size-5 items-center justify-center overflow-hidden rounded-sm">
               {brandIcon}
@@ -211,7 +237,12 @@ export const StoreSlide = ({
               className="!h-auto"
             />
           ) : (
-            <span>{localBrandName}</span>
+            <Typography
+              typography="CompactCaption"
+              element="span"
+              className="font-semibold uppercase tracking-wide">
+              {localBrandName}
+            </Typography>
           )}
         </div>
 
@@ -223,14 +254,15 @@ export const StoreSlide = ({
             className="!h-auto"
           />
         ) : (
-          <h3
+          <Typography
+            typography="Heading"
+            element="h3"
             className={cn(
-              getTypographyClassName('Heading'),
               'leading-[1.08]',
               'overflow-hidden [display:-webkit-box] [-webkit-line-clamp:2] [-webkit-box-orient:vertical]',
             )}>
             {localHeading}
-          </h3>
+          </Typography>
         )}
 
         {isSetModeResolvedEnabled ? (
@@ -242,15 +274,16 @@ export const StoreSlide = ({
             className="!h-auto text-(--chart-1)"
           />
         ) : localAccentText ? (
-          <p
+          <Typography
+            typography="Subheader"
             className={cn(
-              getTypographyClassName('Subheader'),
               'font-medium',
               'overflow-hidden [display:-webkit-box] [-webkit-line-clamp:2] [-webkit-box-orient:vertical]',
               'text-(--chart-1)',
-            )}>
+            )}
+            color="chart-1">
             {localAccentText}
-          </p>
+          </Typography>
         ) : null}
 
         {isSetModeResolvedEnabled ? (
@@ -262,13 +295,13 @@ export const StoreSlide = ({
             className="!h-auto"
           />
         ) : localDescription ? (
-          <p
+          <Typography
+            typography="Subheader"
             className={cn(
-              getTypographyClassName('Subheader'),
               'overflow-hidden [display:-webkit-box] [-webkit-line-clamp:2] [-webkit-box-orient:vertical]',
             )}>
             {localDescription}
-          </p>
+          </Typography>
         ) : null}
 
         {isSetModeResolvedEnabled ? (
@@ -279,9 +312,13 @@ export const StoreSlide = ({
             className="mt-auto !h-auto pt-6"
           />
         ) : (
-          <p className="mt-auto pt-6 text-5xl leading-none font-bold tracking-tight text-foreground">
+          <Typography
+            typography="Heading"
+            element="p"
+            className="mt-auto pt-6 text-5xl leading-none font-bold tracking-tight"
+            color="foreground">
             {localPriceText}
-          </p>
+          </Typography>
         )}
       </Paper>
     </article>
