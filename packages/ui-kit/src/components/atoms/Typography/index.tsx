@@ -42,6 +42,8 @@ export const Typography = ({
   children,
   ...props
 }: OwnPropertyType) => {
+  const resolvedContent = isLoading ? '\u00A0' : children
+
   const className = clsx(
     'font-infinityloop',
     getTypographyClassName(typography),
@@ -58,14 +60,14 @@ export const Typography = ({
     },
     <>
       <span className={clsx('relative z-10', isLoading && 'loading-text-blink')}>
-        {children}
+        {resolvedContent}
       </span>
       {isLoading ? (
         <span
           aria-hidden="true"
           className={clsx(
             'pointer-events-none absolute inset-0 rounded-[inherit]',
-            'bg-gradient-to-r from-white/0 via-white/18 to-white/0 opacity-70',
+            'loading-wave-overlay',
             'loading-wave',
           )}
         />

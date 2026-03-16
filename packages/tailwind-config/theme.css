@@ -350,7 +350,7 @@
   }
 
   .paper--colored::before {
-    background-color: color-mix(in oklab, var(--card) 16%, transparent);
+    background-color: color-mix(in oklab, var(--chart-1) 16%, transparent);
     z-index: 0;
   }
 
@@ -361,7 +361,7 @@
   }
 
   .paper--colored:hover::after {
-    background-color: color-mix(in oklab, var(--card) 10%, transparent);
+    background-color: color-mix(in oklab, var(--chart-1) 10%, transparent);
   }
 
   .paper--colored > * {
@@ -425,6 +425,16 @@
 
 @utility loading-wave {
   animation: loading-wave 1.8s ease-in-out infinite;
+}
+
+@utility loading-wave-overlay {
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    color-mix(in oklab, var(--foreground) 26%, transparent) 50%,
+    transparent 100%
+  );
+  opacity: 0.75;
 }
 
 @keyframes loading-text-blink {

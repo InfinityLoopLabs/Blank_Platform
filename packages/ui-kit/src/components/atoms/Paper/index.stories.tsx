@@ -8,21 +8,19 @@ const meta = {
   component: Paper,
   tags: ['autodocs'],
   render: args => (
-    <div className="w-[520px] rounded-[var(--radius)] border border-(--border) bg-(--background) p-6">
-      <Paper {...args}>
-        <div className="space-y-2">
-          <Typography typography="Heading" element="h4" isLoading={Boolean(args.isLoading)}>
-            Infinity Loop Surface Title
-          </Typography>
-          <Typography typography="Subheader" element="p" isLoading={Boolean(args.isLoading)}>
-            This content is controlled by Paper storybook controls.
-          </Typography>
-        </div>
-      </Paper>
-    </div>
+    <Paper {...args}>
+      <div className="space-y-2">
+        <Typography typography="Heading" element="h4" isLoading={Boolean(args.isLoading)}>
+          Infinity Loop Surface Title
+        </Typography>
+        <Typography typography="Subheader" element="p" isLoading={Boolean(args.isLoading)}>
+          This content is controlled by Paper storybook controls.
+        </Typography>
+      </div>
+    </Paper>
   ),
   args: {
-    className: 'max-w-xl',
+    className: 'w-[600px]',
     type: 'dark',
     isColored: false,
     isLoading: false,

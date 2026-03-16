@@ -268,7 +268,7 @@ export const Button = ({
           aria-hidden="true"
           className={clsx(
             'pointer-events-none absolute inset-0 rounded-[inherit]',
-            'bg-gradient-to-r from-white/0 via-white/18 to-white/0 opacity-70',
+            'loading-wave-overlay',
             'loading-wave',
           )}
         />
