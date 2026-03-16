@@ -1,4 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/react'
+import { fn } from '@storybook/test'
 
 import { Slider } from '@/components/molecules/Slider'
 import { StoreSlide } from '@/components/molecules/SlideTemplates'
@@ -67,6 +68,7 @@ const meta = {
     isKeyboardEnabled: true,
     isGrabCursorVisible: true,
     isFreeScrollEnabled: false,
+    onSlideChange: fn(),
   },
   argTypes: {
     slides: {
