@@ -15,6 +15,7 @@ type EditableTypographyPropertyType = {
   typography?: TypographyType
   element?: ElementType
   isEditModeDisabled?: boolean
+  isLoading?: boolean
   value?: string
   defaultValue?: string
   placeholder?: string
@@ -38,6 +39,7 @@ export const EditableTypography = ({
   typography = 'Subheader',
   element = 'span',
   isEditModeDisabled = false,
+  isLoading = false,
   value,
   defaultValue,
   placeholder,
@@ -55,13 +57,13 @@ export const EditableTypography = ({
     : localTextValue
 
   React.useEffect(() => {
-    if (isEditModeDisabled && isEditModeOn) {
+    if ((isEditModeDisabled || isLoading) && isEditModeOn) {
       setIsEditModeOn(false)
     }
-  }, [isEditModeDisabled, isEditModeOn])
+  }, [isEditModeDisabled, isEditModeOn, isLoading])
 
   const handleEnableEditMode = () => {
-    if (isEditModeDisabled) {
+    if (isEditModeDisabled || isLoading) {
       return
     }
     setIsEditModeOn(true)
@@ -86,7 +88,7 @@ export const EditableTypography = ({
     }
   }
 
-  if (isEditModeOn && !isEditModeDisabled) {
+  if (isEditModeOn && !isEditModeDisabled && !isLoading) {
     return (
       <div className={clsx('relative h-9 w-full', className)}>
         <input
@@ -115,9 +117,11 @@ export const EditableTypography = ({
       <Typography
         typography={typography}
         element={element}
+        isLoading={isLoading}
         className={clsx(
-          'block w-full cursor-text px-0',
-          !isEditModeDisabled && 'hover:opacity-90',
+          'block w-full px-0',
+          !isEditModeDisabled && !isLoading && 'cursor-text hover:opacity-90',
+          isLoading && 'cursor-default',
         )}
         onClick={handleEnableEditMode}>
         {resolvedTextValue || children || placeholder || 'Click to edit'}

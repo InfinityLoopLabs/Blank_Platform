@@ -426,3 +426,17 @@
 @utility loading-wave {
   animation: loading-wave 1.8s ease-in-out infinite;
 }
+
+@keyframes loading-text-blink {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.45;
+  }
+}
+
+@utility loading-text-blink {
+  animation: loading-text-blink 1.2s ease-in-out infinite;
+}

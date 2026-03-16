@@ -18,6 +18,7 @@ type PaperBasePropertyType<T extends ElementType> = {
   type?: PaperType
   className?: string
   isColored?: boolean
+  isLoading?: boolean
 }
 
 type PaperPropertyType<T extends ElementType> = PropsWithChildren<
@@ -33,6 +34,7 @@ export const Paper = <T extends ElementType = typeof defaultElement>({
   className,
   children,
   isColored,
+  isLoading = false,
   ...property
 }: PaperPropertyType<T>) => {
   const Component = (as || defaultElement) as ElementType
@@ -44,13 +46,25 @@ export const Paper = <T extends ElementType = typeof defaultElement>({
 
   return (
     <Component
+      aria-busy={isLoading || undefined}
       className={clsx(
-        'rounded-(--radius) border px-6 py-4 ',
+        'rounded-(--radius) border px-6 py-4',
+        isLoading && 'relative overflow-hidden',
         resolvedBackgroundClass,
         className,
       )}
       {...property}>
       {children}
+      {isLoading ? (
+        <div
+          aria-hidden="true"
+          className={clsx(
+            'pointer-events-none absolute inset-0 rounded-[inherit]',
+            'bg-gradient-to-r from-white/0 via-white/18 to-white/0 opacity-70',
+            'loading-wave',
+          )}
+        />
+      ) : null}
     </Component>
   )
 }

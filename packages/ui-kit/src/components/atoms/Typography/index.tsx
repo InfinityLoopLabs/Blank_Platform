@@ -1,9 +1,10 @@
 import React, { type ElementType, type HTMLAttributes } from 'react'
 import { clsx } from '@infinityloop.labs/utils'
 
-export type TypographyType = 'Action' | 'Subheader' | 'Caption'
+export type TypographyType = 'Heading' | 'Action' | 'Subheader' | 'Caption'
 
 const typographyToTailwindClass: Record<TypographyType, string> = {
+  Heading: 'text-lg font-semibold',
   Action: 'text-sm font-medium',
   Subheader: 'text-base md:text-sm text-muted-foreground',
   Caption: 'text-xs uppercase tracking-[0.08em] text-muted-foreground',
@@ -30,18 +31,21 @@ type OwnPropertyType = {
   typography: TypographyType
   element?: ElementType
   className?: string
+  isLoading?: boolean
 } & HTMLAttributes<HTMLElement>
 
 export const Typography = ({
   typography,
   element = 'span',
   className: clsname = '',
+  isLoading = false,
   children,
   ...props
 }: OwnPropertyType) => {
   const className = clsx(
     'font-infinityloop',
     getTypographyClassName(typography),
+    isLoading && 'relative overflow-hidden rounded-(--radius)',
     clsname,
   )
 
@@ -49,9 +53,24 @@ export const Typography = ({
     element,
     {
       className,
+      'aria-busy': isLoading || undefined,
       ...props,
     },
-    children,
+    <>
+      <span className={clsx('relative z-10', isLoading && 'loading-text-blink')}>
+        {children}
+      </span>
+      {isLoading ? (
+        <span
+          aria-hidden="true"
+          className={clsx(
+            'pointer-events-none absolute inset-0 rounded-[inherit]',
+            'bg-gradient-to-r from-white/0 via-white/18 to-white/0 opacity-70',
+            'loading-wave',
+          )}
+        />
+      ) : null}
+    </>,
   )
 }
 

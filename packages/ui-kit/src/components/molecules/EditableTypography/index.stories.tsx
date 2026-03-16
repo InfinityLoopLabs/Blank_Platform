@@ -24,6 +24,7 @@ const meta = {
     value: 'Click this text to edit',
     placeholder: 'Type value...',
     isEditModeDisabled: false,
+    isLoading: false,
   },
   argTypes: {
     typography: {
@@ -39,6 +40,9 @@ const meta = {
     },
     placeholder: {
       control: 'text',
+    },
+    isLoading: {
+      control: 'boolean',
     },
   },
 } satisfies Meta<typeof EditableTypography>

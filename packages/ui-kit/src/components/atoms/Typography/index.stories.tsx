@@ -12,6 +12,12 @@ type TypographyVariantType = {
 
 const typographyVariants: TypographyVariantType[] = [
   {
+    label: 'Heading',
+    type: 'Heading',
+    sample: 'Infinity Loop Surface Title',
+    usage: 'Использовать для крупных заголовков блоков и карточек (уровень h4).',
+  },
+  {
     label: 'Action',
     type: 'Action',
     sample: 'Infinity Loop Launch Control',
@@ -53,6 +59,11 @@ const meta = {
   title: 'Design/Typography',
   component: Typography,
   tags: ['autodocs'],
+  argTypes: {
+    isLoading: {
+      control: 'boolean',
+    },
+  },
 } satisfies Meta<typeof Typography>
 
 export default meta
@@ -74,6 +85,21 @@ export const Action: StoryType = {
     docs: {
       source: {
         code: '<Typography typography="Action">Infinity Loop Launch Control</Typography>',
+      },
+    },
+  },
+}
+
+export const Heading: StoryType = {
+  args: {
+    typography: 'Heading',
+    children: 'Infinity Loop Surface Title',
+    element: 'h4',
+  },
+  parameters: {
+    docs: {
+      source: {
+        code: '<Typography typography="Heading" element="h4">Infinity Loop Surface Title</Typography>',
       },
     },
   },
@@ -104,5 +130,13 @@ export const Caption: StoryType = {
         code: '<Typography typography="Caption">Infinity Loop photo caption</Typography>',
       },
     },
+  },
+}
+
+export const Loading: StoryType = {
+  args: {
+    typography: 'Subheader',
+    isLoading: true,
+    children: 'Loading typography preview...',
   },
 }
