@@ -1,5 +1,7 @@
 import * as React from '../../../../../../../node_modules/react';
 import { type ImagePropertyType } from '../../../../components/atoms/Image';
+import { type TagType } from '../../../../components/atoms/Tag';
+import { type TypographyColorType } from '../../../../components/atoms/Typography';
 export type StoreSlideImageChangePayloadType = {
     file: File;
     objectUrl: string;
@@ -20,7 +22,10 @@ type StoreSlidePropertyType = Omit<React.HTMLAttributes<HTMLElement>, 'title'> &
     description?: React.ReactNode;
     priceText: React.ReactNode;
     tagText?: string;
+    tagType?: TagType;
+    tagColor?: TypographyColorType;
+    tagTextColor?: TypographyColorType;
     badgeText?: React.ReactNode;
 };
-export declare const StoreSlide: ({ className, isSetModeEnabled, setModelEnabled, coverImageSrc, coverImageAlt, isImageLoading, imageProps, imageAccept, onImageChange, brandName, brandIcon, heading, accentText, description, priceText, tagText, badgeText, ...property }: StoreSlidePropertyType) => import('../../../../../../../node_modules/react/jsx-runtime').JSX.Element;
+export declare const StoreSlide: ({ className, isSetModeEnabled, setModelEnabled, coverImageSrc, coverImageAlt, isImageLoading, imageProps, imageAccept, onImageChange, brandName, brandIcon, heading, accentText, description, priceText, tagText, tagType, tagColor, tagTextColor, badgeText, ...property }: StoreSlidePropertyType) => import('../../../../../../../node_modules/react/jsx-runtime').JSX.Element;
 export {};

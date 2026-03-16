@@ -2,7 +2,8 @@ import * as React from 'react'
 
 import { Image, type ImagePropertyType } from '@/components/atoms/Image'
 import { Paper } from '@/components/atoms/Paper'
-import { Typography } from '@/components/atoms/Typography'
+import { Tag, type TagType } from '@/components/atoms/Tag'
+import { Typography, type TypographyColorType } from '@/components/atoms/Typography'
 import { EditableTypography } from '@/components/molecules/EditableTypography'
 import { cn } from '@/lib/utils'
 
@@ -11,11 +12,25 @@ export type StoreSlideImageChangePayloadType = {
   objectUrl: string
 }
 
+export type StoreSlideTagItemType = {
+  id: string
+  label: string
+  type?: TagType
+  position?: 'top-left' | 'bottom-right'
+  color?: TypographyColorType
+  textColor?: TypographyColorType
+  isLoading?: boolean
+  onClick?: (id: string) => void
+  onLabelChange?: (id: string, value: string) => void
+}
+
 type StoreSlidePropertyType = Omit<
   React.HTMLAttributes<HTMLElement>,
   'title'
 > & {
   isSetModeEnabled?: boolean
+  isEditModeEnabled?: boolean
+  isEditModeDisabled?: boolean
   // eslint-disable-next-line @typescript-eslint/naming-convention
   setModelEnabled?: boolean
   coverImageSrc: string
@@ -31,6 +46,12 @@ type StoreSlidePropertyType = Omit<
   description?: React.ReactNode
   priceText: React.ReactNode
   tagText?: string
+  tagType?: TagType
+  tagColor?: TypographyColorType
+  tagTextColor?: TypographyColorType
+  tags?: StoreSlideTagItemType[]
+  onTagClick?: (id: string) => void
+  onTagLabelChange?: (id: string, value: string) => void
   badgeText?: React.ReactNode
 }
 
@@ -45,6 +66,8 @@ const toEditableText = (value: React.ReactNode): string => {
 export const StoreSlide = ({
   className,
   isSetModeEnabled = false,
+  isEditModeEnabled = false,
+  isEditModeDisabled = false,
   setModelEnabled,
   coverImageSrc,
   coverImageAlt = 'Slide cover image',
@@ -59,10 +82,18 @@ export const StoreSlide = ({
   description,
   priceText,
   tagText,
+  tagType = 'default',
+  tagColor,
+  tagTextColor,
+  tags,
+  onTagClick,
+  onTagLabelChange,
   badgeText,
   ...property
 }: StoreSlidePropertyType) => {
-  const isSetModeResolvedEnabled = isSetModeEnabled || Boolean(setModelEnabled)
+  const isEditModeResolvedEnabled =
+    (isEditModeEnabled || isSetModeEnabled || Boolean(setModelEnabled)) &&
+    !isEditModeDisabled
   const {
     isEditModeDisabled: isImageEditModeDisabled,
     isLoading: isImageLoadingFromProps,
@@ -71,8 +102,34 @@ export const StoreSlide = ({
   const isImageResolvedLoading =
     isImageLoading ?? isImageLoadingFromProps ?? false
   const isImageResolvedEditModeDisabled =
-    isImageEditModeDisabled ?? !isSetModeResolvedEnabled
+    isImageEditModeDisabled ?? !isEditModeResolvedEnabled
   const resolvedTagText = tagText ?? toEditableText(badgeText)
+  const resolvedTags = React.useMemo<StoreSlideTagItemType[]>(() => {
+    if (tags?.length) {
+      return tags
+    }
+    if (!resolvedTagText) {
+      return []
+    }
+
+    return [
+      {
+        id: 'primary-tag',
+        label: resolvedTagText,
+        type: tagType,
+        color: tagColor,
+        textColor: tagTextColor,
+      },
+    ]
+  }, [tags, resolvedTagText, tagType, tagColor, tagTextColor])
+  const topLeftTags = React.useMemo(
+    () => resolvedTags.filter(tag => tag.position !== 'bottom-right'),
+    [resolvedTags],
+  )
+  const bottomRightTags = React.useMemo(
+    () => resolvedTags.filter(tag => tag.position === 'bottom-right'),
+    [resolvedTags],
+  )
   const fileInputReference = React.useRef<HTMLInputElement | null>(null)
   const lastObjectUrlReference = React.useRef<string | null>(null)
 
@@ -177,23 +234,65 @@ export const StoreSlide = ({
 
         <div className="pointer-events-none absolute inset-x-0 bottom-0 h-20 bg-gradient-to-t from-card to-transparent" />
 
-        {resolvedTagText ? (
-          <span
-            className={cn(
-              'absolute top-4 left-4 rounded-md bg-destructive px-2 py-1 text-xs font-semibold text-destructive-foreground',
-              'uppercase tracking-wide',
-            )}>
-            <Typography
-              typography="CompactCaption"
-              element="span"
-              className="font-semibold uppercase tracking-wide"
-              style={{ color: 'var(--destructive-foreground)' }}>
-              {resolvedTagText}
-            </Typography>
-          </span>
+        {topLeftTags.length ? (
+          <div className="absolute top-4 left-4 z-10 flex max-w-[calc(100%-1rem)] flex-wrap gap-2">
+            {topLeftTags.map(tag => (
+              <Tag
+                key={tag.id}
+                label={tag.label}
+                type={tag.type}
+                color={tag.color}
+                textColor={tag.textColor}
+                isLoading={tag.isLoading}
+                isEditModeEnabled={isEditModeResolvedEnabled}
+                isEditModeDisabled={!isEditModeResolvedEnabled}
+                onLabelChange={nextValue => {
+                  tag.onLabelChange?.(tag.id, nextValue)
+                  onTagLabelChange?.(tag.id, nextValue)
+                }}
+                onClick={() => {
+                  tag.onClick?.(tag.id)
+                  onTagClick?.(tag.id)
+                }}
+                className={cn(
+                  'max-w-full',
+                  (tag.onClick || onTagClick) && 'cursor-pointer',
+                )}
+              />
+            ))}
+          </div>
         ) : null}
 
-        {isSetModeResolvedEnabled ? (
+        {bottomRightTags.length ? (
+          <div className="absolute right-4 bottom-4 z-10 flex max-w-[calc(100%-1rem)] flex-wrap justify-end gap-2">
+            {bottomRightTags.map(tag => (
+              <Tag
+                key={tag.id}
+                label={tag.label}
+                type={tag.type}
+                color={tag.color}
+                textColor={tag.textColor}
+                isLoading={tag.isLoading}
+                isEditModeEnabled={isEditModeResolvedEnabled}
+                isEditModeDisabled={!isEditModeResolvedEnabled}
+                onLabelChange={nextValue => {
+                  tag.onLabelChange?.(tag.id, nextValue)
+                  onTagLabelChange?.(tag.id, nextValue)
+                }}
+                onClick={() => {
+                  tag.onClick?.(tag.id)
+                  onTagClick?.(tag.id)
+                }}
+                className={cn(
+                  'max-w-full',
+                  (tag.onClick || onTagClick) && 'cursor-pointer',
+                )}
+              />
+            ))}
+          </div>
+        ) : null}
+
+        {isEditModeResolvedEnabled ? (
           <>
             <input
               ref={fileInputReference}
@@ -229,7 +328,7 @@ export const StoreSlide = ({
             </span>
           ) : null}
 
-          {isSetModeResolvedEnabled ? (
+          {isEditModeResolvedEnabled ? (
             <EditableTypography
               value={localBrandName}
               onValueChange={setLocalBrandName}
@@ -246,7 +345,7 @@ export const StoreSlide = ({
           )}
         </div>
 
-        {isSetModeResolvedEnabled ? (
+        {isEditModeResolvedEnabled ? (
           <EditableTypography
             value={localHeading}
             onValueChange={setLocalHeading}
@@ -265,7 +364,7 @@ export const StoreSlide = ({
           </Typography>
         )}
 
-        {isSetModeResolvedEnabled ? (
+        {isEditModeResolvedEnabled ? (
           <EditableTypography
             value={localAccentText}
             onValueChange={setLocalAccentText}
@@ -286,7 +385,7 @@ export const StoreSlide = ({
           </Typography>
         ) : null}
 
-        {isSetModeResolvedEnabled ? (
+        {isEditModeResolvedEnabled ? (
           <EditableTypography
             value={localDescription}
             onValueChange={setLocalDescription}
@@ -304,7 +403,7 @@ export const StoreSlide = ({
           </Typography>
         ) : null}
 
-        {isSetModeResolvedEnabled ? (
+        {isEditModeResolvedEnabled ? (
           <EditableTypography
             value={localPriceText}
             onValueChange={setLocalPriceText}

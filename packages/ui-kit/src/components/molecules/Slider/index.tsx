@@ -55,6 +55,7 @@ export const Slider = ({
 }: SliderPropertyType) => {
   const isNavigationResolvedEnabled =
     isNavigationEnabled ?? isNavigationVisible ?? true
+  const isAutoSlidesPerView = slidesPerView === 'auto'
 
   const handleSlideChange = (swiper: SwiperType) => {
     onSlideChange?.(swiper.realIndex)
@@ -101,7 +102,9 @@ export const Slider = ({
         )}
         onSlideChange={handleSlideChange}>
         {slides.map((slide, index) => (
-          <SwiperSlide key={index} className="h-auto">
+          <SwiperSlide
+            key={index}
+            className={cn('h-auto', isAutoSlidesPerView && '!w-auto')}>
             {slide}
           </SwiperSlide>
         ))}
