@@ -101,7 +101,7 @@ export const EditableTypography = ({
   if (isEditModeOn && !isEditModeDisabled && !isLoading) {
     return (
       <div
-        className={clsx('relative h-9 w-full', typographyClassName, className)}
+        className={clsx('relative h-9 w-full', className)}
         style={{ color: `var(--${resolvedColor})` }}>
         <input
           autoFocus
