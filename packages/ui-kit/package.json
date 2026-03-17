@@ -31,7 +31,9 @@
     "preview": "vite preview",
     "storybook:dev": "storybook dev -p 6006 --no-open",
     "storybook": "npm run storybook:dev",
-    "build-storybook": "storybook build"
+    "build-storybook": "storybook build",
+    "test:visual": "playwright test -c ./playwright.config.ts",
+    "test:visual:update": "playwright test -c ./playwright.config.ts --update-snapshots"
   },
   "peerDependencies": {
     "react": "19.x.x",
