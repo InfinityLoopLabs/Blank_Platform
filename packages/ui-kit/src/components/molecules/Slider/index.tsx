@@ -56,6 +56,7 @@ export const Slider = ({
   const isNavigationResolvedEnabled =
     isNavigationEnabled ?? isNavigationVisible ?? true
   const isAutoSlidesPerView = slidesPerView === 'auto'
+  const isLoopResolvedEnabled = isLoopEnabled && slides.length > 1
 
   const handleSlideChange = (swiper: SwiperType) => {
     onSlideChange?.(swiper.realIndex)
@@ -67,7 +68,11 @@ export const Slider = ({
         modules={[A11y, FreeMode, Keyboard, Mousewheel, Navigation, Pagination]}
         slidesPerView={slidesPerView}
         spaceBetween={spaceBetween}
-        loop={isLoopEnabled}
+        loop={isLoopResolvedEnabled}
+        loopAdditionalSlides={isLoopResolvedEnabled ? slides.length : undefined}
+        loopAddBlankSlides={false}
+        slidesPerGroupAuto={isAutoSlidesPerView}
+        initialSlide={0}
         navigation={isNavigationResolvedEnabled && isArrowsVisible}
         pagination={isPaginationVisible ? { clickable: true } : false}
         keyboard={isKeyboardEnabled ? { enabled: true } : false}

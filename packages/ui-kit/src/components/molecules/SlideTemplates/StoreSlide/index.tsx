@@ -3,7 +3,10 @@ import * as React from 'react'
 import { Image, type ImagePropertyType } from '@/components/atoms/Image'
 import { Paper } from '@/components/atoms/Paper'
 import { Tag, type TagType } from '@/components/atoms/Tag'
-import { Typography, type TypographyColorType } from '@/components/atoms/Typography'
+import {
+  Typography,
+  type TypographyColorType,
+} from '@/components/atoms/Typography'
 import { EditableTypography } from '@/components/molecules/EditableTypography'
 import { cn } from '@/lib/utils'
 
@@ -24,7 +27,7 @@ export type StoreSlideTagItemType = {
   onLabelChange?: (id: string, value: string) => void
 }
 
-type StoreSlidePropertyType = Omit<
+export type StoreSlidePropertyType = Omit<
   React.HTMLAttributes<HTMLElement>,
   'title'
 > & {
@@ -235,7 +238,13 @@ export const StoreSlide = ({
         <div className="pointer-events-none absolute inset-x-0 bottom-0 h-20 bg-gradient-to-t from-card to-transparent" />
 
         {topLeftTags.length ? (
-          <div className="absolute top-4 left-4 z-10 flex max-w-[calc(100%-1rem)] flex-wrap gap-2">
+          <div
+            className={cn(
+              'absolute top-4 left-4 z-10 flex flex-wrap gap-2',
+              isEditModeResolvedEnabled
+                ? 'max-w-[calc(100%-13rem)]'
+                : 'max-w-[calc(100%-1rem)]',
+            )}>
             {topLeftTags.map(tag => (
               <Tag
                 key={tag.id}
@@ -333,6 +342,7 @@ export const StoreSlide = ({
               value={localBrandName}
               onValueChange={setLocalBrandName}
               typography="CompactCaption"
+              contentClassName="font-semibold uppercase tracking-wide"
               className="!h-auto"
             />
           ) : (
@@ -350,6 +360,7 @@ export const StoreSlide = ({
             value={localHeading}
             onValueChange={setLocalHeading}
             typography="Heading"
+            contentClassName="leading-[1.08]"
             className="!h-auto"
           />
         ) : (
@@ -370,6 +381,8 @@ export const StoreSlide = ({
             onValueChange={setLocalAccentText}
             placeholder="Accent text"
             typography="Subheader"
+            color="chart-1"
+            contentClassName="font-medium"
             className="!h-auto text-(--chart-1)"
           />
         ) : localAccentText ? (
@@ -408,6 +421,7 @@ export const StoreSlide = ({
             value={localPriceText}
             onValueChange={setLocalPriceText}
             typography="Heading"
+            contentClassName="text-5xl leading-none font-bold tracking-tight"
             className="mt-auto !h-auto pt-6"
           />
         ) : (

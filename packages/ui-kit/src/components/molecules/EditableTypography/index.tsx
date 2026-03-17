@@ -14,6 +14,7 @@ import {
 
 type EditableTypographyPropertyType = {
   className?: string
+  contentClassName?: string
   typography?: TypographyType
   element?: ElementType
   color?: TypographyColorType
@@ -39,6 +40,7 @@ const toStringValue = (value: unknown): string => {
 
 export const EditableTypography = ({
   className,
+  contentClassName,
   typography = 'Subheader',
   element = 'span',
   color,
@@ -55,6 +57,9 @@ export const EditableTypography = ({
     toStringValue(defaultValue),
   )
   const resolvedColor = color ?? getDefaultColorByTypography(typography)
+  const typographyClassName = getTypographyClassName(typography)
+  const placeholderTypographyClassName =
+    getPlaceholderTypographyClassName(typography)
 
   const isExternallyControlled = value !== undefined
   const resolvedTextValue = isExternallyControlled
@@ -95,19 +100,22 @@ export const EditableTypography = ({
 
   if (isEditModeOn && !isEditModeDisabled && !isLoading) {
     return (
-      <div className={clsx('relative h-9 w-full', className)}>
+      <div
+        className={clsx('relative h-9 w-full', typographyClassName, className)}
+        style={{ color: `var(--${resolvedColor})` }}>
         <input
           autoFocus
           value={resolvedTextValue}
           placeholder={placeholder}
           style={{
-            color: `var(--${resolvedColor})`,
-            caretColor: `var(--${resolvedColor})`,
+            color: 'inherit',
+            caretColor: 'currentColor',
           }}
           className={clsx(
             'relative m-0 block h-auto w-full border-0 bg-transparent p-0 font-infinityloop',
-            getTypographyClassName(typography),
-            getPlaceholderTypographyClassName(typography),
+            typographyClassName,
+            placeholderTypographyClassName,
+            contentClassName,
             'appearance-none outline-none shadow-none',
             'outline-none focus:outline-none focus-visible:outline-none',
             'focus:shadow-none focus-visible:shadow-none',
@@ -130,6 +138,7 @@ export const EditableTypography = ({
         isLoading={isLoading}
         className={clsx(
           'block w-full px-0',
+          contentClassName,
           !isEditModeDisabled && !isLoading && 'cursor-text hover:opacity-90',
           isLoading && 'cursor-default',
         )}

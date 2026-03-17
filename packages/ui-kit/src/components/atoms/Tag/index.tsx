@@ -78,12 +78,15 @@ export const Tag = ({
           value={localLabel}
           onChange={onInputChange}
           className={clsx(
-            'min-w-0 border-none bg-transparent p-0 outline-none',
+            'inline-block max-w-full min-w-[1ch] border-none bg-transparent p-0 outline-none',
             getTypographyClassName(resolvedTypography),
             'font-semibold',
             type === 'default' && 'uppercase tracking-wide',
           )}
-          style={{ color: resolvedTextStyle }}
+          style={{
+            color: resolvedTextStyle,
+            width: `${Math.max(1, localLabel.length)}ch`,
+          }}
         />
       ) : (
         <Typography
