@@ -2,8 +2,13 @@ import type { ComponentProps } from 'react'
 import { useArgs } from '@storybook/preview-api'
 import type { Meta, StoryObj } from '@storybook/react'
 
-import { Image, IMAGE_MASK_OPTIONS } from '@/components/atoms/Image'
+import {
+  Image,
+  IMAGE_MASK_OPTIONS,
+  IMAGE_SIDE_SHADE_SIDE_OPTIONS,
+} from '@/components/atoms/Image'
 import { Paper } from '@/components/atoms/Paper'
+import { TYPOGRAPHY_COLOR_OPTIONS } from '@/components/atoms/Typography'
 import { cn } from '@/lib/utils'
 
 const mockImageUrl =
@@ -11,6 +16,9 @@ const mockImageUrl =
 
 const maskTypeControlLabels = Object.fromEntries(
   IMAGE_MASK_OPTIONS.map(option => [option.value, option.label]),
+)
+const sideShadeSideControlLabels = Object.fromEntries(
+  IMAGE_SIDE_SHADE_SIDE_OPTIONS.map(option => [option, option]),
 )
 
 const previewFormatOptions = [
@@ -104,6 +112,9 @@ const meta = {
     topShadeColor: undefined,
     isBottomShadeVisible: false,
     bottomShadeColor: undefined,
+    isSideShadeVisible: false,
+    sideShadeSide: 'right',
+    sideShadeColorToken: 'background',
     src: mockImageUrl,
   },
   argTypes: {
@@ -183,6 +194,22 @@ const meta = {
     },
     bottomShadeColor: {
       control: 'color',
+    },
+    isSideShadeVisible: {
+      control: 'boolean',
+    },
+    sideShadeSide: {
+      control: {
+        type: 'select',
+        labels: sideShadeSideControlLabels,
+      },
+      options: IMAGE_SIDE_SHADE_SIDE_OPTIONS,
+    },
+    sideShadeColorToken: {
+      control: {
+        type: 'select',
+      },
+      options: TYPOGRAPHY_COLOR_OPTIONS,
     },
     onCropPositionChange: {
       table: {

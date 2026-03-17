@@ -760,18 +760,20 @@
   resolved "file:packages/types"
 
 "@infinityloop.labs/ui-kit@^0.0.10", "@infinityloop.labs/ui-kit@file:/Users/m1max/IdeaProjects/infinitylooplabs/Platform/packages/ui-kit":
-  version "0.0.10"
+  version "0.0.11"
   resolved "file:packages/ui-kit"
   dependencies:
     "@radix-ui/react-avatar" "^1.1.11"
     "@radix-ui/react-select" "^2.2.6"
     "@radix-ui/react-slot" "^1.2.4"
     "@tailwindcss/postcss" "^4.1.13"
+    "@tanstack/react-table" "^8.21.3"
     class-variance-authority "^0.7.1"
     clsx "^2.1.1"
     color "^5.0.3"
     lucide-react "^0.546.0"
     radix-ui "^1.4.3"
+    swiper "^11.2.10"
     tailwind-merge "^3.3.1"
 
 "@infinityloop.labs/utils@^1.0.0", "@infinityloop.labs/utils@file:/Users/m1max/IdeaProjects/infinitylooplabs/Platform/packages/utils":
@@ -2556,6 +2558,18 @@
     "@tailwindcss/node" "4.1.18"
     "@tailwindcss/oxide" "4.1.18"
     tailwindcss "4.1.18"
+
+"@tanstack/react-table@^8.21.3":
+  version "8.21.3"
+  resolved "https://registry.npmjs.org/@tanstack/react-table/-/react-table-8.21.3.tgz"
+  integrity sha512-5nNMTSETP4ykGegmVkhjcS8tTLW6Vl4axfEGQN3v0zdHYbK4UfoqfPChclTrJ4EoK9QynqAu9oUf8VEmrpZ5Ww==
+  dependencies:
+    "@tanstack/table-core" "8.21.3"
+
+"@tanstack/table-core@8.21.3":
+  version "8.21.3"
+  resolved "https://registry.npmjs.org/@tanstack/table-core/-/table-core-8.21.3.tgz"
+  integrity sha512-ldZXEhOBb8Is7xLs01fR3YEc3DERiz5silj8tnGkFZytt1abEvl/GhUmCE0PMLaMPTa3Jk4HbKmRlHmu+gCftg==
 
 "@testing-library/dom@^10.0.0":
   version "10.4.1"
@@ -8047,7 +8061,7 @@ react-docgen@^7.0.0:
     resolve "^1.22.1"
     strip-indent "^4.0.0"
 
-"react-dom@^16.0.0 || ^17.0.0 || ^18.0.0 || ^19.0.0", "react-dom@^16.8 || ^17.0 || ^18.0 || ^19.0 || ^19.0.0-rc", "react-dom@^16.8.0 || ^17.0.0 || ^18.0.0 || ^19.0.0", "react-dom@^16.8.0 || ^17.0.0 || ^18.0.0 || ^19.0.0-beta", "react-dom@^18.0.0 || ^19.0.0", react-dom@^19.2.0, react-dom@^19.2.4, react-dom@>=16.8.0, react-dom@>=18, react-dom@19.x.x, react-dom@19.X.X:
+"react-dom@^16.0.0 || ^17.0.0 || ^18.0.0 || ^19.0.0", "react-dom@^16.8 || ^17.0 || ^18.0 || ^19.0 || ^19.0.0-rc", "react-dom@^16.8.0 || ^17.0.0 || ^18.0.0 || ^19.0.0", "react-dom@^16.8.0 || ^17.0.0 || ^18.0.0 || ^19.0.0-beta", "react-dom@^18.0.0 || ^19.0.0", react-dom@^19.2.0, react-dom@^19.2.4, react-dom@>=16.8, react-dom@>=16.8.0, react-dom@>=18, react-dom@19.x.x, react-dom@19.X.X:
   version "19.2.4"
   resolved "https://registry.npmjs.org/react-dom/-/react-dom-19.2.4.tgz"
   integrity sha512-AXJdLo8kgMbimY95O2aKQqsz2iWi9jMgKJhRBAxECE4IFxfcazB2LmzloIoibJI3C12IlY20+KFaLv+71bUJeQ==
@@ -8122,7 +8136,7 @@ react-style-singleton@^2.2.2, react-style-singleton@^2.2.3:
     get-nonce "^1.0.0"
     tslib "^2.0.0"
 
-"react@^16.5.1 || ^17.0.0 || ^18.0.0 || ^19.0.0", "react@^16.8 || ^17.0 || ^18.0 || ^19.0 || ^19.0.0-rc", "react@^16.8.0 || ^17 || ^18 || ^19", "react@^16.8.0 || ^17.0.0 || ^18.0.0 || ^19.0.0", "react@^16.8.0 || ^17.0.0 || ^18.0.0 || ^19.0.0 || ^19.0.0-rc", "react@^16.8.0 || ^17.0.0 || ^18.0.0 || ^19.0.0-beta", "react@^16.9.0 || ^17.0.0 || ^18 || ^19", "react@^18.0 || ^19", "react@^18.0.0 || ^19.0.0", react@^19.2.0, react@^19.2.4, react@>=16, react@>=16.8.0, react@>=18, react@19.x.x, react@19.X.X:
+"react@^16.5.1 || ^17.0.0 || ^18.0.0 || ^19.0.0", "react@^16.8 || ^17.0 || ^18.0 || ^19.0 || ^19.0.0-rc", "react@^16.8.0 || ^17 || ^18 || ^19", "react@^16.8.0 || ^17.0.0 || ^18.0.0 || ^19.0.0", "react@^16.8.0 || ^17.0.0 || ^18.0.0 || ^19.0.0 || ^19.0.0-rc", "react@^16.8.0 || ^17.0.0 || ^18.0.0 || ^19.0.0-beta", "react@^16.9.0 || ^17.0.0 || ^18 || ^19", "react@^18.0 || ^19", "react@^18.0.0 || ^19.0.0", react@^19.2.0, react@^19.2.4, react@>=16, react@>=16.8, react@>=16.8.0, react@>=18, react@19.x.x, react@19.X.X:
   version "19.2.4"
   resolved "https://registry.npmjs.org/react/-/react-19.2.4.tgz"
   integrity sha512-9nfp2hYpCwOjAN+8TZFGhtWEwgvWHXqESH8qT89AT/lWklpLON22Lc8pEtnpsZz7VmawabSU0gCjnj8aC0euHQ==

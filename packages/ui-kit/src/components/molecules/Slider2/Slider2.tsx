@@ -14,20 +14,17 @@ import { Swiper, SwiperSlide } from 'swiper/react'
 import { cn } from '@/lib/utils'
 
 import 'swiper/css'
-import 'swiper/css/navigation'
 import 'swiper/css/pagination'
 
-type SliderPropertyType = Omit<
+export type Slider2PropertyType = Omit<
   React.HTMLAttributes<HTMLDivElement>,
   'children'
 > & {
-  slides?: React.ReactNode[]
-  children?: React.ReactNode
+  children: React.ReactNode
   slidesPerView?: number | 'auto'
   spaceBetween?: number
   isLoopEnabled?: boolean
   isPaginationVisible?: boolean
-  isNavigationVisible?: boolean
   isNavigationEnabled?: boolean
   isArrowsVisible?: boolean
   isMousewheelEnabled?: boolean
@@ -37,16 +34,14 @@ type SliderPropertyType = Omit<
   onSlideChange?: (activeSlideIndex: number) => void
 }
 
-export const Slider = ({
-  slides,
+export const Slider2 = ({
   children,
   className,
   slidesPerView = 1,
   spaceBetween = 16,
   isLoopEnabled = false,
   isPaginationVisible = true,
-  isNavigationVisible,
-  isNavigationEnabled,
+  isNavigationEnabled = true,
   isArrowsVisible = true,
   isMousewheelEnabled = true,
   isKeyboardEnabled = true,
@@ -54,21 +49,20 @@ export const Slider = ({
   isFreeScrollEnabled = false,
   onSlideChange,
   ...property
-}: SliderPropertyType) => {
-  const resolvedSlides = React.useMemo(
-    () => slides ?? React.Children.toArray(children),
-    [slides, children],
+}: Slider2PropertyType) => {
+  const slides = React.useMemo(
+    () => React.Children.toArray(children),
+    [children],
   )
-  const isNavigationResolvedEnabled =
-    isNavigationEnabled ?? isNavigationVisible ?? true
-  const isArrowsResolvedVisible = isNavigationResolvedEnabled && isArrowsVisible
+  const slidesCount = slides.length
   const isAutoSlidesPerView = slidesPerView === 'auto'
-  const isLoopRequested = isLoopEnabled && resolvedSlides.length > 1
+  const isLoopRequested = isLoopEnabled && slidesCount > 1
   const isLoopResolvedEnabled =
-    isLoopRequested && !isAutoSlidesPerView && !isFreeScrollEnabled
+    isLoopRequested && !isFreeScrollEnabled && !isAutoSlidesPerView
   const isRewindResolvedEnabled = isLoopRequested && !isLoopResolvedEnabled
+  const isArrowsResolvedVisible = isNavigationEnabled && isArrowsVisible
+  const isArrowsDisabled = slidesCount <= 1
   const swiperReference = React.useRef<SwiperType | null>(null)
-  const isArrowsDisabled = resolvedSlides.length <= 1
 
   const handleSlideChange = (swiper: SwiperType) => {
     onSlideChange?.(swiper.realIndex)
@@ -84,6 +78,8 @@ export const Slider = ({
         spaceBetween={spaceBetween}
         loop={isLoopResolvedEnabled}
         rewind={isRewindResolvedEnabled}
+        loopAdditionalSlides={isLoopResolvedEnabled ? slidesCount : undefined}
+        watchSlidesProgress={isLoopResolvedEnabled}
         pagination={isPaginationVisible ? { clickable: true } : false}
         keyboard={isKeyboardEnabled ? { enabled: true } : false}
         freeMode={
@@ -91,17 +87,18 @@ export const Slider = ({
             ? {
                 enabled: true,
                 sticky: false,
-                momentum: false,
-                momentumBounce: false,
+                momentum: true,
+                momentumBounce: true,
               }
             : false
         }
         mousewheel={
           isMousewheelEnabled
             ? {
+                enabled: true,
                 forceToAxis: false,
-                releaseOnEdges: !isLoopRequested,
-                sensitivity: 0.85,
+                releaseOnEdges: !isLoopResolvedEnabled,
+                sensitivity: 0.9,
               }
             : false
         }
@@ -119,7 +116,7 @@ export const Slider = ({
           swiperReference.current = swiper
         }}
         onSlideChange={handleSlideChange}>
-        {resolvedSlides.map((slide, index) => (
+        {slides.map((slide, index) => (
           <SwiperSlide
             key={index}
             className={cn('h-auto', isAutoSlidesPerView && '!w-auto')}>
@@ -127,6 +124,7 @@ export const Slider = ({
           </SwiperSlide>
         ))}
       </Swiper>
+
       {isArrowsResolvedVisible ? (
         <>
           <button

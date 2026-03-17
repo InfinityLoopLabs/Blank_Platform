@@ -1,5 +1,6 @@
 import * as React from 'react'
 
+import type { TypographyColorType } from '@/components/atoms/Typography'
 import { cn } from '@/lib/utils'
 
 const imageMaskUrlDictionary = {
@@ -28,6 +29,9 @@ export const IMAGE_MASK_OPTIONS = [
 ] as const
 
 export type ImageMaskType = (typeof IMAGE_MASK_OPTIONS)[number]['value']
+export const IMAGE_SIDE_SHADE_SIDE_OPTIONS = ['left', 'right'] as const
+export type ImageSideShadeSideType =
+  (typeof IMAGE_SIDE_SHADE_SIDE_OPTIONS)[number]
 
 export type ImageMaskPositionValueType = {
   x: number
@@ -184,6 +188,9 @@ export type ImagePropertyType = Omit<
   topShadeColor?: string
   isBottomShadeVisible?: boolean
   bottomShadeColor?: string
+  isSideShadeVisible?: boolean
+  sideShadeSide?: ImageSideShadeSideType
+  sideShadeColorToken?: TypographyColorType
 }
 
 export const Image = ({
@@ -207,6 +214,9 @@ export const Image = ({
   topShadeColor,
   isBottomShadeVisible = false,
   bottomShadeColor,
+  isSideShadeVisible = false,
+  sideShadeSide = 'right',
+  sideShadeColorToken,
   alt = '',
   style,
   ...property
@@ -228,12 +238,12 @@ export const Image = ({
   const rawMaskPositionY = rawMaskPositionValue?.y
   const resolvedMaskPositionX =
     typeof rawMaskPositionX === 'number' && Number.isFinite(rawMaskPositionX)
-    ? Math.min(100, Math.max(0, rawMaskPositionX))
-    : 50
+      ? Math.min(100, Math.max(0, rawMaskPositionX))
+      : 50
   const resolvedMaskPositionY =
     typeof rawMaskPositionY === 'number' && Number.isFinite(rawMaskPositionY)
-    ? Math.min(100, Math.max(0, rawMaskPositionY))
-    : 50
+      ? Math.min(100, Math.max(0, rawMaskPositionY))
+      : 50
   const resolvedMaskPosition = `${resolvedMaskPositionX}% ${resolvedMaskPositionY}%`
   const resolvedMaskPositionValue = {
     x: resolvedMaskPositionX,
@@ -338,6 +348,13 @@ export const Image = ({
     isMasked && (Boolean(maskFillColor) || Boolean(maskStrokeColor))
   const resolvedShadeColor =
     topShadeColor ?? bottomShadeColor ?? maskFillColor ?? 'var(--background)'
+  const resolvedSideShadeColor = sideShadeColorToken
+    ? `var(--${sideShadeColorToken})`
+    : resolvedShadeColor
+  const resolvedSideShadeMaskImage =
+    sideShadeSide === 'left'
+      ? 'linear-gradient(to right, rgba(0, 0, 0, 1), rgba(0, 0, 0, 0))'
+      : 'linear-gradient(to left, rgba(0, 0, 0, 1), rgba(0, 0, 0, 0))'
 
   return (
     <div
@@ -410,6 +427,23 @@ export const Image = ({
               'linear-gradient(to top, rgba(0, 0, 0, 1), rgba(0, 0, 0, 0))',
             maskImage:
               'linear-gradient(to top, rgba(0, 0, 0, 1), rgba(0, 0, 0, 0))',
+          }}
+        />
+      ) : null}
+      {isSideShadeVisible ? (
+        <div
+          aria-hidden
+          className={cn(
+            'pointer-events-none absolute inset-y-0 h-full w-[28%]',
+            sideShadeSide === 'left' ? 'left-0' : 'right-0',
+          )}
+          style={{
+            backgroundColor: resolvedSideShadeColor,
+            opacity: 0.85,
+            WebkitMaskImage: resolvedSideShadeMaskImage,
+            maskImage: resolvedSideShadeMaskImage,
+            WebkitMaskRepeat: 'no-repeat',
+            maskRepeat: 'no-repeat',
           }}
         />
       ) : null}

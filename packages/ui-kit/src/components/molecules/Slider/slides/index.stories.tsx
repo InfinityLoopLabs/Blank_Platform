@@ -3,6 +3,8 @@ import { fn } from '@storybook/test'
 
 import { Slider } from '@/components/molecules/Slider'
 import {
+  bigHorizontalSlideWidthClassName,
+  BigHorizontalSlide,
   buildSliderSlides,
   courseSlideData,
   getTagsByVariant,
@@ -102,6 +104,41 @@ export const MediumHorizontalExample: StoryType = {
   },
 }
 
+export const BigHorizontalExample: StoryType = {
+  render: ({
+    isEditModeEnabled,
+    isEditModeDisabled,
+    onTagClick,
+    onTagLabelChange,
+  }) => {
+    const slide = courseSlideData[0]
+    const { tags, tagText } = getTagsByVariant(
+      'two-other-tags',
+      slide.id,
+      slide.tagText,
+    )
+
+    return (
+      <div className="w-full p-4">
+        <div className={bigHorizontalSlideWidthClassName}>
+          <BigHorizontalSlide
+            coverImageSrc={slide.coverImageSrc}
+            brandName={slide.brandName}
+            heading={slide.heading}
+            description={slide.description}
+            tagText={tagText}
+            tags={tags}
+            isEditModeEnabled={isEditModeEnabled}
+            isEditModeDisabled={isEditModeDisabled}
+            onTagClick={onTagClick}
+            onTagLabelChange={onTagLabelChange}
+          />
+        </div>
+      </div>
+    )
+  },
+}
+
 export const MediumVerticalInSlider: StoryType = {
   render: ({
     isEditModeEnabled,
@@ -111,6 +148,41 @@ export const MediumVerticalInSlider: StoryType = {
   }) => {
     const slides = buildSliderSlides({
       componentType: 'MediumVerticalSlide',
+      isEditModeEnabled,
+      isEditModeDisabled,
+      onTagClick,
+      onTagLabelChange,
+    })
+
+    return (
+      <div className="w-full p-4">
+        <Slider
+          slides={slides}
+          slidesPerView="auto"
+          spaceBetween={16}
+          isLoopEnabled={false}
+          isPaginationVisible
+          isNavigationEnabled
+          isArrowsVisible
+          isMousewheelEnabled
+          isKeyboardEnabled
+          isGrabCursorVisible
+          isFreeScrollEnabled={false}
+        />
+      </div>
+    )
+  },
+}
+
+export const BigHorizontalInSlider: StoryType = {
+  render: ({
+    isEditModeEnabled,
+    isEditModeDisabled,
+    onTagClick,
+    onTagLabelChange,
+  }) => {
+    const slides = buildSliderSlides({
+      componentType: 'BigHorizontalSlide',
       isEditModeEnabled,
       isEditModeDisabled,
       onTagClick,

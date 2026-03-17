@@ -19,11 +19,13 @@ type EditableTypographyPropertyType = {
   element?: ElementType
   color?: TypographyColorType
   isEditModeDisabled?: boolean
+  isEditModeOn?: boolean
   isLoading?: boolean
   value?: string
   defaultValue?: string
   placeholder?: string
   onValueChange?: (value: string) => void
+  onEditModeChange?: (isEditModeOn: boolean) => void
   children?: React.ReactNode
 }
 
@@ -45,14 +47,17 @@ export const EditableTypography = ({
   element = 'span',
   color,
   isEditModeDisabled = false,
+  isEditModeOn,
   isLoading = false,
   value,
   defaultValue,
   placeholder,
   onValueChange,
+  onEditModeChange,
   children,
 }: EditableTypographyPropertyType) => {
-  const [isEditModeOn, setIsEditModeOn] = React.useState(false)
+  const [isEditModeOnUncontrolled, setIsEditModeOnUncontrolled] =
+    React.useState(false)
   const [localTextValue, setLocalTextValue] = React.useState(() =>
     toStringValue(defaultValue),
   )
@@ -62,21 +67,46 @@ export const EditableTypography = ({
     getPlaceholderTypographyClassName(typography)
 
   const isExternallyControlled = value !== undefined
+  const isEditModeControlled = isEditModeOn !== undefined
   const resolvedTextValue = isExternallyControlled
     ? toStringValue(value)
     : localTextValue
+  const isEditModeActive = isEditModeControlled
+    ? isEditModeOn
+    : isEditModeOnUncontrolled
+
+  const setEditMode = React.useCallback(
+    (nextValue: boolean) => {
+      if (isEditModeControlled) {
+        if (isEditModeActive !== nextValue) {
+          onEditModeChange?.(nextValue)
+        }
+
+        return
+      }
+
+      setIsEditModeOnUncontrolled(previousValue => {
+        if (previousValue !== nextValue) {
+          onEditModeChange?.(nextValue)
+        }
+
+        return nextValue
+      })
+    },
+    [isEditModeActive, isEditModeControlled, onEditModeChange],
+  )
 
   React.useEffect(() => {
-    if ((isEditModeDisabled || isLoading) && isEditModeOn) {
-      setIsEditModeOn(false)
+    if ((isEditModeDisabled || isLoading) && isEditModeActive) {
+      setEditMode(false)
     }
-  }, [isEditModeDisabled, isEditModeOn, isLoading])
+  }, [isEditModeActive, isEditModeDisabled, isLoading, setEditMode])
 
   const handleEnableEditMode = () => {
     if (isEditModeDisabled || isLoading) {
       return
     }
-    setIsEditModeOn(true)
+    setEditMode(true)
   }
 
   const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -88,17 +118,17 @@ export const EditableTypography = ({
   }
 
   const handleInputBlur = () => {
-    setIsEditModeOn(false)
+    setEditMode(false)
   }
 
   const handleInputKeyDown = (event: React.KeyboardEvent<HTMLInputElement>) => {
     if (event.key === 'Enter' || event.key === 'Escape') {
-      setIsEditModeOn(false)
+      setEditMode(false)
       ;(event.currentTarget as HTMLInputElement).blur()
     }
   }
 
-  if (isEditModeOn && !isEditModeDisabled && !isLoading) {
+  if (isEditModeActive && !isEditModeDisabled && !isLoading) {
     return (
       <div
         className={clsx('relative h-9 w-full', className)}

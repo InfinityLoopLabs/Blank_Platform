@@ -1,5 +1,6 @@
 import * as React from 'react'
 
+import { BigHorizontalSlide } from './BigHorizontalSlide'
 import { MediumHorizontalSlide } from './MediumHorizontalSlide'
 import { MediumVerticalSlide } from './MediumVerticalSlide'
 import type { StoreSlideTagItemType } from '@/components/molecules/SlideTemplates'
@@ -87,6 +88,7 @@ export const courseSlideData: SliderDemoSlideItemType[] = [
 export const sliderSlideComponentTypeOptions = [
   'MediumVerticalSlide',
   'MediumHorizontalSlide',
+  'BigHorizontalSlide',
 ] as const
 
 export type SliderSlideComponentType =
@@ -94,6 +96,7 @@ export type SliderSlideComponentType =
 
 export const mediumVerticalSlideWidthClassName = 'w-[460px] min-w-[460px]'
 export const mediumHorizontalSlideWidthClassName = 'w-[520px] min-w-[520px]'
+export const bigHorizontalSlideWidthClassName = 'w-[620px] min-w-[620px]'
 
 type TagVariantType = 'no-tags' | 'one-tag' | 'two-tags' | 'two-other-tags'
 
@@ -193,6 +196,41 @@ export const buildSliderSlides = ({
         <div key={slide.id} className={mediumVerticalSlideWidthClassName}>
           <MediumVerticalSlide
             {...slide}
+            tagText={tagText}
+            tags={tags}
+            isEditModeEnabled={isEditModeEnabled}
+            isEditModeDisabled={isEditModeDisabled}
+            onTagClick={onTagClick}
+            onTagLabelChange={onTagLabelChange}
+          />
+        </div>
+      )
+    })
+  }
+
+  if (componentType === 'BigHorizontalSlide') {
+    const mixedVariantByIndex = [
+      'two-tags',
+      'one-tag',
+      'two-other-tags',
+    ] as const
+
+    return courseSlideData.slice(0, 3).map((slide, index) => {
+      const { tags, tagText } = getTagsByVariant(
+        mixedVariantByIndex[index] ?? 'one-tag',
+        slide.id,
+        slide.tagText ?? 'Курс',
+      )
+
+      return (
+        <div
+          key={`big-${slide.id}`}
+          className={bigHorizontalSlideWidthClassName}>
+          <BigHorizontalSlide
+            coverImageSrc={slide.coverImageSrc}
+            brandName={slide.brandName}
+            heading={slide.heading}
+            description={slide.description}
             tagText={tagText}
             tags={tags}
             isEditModeEnabled={isEditModeEnabled}

@@ -98,7 +98,7 @@ function Input(property: InputPropertyType) {
     const visibleErrorText = isError ? errorText : undefined
 
     return (
-      <div className="w-full space-y-2">
+      <div className="w-full space-y-1">
         {label ? (
           <label
             htmlFor={textareaProperty.id}
@@ -247,7 +247,7 @@ function Input(property: InputPropertyType) {
     )
 
     return (
-      <div className="w-full space-y-2">
+      <div className="w-full space-y-1">
         {label ? (
           <label
             htmlFor={inputProperty.id}
@@ -276,7 +276,7 @@ function Input(property: InputPropertyType) {
   }
 
   return (
-    <div className="w-full space-y-2">
+    <div className="w-full space-y-1">
       {label ? (
         <label
           htmlFor={inputProperty.id}
