@@ -1,4 +1,9 @@
-import { useEffect, useState, type ChangeEvent, type HTMLAttributes } from 'react'
+import {
+  useEffect,
+  useState,
+  type ChangeEvent,
+  type HTMLAttributes,
+} from 'react'
 
 import { clsx } from '@infinityloop.labs/utils'
 
@@ -27,10 +32,11 @@ const tagTypeDefaultColorDictionary: Record<TagType, TypographyColorType> = {
   time: 'background',
 }
 
-const tagTypeDefaultTextColorDictionary: Record<TagType, TypographyColorType> = {
-  default: 'foreground',
-  time: 'foreground',
-}
+const tagTypeDefaultTextColorDictionary: Record<TagType, TypographyColorType> =
+  {
+    default: 'foreground',
+    time: 'foreground',
+  }
 
 export const Tag = ({
   label,
@@ -54,6 +60,11 @@ export const Tag = ({
     ? '#ffffff'
     : `var(--${resolvedTextColor})`
   const resolvedTypography = type === 'time' ? 'Action' : 'CompactCaption'
+  const contentClassName = clsx(
+    getTypographyClassName(resolvedTypography),
+    'font-semibold',
+    type === 'default' && 'uppercase tracking-wide',
+  )
 
   useEffect(() => {
     setLocalLabel(label)
@@ -75,18 +86,15 @@ export const Tag = ({
       {...property}>
       {isEditModeResolvedEnabled ? (
         <input
+          size={Math.max(1, localLabel.length)}
           value={localLabel}
           onChange={onInputChange}
           className={clsx(
-            'inline-block max-w-full min-w-[1ch] border-none bg-transparent p-0 outline-none',
-            getTypographyClassName(resolvedTypography),
-            'font-semibold',
-            type === 'default' && 'uppercase tracking-wide',
+            'inline-block max-w-full min-w-[1ch] w-auto border-none bg-transparent p-0 outline-none',
+            '[field-sizing:content]',
+            contentClassName,
           )}
-          style={{
-            color: resolvedTextStyle,
-            width: `${Math.max(1, localLabel.length)}ch`,
-          }}
+          style={{ color: resolvedTextStyle }}
         />
       ) : (
         <Typography
@@ -94,10 +102,7 @@ export const Tag = ({
           element="span"
           color={resolvedTextColor}
           isLoading={isLoading}
-          className={clsx(
-            'inline-block truncate font-semibold',
-            type === 'default' && 'uppercase tracking-wide',
-          )}
+          className={clsx('inline-block truncate', contentClassName)}
           style={{ color: resolvedTextStyle }}>
           {localLabel}
         </Typography>
