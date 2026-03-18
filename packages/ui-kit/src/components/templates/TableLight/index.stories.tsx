@@ -15,7 +15,8 @@ const columns: TableLightColumnType[] = [
     header: 'Название',
     width: 320,
     isEditable: true,
-    typography: 'SectionHeader',
+    typography: 'BodySmall',
+    contentClassName: 'font-medium',
   },
   {
     key: 'category',
@@ -31,7 +32,8 @@ const columns: TableLightColumnType[] = [
     header: 'Статус',
     width: 160,
     isEditable: true,
-    typography: 'Action',
+    typography: 'BodySmall',
+    contentClassName: 'font-medium',
   },
   {
     key: 'updatedAt',
