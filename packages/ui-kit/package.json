@@ -26,14 +26,17 @@
     }
   },
   "scripts": {
+    "dev": "concurrently -k -n STORYBOOK,VISUAL \"npm:storybook:dev\" \"npm:visual:server\"",
     "build": "tsc && vite build",
     "lint": "eslint src --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
     "preview": "vite preview",
     "storybook:dev": "storybook dev -p 6006 --no-open",
     "storybook": "npm run storybook:dev",
     "build-storybook": "storybook build",
-    "test:visual": "playwright test -c ./playwright.config.ts",
-    "test:visual:update": "playwright test -c ./playwright.config.ts --update-snapshots"
+    "test:visual": "node ./scripts/visual/run-visual-tests.mjs",
+    "test:visual:update": "node ./scripts/visual/run-visual-tests.mjs --update-snapshots",
+    "visual:manifest": "node ./scripts/visual/build-manifest.mjs",
+    "visual:server": "node ./scripts/visual/server.mjs"
   },
   "peerDependencies": {
     "react": "19.x.x",
@@ -52,7 +55,11 @@
     "@types/react": "^19.1.8",
     "@types/react-dom": "^19.1.9",
     "@vitejs/plugin-react-swc": "^3.4.0",
+    "concurrently": "^9.2.1",
     "eslint-plugin-react-refresh": "^0.4.3",
+    "express": "^4.22.1",
+    "pixelmatch": "^7.1.0",
+    "pngjs": "^7.0.0",
     "postcss": "^8.5.6",
     "storybook": "^8.6.18",
     "tailwindcss": "^4.1.13",
@@ -72,6 +79,7 @@
     "color": "^5.0.3",
     "lucide-react": "^0.546.0",
     "radix-ui": "^1.4.3",
+    "react-day-picker": "^9.14.0",
     "swiper": "^11.2.10",
     "tailwind-merge": "^3.3.1"
   }

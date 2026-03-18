@@ -1,5 +1,17 @@
 import * as React from 'react'
+import { CalendarDays } from 'lucide-react'
+import type { DateRange } from 'react-day-picker'
 
+import { Calendar, type CalendarPropertyType } from '@/components/atoms/Calendar'
+import {
+  type CalendarPickerCalendarSlotPropertyType,
+  type CalendarPickerControlStatePropertyType,
+  formatCalendarValue,
+  isDateRangeValue,
+  type CalendarSelectionType,
+  useOutsideDismiss,
+  usePickerOpenState,
+} from '@/components/atoms/shared/calendar-picker'
 import {
   getPlaceholderTypographyClassName,
   getTypographyClassName,
@@ -32,7 +44,34 @@ type MultiLineInputPropertyType = InputSharedPropertyType &
     isTextarea: true
   }
 
-type InputPropertyType = SingleLineInputPropertyType | MultiLineInputPropertyType
+type CalendarInputModePropertyType = InputCalendarPropertyType & {
+  type: 'calendar'
+  isTextarea?: false
+}
+
+type InputPropertyType =
+  | SingleLineInputPropertyType
+  | MultiLineInputPropertyType
+  | CalendarInputModePropertyType
+
+export type InputCalendarPropertyType = Omit<
+  React.HTMLAttributes<HTMLDivElement>,
+  'onChange'
+> &
+  Omit<
+    CalendarPropertyType,
+    'mode' | 'value' | 'onChange' | 'selected' | 'onSelect'
+  > &
+  CalendarPickerControlStatePropertyType &
+  CalendarPickerCalendarSlotPropertyType<CalendarPropertyType> & {
+    label?: React.ReactNode
+    isRequired?: boolean
+    isError?: boolean
+    errorText?: React.ReactNode
+    inputClassName?: string
+    name?: string
+    id?: string
+  }
 
 const getTextareaResizeClassName = (
   isResizableX: boolean,
@@ -138,6 +177,16 @@ function Input(property: InputPropertyType) {
     )
   }
 
+  if ('type' in property && property.type === 'calendar') {
+    const { type: _type, ...calendarProperty } =
+      property as CalendarInputModePropertyType
+    void _type
+
+    return <InputCalendar {...calendarProperty} />
+  }
+
+  const singleLineProperty = property as SingleLineInputPropertyType
+
   const {
     className,
     isTextarea: _isTextarea,
@@ -153,7 +202,7 @@ function Input(property: InputPropertyType) {
     'aria-invalid': ariaInvalid,
     type,
     ...inputProperty
-  } = property
+  } = singleLineProperty
   const { onWheel, onKeyDown, ...restInputProperty } = inputProperty
   void _isTextarea
   void _isResizableX
@@ -312,6 +361,169 @@ function Input(property: InputPropertyType) {
       />
       {visibleErrorText ? (
         <p className="text-sm text-destructive">{visibleErrorText}</p>
+      ) : null}
+    </div>
+  )
+}
+
+export const InputCalendar = ({
+  className,
+  inputClassName,
+  label,
+  isRequired = false,
+  isError = false,
+  errorText,
+  placeholder = 'Select date',
+  mode = 'single',
+  value,
+  defaultValue,
+  onChange,
+  isOpen,
+  isOpenByDefault,
+  onIsOpenChange,
+  disabled = false,
+  isLoading = false,
+  calendarComponent: CalendarComponent = Calendar,
+  numberOfMonths,
+  name,
+  id,
+  ...calendarProperty
+}: InputCalendarPropertyType) => {
+  const isValueControlled = value !== undefined
+  const [internalValue, setInternalValue] =
+    React.useState<CalendarSelectionType>(defaultValue)
+  const resolvedValue = isLoading
+    ? undefined
+    : isValueControlled
+      ? value
+      : internalValue
+  const renderedValue = formatCalendarValue({
+    mode,
+    value: resolvedValue,
+    placeholder,
+  })
+  const {
+    isOpen: isCalendarOpen,
+    setIsOpen: setIsCalendarOpen,
+  } = usePickerOpenState(
+    {
+      isOpen,
+      isOpenByDefault,
+    },
+    onIsOpenChange,
+  )
+  const rootReference = React.useRef<HTMLDivElement | null>(null)
+  const generatedId = React.useId()
+  const inputId = id ?? generatedId
+
+  useOutsideDismiss(rootReference, isCalendarOpen, () => {
+    setIsCalendarOpen(false)
+  })
+
+  const applyValueChange = (nextValue: CalendarSelectionType) => {
+    if (!isValueControlled) {
+      setInternalValue(nextValue)
+    }
+
+    onChange?.(nextValue)
+
+    if (mode === 'single' && nextValue instanceof Date) {
+      setIsCalendarOpen(false)
+
+      return
+    }
+
+    if (
+      mode === 'range' &&
+      isDateRangeValue(nextValue) &&
+      nextValue.from &&
+      nextValue.to
+    ) {
+      setIsCalendarOpen(false)
+    }
+  }
+
+  const handleSingleSelect = (nextValue: Date | undefined) => {
+    applyValueChange(nextValue)
+  }
+
+  const handleRangeSelect = (nextValue: DateRange | undefined) => {
+    applyValueChange(nextValue)
+  }
+
+  return (
+    <div
+      ref={rootReference}
+      className={cn('relative w-full space-y-1', className)}>
+      {label ? (
+        <label
+          htmlFor={inputId}
+          className="inline-flex items-center gap-1 text-sm font-medium text-foreground">
+          {label}
+          {isRequired ? (
+            <span aria-hidden className="text-cautionary">
+              *
+            </span>
+          ) : null}
+        </label>
+      ) : null}
+
+      <div className="relative flex w-full items-center">
+        <input
+          id={inputId}
+          name={name}
+          readOnly
+          value={renderedValue}
+          placeholder={placeholder}
+          disabled={disabled}
+          onClick={() => setIsCalendarOpen(!isCalendarOpen)}
+          onFocus={() => setIsCalendarOpen(true)}
+          className={cn(
+            'field-transition focus-ring-3 border-border bg-background text-foreground',
+            'h-9 w-full rounded-md border py-1 pl-3 pr-10 text-sm outline-none',
+            'disabled:pointer-events-none disabled:cursor-not-allowed disabled:opacity-50',
+            renderedValue === placeholder && 'text-muted-foreground',
+            isError &&
+              'border-destructive aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40',
+            inputClassName,
+          )}
+        />
+        <button
+          type="button"
+          tabIndex={-1}
+          disabled={disabled}
+          onClick={() => setIsCalendarOpen(!isCalendarOpen)}
+          className="absolute right-2 inline-flex size-6 items-center justify-center rounded-sm text-muted-foreground">
+          <CalendarDays className="size-4" />
+        </button>
+      </div>
+
+      {isCalendarOpen ? (
+        <div className="border-border bg-card text-card-foreground absolute left-0 top-full z-50 mt-2 rounded-md border p-2 shadow-md">
+          {mode === 'range' ? (
+            <CalendarComponent
+              {...calendarProperty}
+              isLoading={isLoading}
+              mode="range"
+              selected={resolvedValue as DateRange | undefined}
+              onSelect={handleRangeSelect}
+              numberOfMonths={numberOfMonths ?? 2}
+            />
+          ) : (
+            <CalendarComponent
+              {...calendarProperty}
+              isLoading={isLoading}
+              mode="single"
+              selected={resolvedValue as Date | undefined}
+              onSelect={handleSingleSelect}
+              numberOfMonths={numberOfMonths ?? 1}
+            />
+          )}
+        </div>
+      ) : null}
+
+      {isError && errorText ? (
+        <p className="text-sm text-destructive">{errorText}</p>
       ) : null}
     </div>
   )
