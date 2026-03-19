@@ -7,8 +7,10 @@ import { Calendar, type CalendarPropertyType } from '@/components/atoms/Calendar
 import {
   type CalendarPickerCalendarSlotPropertyType,
   type CalendarPickerControlStatePropertyType,
+  type CalendarPickerPopoverSlotPropertyType,
   formatCalendarValue,
   isDateRangeValue,
+  normalizeCalendarPickerMode,
   type CalendarSelectionType,
   usePickerOpenState,
 } from '@/components/atoms/shared/calendar-picker'
@@ -24,6 +26,7 @@ type DropdownListPropertyType = Omit<
   'onChange'
 > & {
   type?: 'default'
+  popoverComponent?: React.ComponentType<{ children: React.ReactNode }>
   options: DropdownOptionType[]
   value?: string
   defaultValue?: string
@@ -48,6 +51,7 @@ export type DropdownCalendarPropertyType = Omit<
     'mode' | 'value' | 'onChange' | 'selected' | 'onSelect'
   > &
   CalendarPickerControlStatePropertyType &
+  CalendarPickerPopoverSlotPropertyType &
   CalendarPickerCalendarSlotPropertyType<CalendarPropertyType> & {
     label?: React.ReactNode
     isRequired?: boolean
@@ -175,6 +179,7 @@ export const Dropdown = (property: DropdownPropertyType) => {
     searchPlaceholder = 'Type to filter...',
     disabled = false,
     emptyText = 'No options found',
+    popoverComponent: PopoverComponent = Popover,
     id,
     'aria-invalid': ariaInvalid,
     className,
@@ -286,7 +291,7 @@ export const Dropdown = (property: DropdownPropertyType) => {
         </button>
 
         {isOpen && panelPosition ? (
-          <Popover>
+          <PopoverComponent>
             <div
               ref={panelReference}
               role="listbox"
@@ -346,7 +351,7 @@ export const Dropdown = (property: DropdownPropertyType) => {
                 )}
               </div>
             </div>
-          </Popover>
+          </PopoverComponent>
         ) : null}
       </div>
 
@@ -366,6 +371,7 @@ export const DropdownCalendar = ({
   errorText,
   placeholder = 'Select date',
   mode = 'single',
+  selectionScope = 'date',
   value,
   defaultValue,
   onChange,
@@ -374,6 +380,7 @@ export const DropdownCalendar = ({
   onIsOpenChange,
   disabled = false,
   isLoading = false,
+  popoverComponent: PopoverComponent = Popover,
   calendarComponent: CalendarComponent = Calendar,
   numberOfMonths,
   ...calendarProperty
@@ -386,8 +393,10 @@ export const DropdownCalendar = ({
     : isValueControlled
       ? value
       : internalValue
+  const resolvedMode = normalizeCalendarPickerMode(mode)
   const renderedLabel = formatCalendarValue({
-    mode,
+    mode: resolvedMode,
+    selectionScope,
     value: resolvedValue,
     placeholder,
   })
@@ -420,14 +429,14 @@ export const DropdownCalendar = ({
 
     onChange?.(nextValue)
 
-    if (mode === 'single' && nextValue instanceof Date) {
+    if (resolvedMode === 'single' && nextValue instanceof Date) {
       setIsCalendarOpen(false)
 
       return
     }
 
     if (
-      mode === 'range' &&
+      resolvedMode === 'range' &&
       isDateRangeValue(nextValue) &&
       nextValue.from &&
       nextValue.to
@@ -486,7 +495,7 @@ export const DropdownCalendar = ({
         </button>
 
         {isCalendarOpen && panelPosition ? (
-          <Popover>
+          <PopoverComponent>
             <div
               ref={panelReference}
               style={{
@@ -495,10 +504,11 @@ export const DropdownCalendar = ({
                 left: panelPosition.left,
               }}
               className="border-border bg-card text-card-foreground z-50 w-max rounded-md border p-2 shadow-md">
-              {mode === 'range' ? (
+              {resolvedMode === 'range' ? (
                 <CalendarComponent
                   {...calendarProperty}
                   isLoading={isLoading}
+                  selectionScope={selectionScope}
                   mode="range"
                   selected={resolvedValue as DateRange | undefined}
                   onSelect={handleRangeSelect}
@@ -508,6 +518,7 @@ export const DropdownCalendar = ({
                 <CalendarComponent
                   {...calendarProperty}
                   isLoading={isLoading}
+                  selectionScope={selectionScope}
                   mode="single"
                   selected={resolvedValue as Date | undefined}
                   onSelect={handleSingleSelect}
@@ -515,7 +526,7 @@ export const DropdownCalendar = ({
                 />
               )}
             </div>
-          </Popover>
+          </PopoverComponent>
         ) : null}
       </div>
 

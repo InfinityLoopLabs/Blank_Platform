@@ -28,6 +28,7 @@ const meta = {
   args: {
     type: 'default',
     mode: 'single',
+    selectionScope: 'date',
     calendarComponent: Calendar,
     options: demoOptions,
     label: 'Direction',
@@ -88,7 +89,12 @@ const meta = {
     },
     mode: {
       control: 'select',
-      options: ['single', 'range'],
+      options: ['single', 'range', 'ranged'],
+      if: { arg: 'type', eq: 'calendar' },
+    },
+    selectionScope: {
+      control: 'select',
+      options: ['date', 'month', 'monthYear'],
       if: { arg: 'type', eq: 'calendar' },
     },
     isLoading: {
@@ -113,6 +119,7 @@ const meta = {
           disabled={args.disabled}
           isLoading={args.isLoading}
           mode={args.mode ?? 'single'}
+          selectionScope={args.selectionScope ?? 'date'}
           value={calendarValue}
           onChange={nextValue =>
             setCalendarValue(nextValue as CalendarSelectionType)

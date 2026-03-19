@@ -1,15 +1,17 @@
 import * as React from 'react'
 import { CalendarDays } from 'lucide-react'
 import type { DateRange } from 'react-day-picker'
+import { Popover } from '@infinityloop.labs/utils'
 
 import { Calendar, type CalendarPropertyType } from '@/components/atoms/Calendar'
 import {
   type CalendarPickerCalendarSlotPropertyType,
   type CalendarPickerControlStatePropertyType,
+  type CalendarPickerPopoverSlotPropertyType,
   formatCalendarValue,
   isDateRangeValue,
+  normalizeCalendarPickerMode,
   type CalendarSelectionType,
-  useOutsideDismiss,
   usePickerOpenState,
 } from '@/components/atoms/shared/calendar-picker'
 import {
@@ -63,6 +65,7 @@ export type InputCalendarPropertyType = Omit<
     'mode' | 'value' | 'onChange' | 'selected' | 'onSelect'
   > &
   CalendarPickerControlStatePropertyType &
+  CalendarPickerPopoverSlotPropertyType &
   CalendarPickerCalendarSlotPropertyType<CalendarPropertyType> & {
     label?: React.ReactNode
     isRequired?: boolean
@@ -112,6 +115,96 @@ const numberInputAllowedKeys = new Set([
   'Home',
   'End',
 ])
+
+type FloatingPanelPositionType = {
+  top: number
+  left: number
+}
+
+const useFloatingPanelPosition = (
+  isOpen: boolean,
+  anchorReference: React.RefObject<HTMLElement | null>,
+) => {
+  const [position, setPosition] =
+    React.useState<FloatingPanelPositionType | null>(null)
+
+  React.useEffect(() => {
+    if (!isOpen) {
+      setPosition(null)
+
+      return
+    }
+
+    const updatePosition = () => {
+      const anchorElement = anchorReference.current
+      if (!anchorElement) {
+        return
+      }
+
+      const anchorRect = anchorElement.getBoundingClientRect()
+      setPosition({
+        top: anchorRect.bottom + 8,
+        left: anchorRect.left,
+      })
+    }
+
+    updatePosition()
+
+    window.addEventListener('resize', updatePosition)
+    window.addEventListener('scroll', updatePosition, true)
+
+    return () => {
+      window.removeEventListener('resize', updatePosition)
+      window.removeEventListener('scroll', updatePosition, true)
+    }
+  }, [anchorReference, isOpen])
+
+  return position
+}
+
+const useOutsideDismiss = ({
+  isOpen,
+  rootReference,
+  panelReference,
+  onDismiss,
+}: {
+  isOpen: boolean
+  rootReference: React.RefObject<HTMLElement | null>
+  panelReference: React.RefObject<HTMLElement | null>
+  onDismiss: () => void
+}) => {
+  React.useEffect(() => {
+    if (!isOpen) {
+      return
+    }
+
+    const onMouseDown = (event: MouseEvent) => {
+      const eventTarget = event.target as Node
+      if (
+        rootReference.current?.contains(eventTarget) ||
+        panelReference.current?.contains(eventTarget)
+      ) {
+        return
+      }
+
+      onDismiss()
+    }
+
+    const onKeyDown = (event: KeyboardEvent) => {
+      if (event.key === 'Escape') {
+        onDismiss()
+      }
+    }
+
+    document.addEventListener('mousedown', onMouseDown)
+    document.addEventListener('keydown', onKeyDown)
+
+    return () => {
+      document.removeEventListener('mousedown', onMouseDown)
+      document.removeEventListener('keydown', onKeyDown)
+    }
+  }, [isOpen, onDismiss, panelReference, rootReference])
+}
 
 function Input(property: InputPropertyType) {
   if (property.isTextarea) {
@@ -375,6 +468,7 @@ export const InputCalendar = ({
   errorText,
   placeholder = 'Select date',
   mode = 'single',
+  selectionScope = 'date',
   value,
   defaultValue,
   onChange,
@@ -383,6 +477,7 @@ export const InputCalendar = ({
   onIsOpenChange,
   disabled = false,
   isLoading = false,
+  popoverComponent: PopoverComponent = Popover,
   calendarComponent: CalendarComponent = Calendar,
   numberOfMonths,
   name,
@@ -397,8 +492,10 @@ export const InputCalendar = ({
     : isValueControlled
       ? value
       : internalValue
+  const resolvedMode = normalizeCalendarPickerMode(mode)
   const renderedValue = formatCalendarValue({
-    mode,
+    mode: resolvedMode,
+    selectionScope,
     value: resolvedValue,
     placeholder,
   })
@@ -413,11 +510,22 @@ export const InputCalendar = ({
     onIsOpenChange,
   )
   const rootReference = React.useRef<HTMLDivElement | null>(null)
+  const triggerReference = React.useRef<HTMLInputElement | null>(null)
+  const panelReference = React.useRef<HTMLDivElement | null>(null)
+  const panelPosition = useFloatingPanelPosition(
+    isCalendarOpen,
+    triggerReference,
+  )
   const generatedId = React.useId()
   const inputId = id ?? generatedId
 
-  useOutsideDismiss(rootReference, isCalendarOpen, () => {
-    setIsCalendarOpen(false)
+  useOutsideDismiss({
+    isOpen: isCalendarOpen,
+    rootReference,
+    panelReference,
+    onDismiss: () => {
+      setIsCalendarOpen(false)
+    },
   })
 
   const applyValueChange = (nextValue: CalendarSelectionType) => {
@@ -427,14 +535,14 @@ export const InputCalendar = ({
 
     onChange?.(nextValue)
 
-    if (mode === 'single' && nextValue instanceof Date) {
+    if (resolvedMode === 'single' && nextValue instanceof Date) {
       setIsCalendarOpen(false)
 
       return
     }
 
     if (
-      mode === 'range' &&
+      resolvedMode === 'range' &&
       isDateRangeValue(nextValue) &&
       nextValue.from &&
       nextValue.to
@@ -470,13 +578,14 @@ export const InputCalendar = ({
 
       <div className="relative flex w-full items-center">
         <input
+          ref={triggerReference}
           id={inputId}
           name={name}
           readOnly
           value={renderedValue}
           placeholder={placeholder}
           disabled={disabled}
-          onClick={() => setIsCalendarOpen(!isCalendarOpen)}
+          onClick={() => setIsCalendarOpen(true)}
           onFocus={() => setIsCalendarOpen(true)}
           className={cn(
             'field-transition focus-ring-3 border-border bg-background text-foreground',
@@ -498,28 +607,39 @@ export const InputCalendar = ({
         </button>
       </div>
 
-      {isCalendarOpen ? (
-        <div className="border-border bg-card text-card-foreground absolute left-0 top-full z-50 mt-2 rounded-md border p-2 shadow-md">
-          {mode === 'range' ? (
-            <CalendarComponent
-              {...calendarProperty}
-              isLoading={isLoading}
-              mode="range"
-              selected={resolvedValue as DateRange | undefined}
-              onSelect={handleRangeSelect}
-              numberOfMonths={numberOfMonths ?? 2}
-            />
-          ) : (
-            <CalendarComponent
-              {...calendarProperty}
-              isLoading={isLoading}
-              mode="single"
-              selected={resolvedValue as Date | undefined}
-              onSelect={handleSingleSelect}
-              numberOfMonths={numberOfMonths ?? 1}
-            />
-          )}
-        </div>
+      {isCalendarOpen && panelPosition ? (
+        <PopoverComponent>
+          <div
+            ref={panelReference}
+            style={{
+              position: 'fixed',
+              top: panelPosition.top,
+              left: panelPosition.left,
+            }}
+            className="border-border bg-card text-card-foreground z-50 w-max rounded-md border p-2 shadow-md">
+            {resolvedMode === 'range' ? (
+              <CalendarComponent
+                {...calendarProperty}
+                isLoading={isLoading}
+                selectionScope={selectionScope}
+                mode="range"
+                selected={resolvedValue as DateRange | undefined}
+                onSelect={handleRangeSelect}
+                numberOfMonths={numberOfMonths ?? 2}
+              />
+            ) : (
+              <CalendarComponent
+                {...calendarProperty}
+                isLoading={isLoading}
+                selectionScope={selectionScope}
+                mode="single"
+                selected={resolvedValue as Date | undefined}
+                onSelect={handleSingleSelect}
+                numberOfMonths={numberOfMonths ?? 1}
+              />
+            )}
+          </div>
+        </PopoverComponent>
       ) : null}
 
       {isError && errorText ? (

@@ -1,12 +1,15 @@
 import * as React from 'react'
 import type { DateRange } from 'react-day-picker'
 
-export type CalendarPickerModeType = 'single' | 'range'
+export type CalendarPickerModeType = 'single' | 'range' | 'ranged'
+
+export type CalendarPickerSelectionScopeType = 'date' | 'month' | 'monthYear'
 
 export type CalendarSelectionType = Date | DateRange | undefined
 
 export type CalendarPickerControlStatePropertyType = {
   mode?: CalendarPickerModeType
+  selectionScope?: CalendarPickerSelectionScopeType
   value?: CalendarSelectionType
   defaultValue?: CalendarSelectionType
   onChange?: (value: CalendarSelectionType) => void
@@ -24,6 +27,10 @@ export type CalendarPickerCalendarSlotPropertyType<
   calendarComponent?: React.ComponentType<CalendarComponentPropertyType>
 }
 
+export type CalendarPickerPopoverSlotPropertyType = {
+  popoverComponent?: React.ComponentType<{ children: React.ReactNode }>
+}
+
 export const isDateRangeValue = (
   value: CalendarSelectionType,
 ): value is DateRange => {
@@ -34,29 +41,54 @@ export const isDateRangeValue = (
   return 'from' in value || 'to' in value
 }
 
-const formatCalendarDate = (date: Date) =>
-  date.toLocaleDateString(undefined, {
+export const normalizeCalendarPickerMode = (
+  mode: CalendarPickerModeType,
+): 'single' | 'range' => (mode === 'ranged' ? 'range' : mode)
+
+const formatCalendarDate = (
+  date: Date,
+  selectionScope: CalendarPickerSelectionScopeType,
+) => {
+  if (selectionScope === 'month') {
+    return date.toLocaleDateString(undefined, {
+      month: 'long',
+    })
+  }
+
+  if (selectionScope === 'monthYear') {
+    return date.toLocaleDateString(undefined, {
+      month: 'long',
+      year: 'numeric',
+    })
+  }
+
+  return date.toLocaleDateString(undefined, {
     day: '2-digit',
     month: 'short',
     year: 'numeric',
   })
+}
 
 export const formatCalendarValue = ({
   mode,
+  selectionScope = 'date',
   value,
   placeholder,
 }: {
   mode: CalendarPickerModeType
+  selectionScope?: CalendarPickerSelectionScopeType
   value: CalendarSelectionType
   placeholder: string
 }) => {
+  const normalizedMode = normalizeCalendarPickerMode(mode)
+
   if (!value) {
     return placeholder
   }
 
-  if (mode === 'single') {
+  if (normalizedMode === 'single') {
     if (value instanceof Date) {
-      return formatCalendarDate(value)
+      return formatCalendarDate(value, selectionScope)
     }
 
     return placeholder
@@ -67,11 +99,11 @@ export const formatCalendarValue = ({
   }
 
   if (value.from && value.to) {
-    return `${formatCalendarDate(value.from)} - ${formatCalendarDate(value.to)}`
+    return `${formatCalendarDate(value.from, selectionScope)} - ${formatCalendarDate(value.to, selectionScope)}`
   }
 
   if (value.from) {
-    return `${formatCalendarDate(value.from)} - ...`
+    return `${formatCalendarDate(value.from, selectionScope)} - ...`
   }
 
   return placeholder
