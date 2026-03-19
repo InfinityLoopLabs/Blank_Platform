@@ -19,6 +19,21 @@ type DiffStats = {
   height: number | null
 }
 
+type ArtifactGroup = {
+  id: string
+  testCase: string
+  screenshotName: string
+  capturedAt: string
+  baselineExists: boolean
+  baselinePath: string
+  actualPath: string
+  diffPath: string | null
+  diffPixels: number | null
+  diffRatio: number | null
+  width: number | null
+  height: number | null
+}
+
 const stories: readonly StoryCase[] = [
   { id: 'atoms-button--all-colors', snapshot: 'atoms-button-all-colors.png' },
   { id: 'atoms-tag--playground', snapshot: 'atoms-tag-playground.png' },
@@ -28,6 +43,14 @@ const stories: readonly StoryCase[] = [
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
 const packageRoot = path.resolve(__dirname, '..', '..')
 const runId = process.env.VISUAL_RUN_ID ?? 'local'
+const runLabel = (() => {
+  const value = runId
+    .replace(/[^a-z0-9-]+/gi, '-')
+    .replace(/-+/g, '-')
+    .replace(/^-|-$/g, '')
+    .toLowerCase()
+  return value.length > 0 ? value : 'local'
+})()
 
 const runRoot = path.join(__dirname, 'runs', 'latest')
 const actualDir = path.join(runRoot, 'actual')
@@ -48,6 +71,9 @@ const slugify = (value: string) =>
     .replace(/-+/g, '-')
     .replace(/^-|-$/g, '')
     .toLowerCase()
+
+const buildArtifactName = (storyId: string, testCase: string, projectName: string) =>
+  `${runLabel}-${slugify(storyId)}-${slugify(testCase)}-${slugify(projectName)}.png`
 
 const buildDiffStats = (
   baselinePath: string,
@@ -122,11 +148,12 @@ for (const story of stories) {
       throw new Error('Playwright baseURL is required for visual tests')
     }
 
-    const artifactStem = `${slugify(story.snapshot)}-${testInfo.project.name}`
-    const actualPath = path.join(actualDir, `${artifactStem}.png`)
-    const diffPath = path.join(diffDir, `${artifactStem}.png`)
+    const screenshotName = buildArtifactName(story.id, 'default', testInfo.project.name)
+    const actualPath = path.join(actualDir, screenshotName)
+    const diffPath = path.join(diffDir, screenshotName)
     const resultPath = path.join(resultsDir, `${slugify(story.id)}.json`)
     const baselinePath = testInfo.snapshotPath(story.snapshot)
+    const capturedAt = new Date().toISOString()
 
     let status: 'passed' | 'failed' = 'passed'
     let failureMessage: string | null = null
@@ -159,17 +186,11 @@ for (const story of stories) {
     } finally {
       const baselineExists = fs.existsSync(baselinePath)
       const diffStats = buildDiffStats(baselinePath, actualPath, diffPath)
-
-      const result = {
-        schemaVersion: 1,
-        runId,
-        storyId: story.id,
-        snapshotName: story.snapshot,
-        projectName: testInfo.project.name,
-        browserName: testInfo.project.use.browserName,
-        status,
-        failureMessage,
-        capturedAt: new Date().toISOString(),
+      const artifactGroup: ArtifactGroup = {
+        id: 'default',
+        testCase: 'default',
+        screenshotName,
+        capturedAt,
         baselineExists,
         baselinePath: toPosixRelativePath(baselinePath),
         actualPath: toPosixRelativePath(actualPath),
@@ -178,6 +199,29 @@ for (const story of stories) {
         diffRatio: diffStats.diffRatio,
         width: diffStats.width,
         height: diffStats.height,
+      }
+
+      const result = {
+        schemaVersion: 2,
+        runId,
+        storyId: story.id,
+        snapshotName: story.snapshot,
+        projectName: testInfo.project.name,
+        browserName: testInfo.project.use.browserName,
+        status,
+        failureMessage,
+        capturedAt,
+        testCase: artifactGroup.testCase,
+        screenshotName: artifactGroup.screenshotName,
+        baselineExists,
+        baselinePath: artifactGroup.baselinePath,
+        actualPath: artifactGroup.actualPath,
+        diffPath: artifactGroup.diffPath,
+        diffPixels: artifactGroup.diffPixels,
+        diffRatio: artifactGroup.diffRatio,
+        width: artifactGroup.width,
+        height: artifactGroup.height,
+        artifactGroups: [artifactGroup],
       }
 
       fs.writeFileSync(resultPath, JSON.stringify(result, null, 2) + '\n')

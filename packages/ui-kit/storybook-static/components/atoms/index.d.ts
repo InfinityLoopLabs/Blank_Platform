@@ -10,3 +10,4 @@ export * from './Toggle';
 export * from './Image';
 export * from './Timer';
 export * from './Tag';
+export * from './Calendar';

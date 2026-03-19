@@ -1,0 +1,10 @@
+import{j as m}from"./jsx-runtime-9bc08dc0.js";import{r as u}from"./index-0b625b07.js";import{K as f}from"./index.es-32ff2151.js";const t={"flex-start":"items-start","flex-end":"items-end",center:"items-center",baseline:"items-baseline",stretch:"items-stretch"},a={"flex-start":"justify-start","flex-end":"justify-end",center:"justify-center","space-between":"justify-between","space-around":"justify-around","space-evenly":"justify-evenly"},n=u.forwardRef(({children:l,className:s="",column:r,middle:i,...e},c)=>m.jsx("div",{ref:c,className:f("flex",r&&"flex-col",e["justify-content"]&&a[e["justify-content"]],e["align-items"]&&t[e["align-items"]],i&&`${t.center} ${a.center}`,s),...e,children:l}));n.displayName="Flex";n.__docgenInfo={description:"",methods:[],displayName:"Flex",props:{column:{required:!1,tsType:{name:"boolean"},description:""},middle:{required:!1,tsType:{name:"boolean"},description:""},"justify-content":{required:!1,tsType:{name:"union",raw:`| 'center'
+| 'flex-start'
+| 'flex-end'
+| 'space-between'
+| 'space-around'
+| 'space-evenly'`,elements:[{name:"literal",value:"'center'"},{name:"literal",value:"'flex-start'"},{name:"literal",value:"'flex-end'"},{name:"literal",value:"'space-between'"},{name:"literal",value:"'space-around'"},{name:"literal",value:"'space-evenly'"}]},description:""},"align-items":{required:!1,tsType:{name:"union",raw:`| 'center'
+| 'flex-start'
+| 'stretch'
+| 'flex-end'
+| 'baseline'`,elements:[{name:"literal",value:"'center'"},{name:"literal",value:"'flex-start'"},{name:"literal",value:"'stretch'"},{name:"literal",value:"'flex-end'"},{name:"literal",value:"'baseline'"}]},description:""},className:{defaultValue:{value:"''",computed:!1},required:!1}}};export{n as F};

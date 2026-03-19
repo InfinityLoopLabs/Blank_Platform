@@ -1,4 +1,5 @@
 import * as React from '../../../../../../node_modules/react';
+import type { TypographyColorType } from '../../../components/atoms/Typography';
 export declare const IMAGE_MASK_OPTIONS: readonly [{
     readonly value: 0;
     readonly label: "No Mask";
@@ -13,6 +14,8 @@ export declare const IMAGE_MASK_OPTIONS: readonly [{
     readonly label: "Square Crop";
 }];
 export type ImageMaskType = (typeof IMAGE_MASK_OPTIONS)[number]['value'];
+export declare const IMAGE_SIDE_SHADE_SIDE_OPTIONS: readonly ["left", "right"];
+export type ImageSideShadeSideType = (typeof IMAGE_SIDE_SHADE_SIDE_OPTIONS)[number];
 export type ImageMaskPositionValueType = {
     x: number;
     y: number;
@@ -43,5 +46,8 @@ export type ImagePropertyType = Omit<React.ImgHTMLAttributes<HTMLImageElement>, 
     topShadeColor?: string;
     isBottomShadeVisible?: boolean;
     bottomShadeColor?: string;
+    isSideShadeVisible?: boolean;
+    sideShadeSide?: ImageSideShadeSideType;
+    sideShadeColorToken?: TypographyColorType;
 };
-export declare const Image: ({ className, isLoading, maskType, isEditModeDisabled, imagePosition, isSquareCrop, cropX, cropY, cropPositionValue, defaultCropPositionValue, onCropPositionChange, maskSize, maskPositionValue, maskFillColor, maskStrokeColor, maskStrokeWidth, isTopShadeVisible, topShadeColor, isBottomShadeVisible, bottomShadeColor, alt, style, ...property }: ImagePropertyType) => import('../../../../../../node_modules/react/jsx-runtime').JSX.Element;
+export declare const Image: ({ className, isLoading, maskType, isEditModeDisabled, imagePosition, isSquareCrop, cropX, cropY, cropPositionValue, defaultCropPositionValue, onCropPositionChange, maskSize, maskPositionValue, maskFillColor, maskStrokeColor, maskStrokeWidth, isTopShadeVisible, topShadeColor, isBottomShadeVisible, bottomShadeColor, isSideShadeVisible, sideShadeSide, sideShadeColorToken, alt, style, ...property }: ImagePropertyType) => import('../../../../../../node_modules/react/jsx-runtime').JSX.Element;

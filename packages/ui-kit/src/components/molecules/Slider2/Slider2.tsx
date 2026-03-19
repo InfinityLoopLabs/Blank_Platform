@@ -11,7 +11,7 @@ import {
 } from 'swiper/modules'
 import { Swiper, SwiperSlide } from 'swiper/react'
 
-import { cn } from '@/lib/utils'
+import { cn } from '../../../lib/utils'
 
 import 'swiper/css'
 import 'swiper/css/pagination'

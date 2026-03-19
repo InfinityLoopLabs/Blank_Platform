@@ -37,7 +37,11 @@ const meta = {
       onTagLabelChange,
     })
 
-    return <Slider2 {...sliderProperty}>{slides}</Slider2>
+    return (
+      <div className="w-[760px] max-w-full">
+        <Slider2 {...sliderProperty}>{slides}</Slider2>
+      </div>
+    )
   },
   decorators: [
     Story => (

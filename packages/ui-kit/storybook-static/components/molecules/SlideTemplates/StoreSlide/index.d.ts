@@ -6,8 +6,21 @@ export type StoreSlideImageChangePayloadType = {
     file: File;
     objectUrl: string;
 };
-type StoreSlidePropertyType = Omit<React.HTMLAttributes<HTMLElement>, 'title'> & {
+export type StoreSlideTagItemType = {
+    id: string;
+    label: string;
+    type?: TagType;
+    position?: 'top-left' | 'bottom-right';
+    color?: TypographyColorType;
+    textColor?: TypographyColorType;
+    isLoading?: boolean;
+    onClick?: (id: string) => void;
+    onLabelChange?: (id: string, value: string) => void;
+};
+export type StoreSlidePropertyType = Omit<React.HTMLAttributes<HTMLElement>, 'title'> & {
     isSetModeEnabled?: boolean;
+    isEditModeEnabled?: boolean;
+    isEditModeDisabled?: boolean;
     setModelEnabled?: boolean;
     coverImageSrc: string;
     coverImageAlt?: string;
@@ -25,7 +38,9 @@ type StoreSlidePropertyType = Omit<React.HTMLAttributes<HTMLElement>, 'title'> &
     tagType?: TagType;
     tagColor?: TypographyColorType;
     tagTextColor?: TypographyColorType;
+    tags?: StoreSlideTagItemType[];
+    onTagClick?: (id: string) => void;
+    onTagLabelChange?: (id: string, value: string) => void;
     badgeText?: React.ReactNode;
 };
-export declare const StoreSlide: ({ className, isSetModeEnabled, setModelEnabled, coverImageSrc, coverImageAlt, isImageLoading, imageProps, imageAccept, onImageChange, brandName, brandIcon, heading, accentText, description, priceText, tagText, tagType, tagColor, tagTextColor, badgeText, ...property }: StoreSlidePropertyType) => import('../../../../../../../node_modules/react/jsx-runtime').JSX.Element;
-export {};
+export declare const StoreSlide: ({ className, isSetModeEnabled, isEditModeEnabled, isEditModeDisabled, setModelEnabled, coverImageSrc, coverImageAlt, isImageLoading, imageProps, imageAccept, onImageChange, brandName, brandIcon, heading, accentText, description, priceText, tagText, tagType, tagColor, tagTextColor, tags, onTagClick, onTagLabelChange, badgeText, ...property }: StoreSlidePropertyType) => import('../../../../../../../node_modules/react/jsx-runtime').JSX.Element;

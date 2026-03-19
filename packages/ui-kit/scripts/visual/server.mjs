@@ -128,16 +128,119 @@ const loadState = () => {
   return state
 }
 
+const normalizeStoryArtifactGroups = storyLike => {
+  const fromArray = Array.isArray(storyLike?.artifactGroups) ? storyLike.artifactGroups : []
+  const normalized = fromArray
+    .map((group, index) => {
+      const groupId =
+        typeof group?.id === 'string' && group.id.trim().length > 0
+          ? group.id.trim()
+          : typeof group?.testCase === 'string' && group.testCase.trim().length > 0
+            ? group.testCase.trim()
+            : index === 0
+              ? 'default'
+              : `case-${index + 1}`
+      const testCase =
+        typeof group?.testCase === 'string' && group.testCase.trim().length > 0
+          ? group.testCase.trim()
+          : groupId
+      return {
+        id: groupId,
+        testCase,
+        screenshotName:
+          typeof group?.screenshotName === 'string' && group.screenshotName.trim().length > 0
+            ? group.screenshotName.trim()
+            : null,
+        capturedAt:
+          typeof group?.capturedAt === 'string' && group.capturedAt.trim().length > 0
+            ? group.capturedAt.trim()
+            : null,
+        baselineExists: typeof group?.baselineExists === 'boolean' ? group.baselineExists : Boolean(group?.baselinePath),
+        baselinePath:
+          typeof group?.baselinePath === 'string' && group.baselinePath.trim().length > 0
+            ? group.baselinePath.trim()
+            : null,
+        actualPath:
+          typeof group?.actualPath === 'string' && group.actualPath.trim().length > 0
+            ? group.actualPath.trim()
+            : null,
+        diffPath:
+          typeof group?.diffPath === 'string' && group.diffPath.trim().length > 0
+            ? group.diffPath.trim()
+            : null,
+        diffPixels: typeof group?.diffPixels === 'number' ? group.diffPixels : null,
+        diffRatio: typeof group?.diffRatio === 'number' ? group.diffRatio : null,
+        width: typeof group?.width === 'number' ? group.width : null,
+        height: typeof group?.height === 'number' ? group.height : null,
+      }
+    })
+    .filter(group => group.baselinePath || group.actualPath || group.diffPath)
+
+  if (normalized.length > 0) {
+    return normalized
+  }
+
+  const baselinePath =
+    typeof storyLike?.baselinePath === 'string' && storyLike.baselinePath.trim().length > 0
+      ? storyLike.baselinePath.trim()
+      : null
+  const actualPath =
+    typeof storyLike?.actualPath === 'string' && storyLike.actualPath.trim().length > 0
+      ? storyLike.actualPath.trim()
+      : null
+  const diffPath =
+    typeof storyLike?.diffPath === 'string' && storyLike.diffPath.trim().length > 0
+      ? storyLike.diffPath.trim()
+      : null
+
+  if (!baselinePath && !actualPath && !diffPath) {
+    return []
+  }
+
+  return [
+    {
+      id: 'default',
+      testCase:
+        typeof storyLike?.testCase === 'string' && storyLike.testCase.trim().length > 0
+          ? storyLike.testCase.trim()
+          : 'default',
+      screenshotName:
+        typeof storyLike?.screenshotName === 'string' && storyLike.screenshotName.trim().length > 0
+          ? storyLike.screenshotName.trim()
+          : null,
+      capturedAt:
+        typeof storyLike?.capturedAt === 'string' && storyLike.capturedAt.trim().length > 0
+          ? storyLike.capturedAt.trim()
+          : null,
+      baselineExists: Boolean(baselinePath),
+      baselinePath,
+      actualPath,
+      diffPath,
+      diffPixels: typeof storyLike?.diffPixels === 'number' ? storyLike.diffPixels : null,
+      diffRatio: typeof storyLike?.diffRatio === 'number' ? storyLike.diffRatio : null,
+      width: typeof storyLike?.width === 'number' ? storyLike.width : null,
+      height: typeof storyLike?.height === 'number' ? storyLike.height : null,
+    },
+  ]
+}
+
 const resolveStoryArtifacts = storyId => {
   const manifest = loadManifest()
   const state = loadState()
   const manifestStory = manifest.stories?.[storyId] ?? null
   const stateStory = state.stories?.[storyId] ?? null
+  const manifestGroups = normalizeStoryArtifactGroups(manifestStory)
+  const stateGroups = normalizeStoryArtifactGroups(stateStory?.lastRun ?? null)
+  const artifactGroups = manifestGroups.length > 0 ? manifestGroups : stateGroups
+  const primaryGroup = artifactGroups[0] ?? null
 
   return {
-    baselinePath: manifestStory?.baselinePath ?? stateStory?.baselinePath ?? null,
-    actualPath: manifestStory?.actualPath ?? stateStory?.lastRun?.actualPath ?? null,
-    diffPath: manifestStory?.diffPath ?? stateStory?.lastRun?.diffPath ?? null,
+    baselinePath:
+      primaryGroup?.baselinePath ?? manifestStory?.baselinePath ?? stateStory?.baselinePath ?? null,
+    actualPath:
+      primaryGroup?.actualPath ?? manifestStory?.actualPath ?? stateStory?.lastRun?.actualPath ?? null,
+    diffPath: primaryGroup?.diffPath ?? manifestStory?.diffPath ?? stateStory?.lastRun?.diffPath ?? null,
+    artifactGroups,
   }
 }
 
@@ -204,6 +307,7 @@ app.get('/api/visual/file', (request, response) => {
 app.get('/api/visual/artifact', (request, response) => {
   const storyId = typeof request.query.storyId === 'string' ? request.query.storyId : ''
   const kind = typeof request.query.kind === 'string' ? request.query.kind : ''
+  const artifactId = typeof request.query.artifactId === 'string' ? request.query.artifactId.trim() : ''
 
   if (!storyId) {
     response.status(400).json({ error: 'Query parameter "storyId" is required' })
@@ -216,11 +320,28 @@ app.get('/api/visual/artifact', (request, response) => {
   }
 
   const artifacts = resolveStoryArtifacts(storyId)
-  const relativePath =
-    kind === 'b' ? artifacts.baselinePath : kind === 'a' ? artifacts.actualPath : artifacts.diffPath
+  const artifactGroup =
+    artifactId.length > 0
+      ? artifacts.artifactGroups.find(group => group.id === artifactId || group.testCase === artifactId) ?? null
+      : artifacts.artifactGroups[0] ?? null
+  const relativePath = artifactGroup
+    ? kind === 'b'
+      ? artifactGroup.baselinePath
+      : kind === 'a'
+        ? artifactGroup.actualPath
+        : artifactGroup.diffPath
+    : kind === 'b'
+      ? artifacts.baselinePath
+      : kind === 'a'
+        ? artifacts.actualPath
+        : artifacts.diffPath
 
   if (!relativePath) {
-    response.status(404).json({ error: `No artifact path found for story "${storyId}"` })
+    response.status(404).json({
+      error: artifactId
+        ? `No artifact path found for story "${storyId}" and artifact "${artifactId}"`
+        : `No artifact path found for story "${storyId}"`,
+    })
     return
   }
 
@@ -364,16 +485,71 @@ app.post('/api/visual/approve', (request, response) => {
   }
 
   try {
-    const actualAbsolutePath = resolveSafePath(manifestStory.actualPath)
-    const baselineAbsolutePath = resolveSafePath(manifestStory.baselinePath)
+    const storyArtifactGroups = normalizeStoryArtifactGroups(manifestStory)
+    const copiedGroups = []
 
-    if (!fs.existsSync(actualAbsolutePath)) {
-      response.status(404).json({ error: `Actual image not found: ${manifestStory.actualPath}` })
-      return
+    for (const group of storyArtifactGroups) {
+      if (!group.actualPath || !group.baselinePath) {
+        continue
+      }
+
+      const actualAbsolutePath = resolveSafePath(group.actualPath)
+      const baselineAbsolutePath = resolveSafePath(group.baselinePath)
+      if (!fs.existsSync(actualAbsolutePath)) {
+        continue
+      }
+
+      fs.mkdirSync(path.dirname(baselineAbsolutePath), { recursive: true })
+      fs.copyFileSync(actualAbsolutePath, baselineAbsolutePath)
+      copiedGroups.push({
+        ...group,
+        baselineExists: true,
+      })
     }
 
-    fs.mkdirSync(path.dirname(baselineAbsolutePath), { recursive: true })
-    fs.copyFileSync(actualAbsolutePath, baselineAbsolutePath)
+    const fallbackActualPath =
+      typeof manifestStory.actualPath === 'string' && manifestStory.actualPath.length > 0
+        ? manifestStory.actualPath
+        : null
+    const fallbackBaselinePath =
+      typeof manifestStory.baselinePath === 'string' && manifestStory.baselinePath.length > 0
+        ? manifestStory.baselinePath
+        : null
+
+    if (copiedGroups.length === 0 && fallbackActualPath && fallbackBaselinePath) {
+      const actualAbsolutePath = resolveSafePath(fallbackActualPath)
+      const baselineAbsolutePath = resolveSafePath(fallbackBaselinePath)
+      if (!fs.existsSync(actualAbsolutePath)) {
+        response.status(404).json({ error: `Actual image not found: ${fallbackActualPath}` })
+        return
+      }
+
+      fs.mkdirSync(path.dirname(baselineAbsolutePath), { recursive: true })
+      fs.copyFileSync(actualAbsolutePath, baselineAbsolutePath)
+      copiedGroups.push({
+        id: 'default',
+        testCase: 'default',
+        baselineExists: true,
+        baselinePath: fallbackBaselinePath,
+        actualPath: fallbackActualPath,
+        diffPath:
+          typeof manifestStory.diffPath === 'string' && manifestStory.diffPath.length > 0
+            ? manifestStory.diffPath
+            : null,
+        diffPixels: typeof manifestStory.diffPixels === 'number' ? manifestStory.diffPixels : null,
+        diffRatio: typeof manifestStory.diffRatio === 'number' ? manifestStory.diffRatio : null,
+        screenshotName:
+          typeof manifestStory.screenshotName === 'string' ? manifestStory.screenshotName : null,
+        capturedAt: typeof manifestStory.capturedAt === 'string' ? manifestStory.capturedAt : null,
+        width: typeof manifestStory.width === 'number' ? manifestStory.width : null,
+        height: typeof manifestStory.height === 'number' ? manifestStory.height : null,
+      })
+    }
+
+    if (copiedGroups.length === 0) {
+      response.status(404).json({ error: `No actual artifacts found to approve for "${storyId}"` })
+      return
+    }
 
     const now = new Date().toISOString()
     const current = state.stories?.[storyId] ?? {
@@ -393,13 +569,16 @@ app.post('/api/visual/approve', (request, response) => {
     current.rejectReason = null
     current.rejectedAt = null
     current.rejectedBy = null
-    current.baselinePath = toPosixRelativePath(baselineAbsolutePath)
-    current.baselineHash = hashFile(baselineAbsolutePath)
-    current.baselineUpdatedAt = now
     current.lastAction = {
       type: 'approve',
       at: now,
     }
+
+    const primaryApprovedGroup = copiedGroups[0]
+    const primaryBaselineAbsolutePath = resolveSafePath(primaryApprovedGroup.baselinePath)
+    current.baselinePath = toPosixRelativePath(primaryBaselineAbsolutePath)
+    current.baselineHash = hashFile(primaryBaselineAbsolutePath)
+    current.baselineUpdatedAt = now
 
     if (manifestStory) {
       current.lastRun = {
@@ -408,8 +587,9 @@ app.post('/api/visual/approve', (request, response) => {
         capturedAt: manifestStory.capturedAt,
         diffPixels: manifestStory.diffPixels,
         diffRatio: manifestStory.diffRatio,
-        actualPath: manifestStory.actualPath,
-        diffPath: manifestStory.diffPath,
+        actualPath: primaryApprovedGroup.actualPath,
+        diffPath: primaryApprovedGroup.diffPath,
+        artifactGroups: copiedGroups,
       }
     }
 

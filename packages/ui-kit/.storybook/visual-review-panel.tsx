@@ -1,5 +1,21 @@
 import React from 'react'
 import { useStorybookState } from '@storybook/manager-api'
+import { Slider2 } from '../src/components/molecules/Slider2'
+
+type ArtifactGroup = {
+  id?: string | null
+  testCase?: string | null
+  screenshotName?: string | null
+  capturedAt?: string | null
+  baselineExists?: boolean
+  baselinePath?: string | null
+  actualPath?: string | null
+  diffPath?: string | null
+  diffPixels?: number | null
+  diffRatio?: number | null
+  width?: number | null
+  height?: number | null
+}
 
 type ManifestStory = {
   storyId: string
@@ -13,6 +29,9 @@ type ManifestStory = {
   diffRatio?: number | null
   title?: string | null
   name?: string | null
+  testCase?: string | null
+  screenshotName?: string | null
+  artifactGroups?: ArtifactGroup[] | null
 }
 
 type StateStory = {
@@ -29,6 +48,7 @@ type StateStory = {
     diffRatio?: number | null
     actualPath?: string | null
     diffPath?: string | null
+    artifactGroups?: ArtifactGroup[] | null
   } | null
 }
 
@@ -101,10 +121,13 @@ const toVisualFileUrl = (relativePath: string | null | undefined, versionToken?:
 const toVisualArtifactUrl = (
   storyId: string | null | undefined,
   kind: 'b' | 'a' | 'd',
+  artifactId?: string | null,
   versionToken?: string | null,
 ) =>
   storyId
     ? `${API_ORIGIN}/api/visual/artifact?storyId=${encodeURIComponent(storyId)}&kind=${kind}${
+        artifactId ? `&artifactId=${encodeURIComponent(artifactId)}` : ''
+      }${
         versionToken ? `&v=${encodeURIComponent(versionToken)}` : ''
       }`
     : null
@@ -198,6 +221,91 @@ const statusColorByValue: Record<string, string> = {
   running: '#0ea5e9',
   passed: '#22c55e',
   failed: '#ef4444',
+}
+
+type ResolvedArtifactGroup = {
+  id: string
+  testCase: string
+  screenshotName: string | null
+  capturedAt: string | null
+  baselinePath: string | null
+  actualPath: string | null
+  diffPath: string | null
+  diffPixels: number | null
+  diffRatio: number | null
+}
+
+const normalizeArtifactValue = (value: string | null | undefined) =>
+  typeof value === 'string' && value.trim().length > 0 ? value : null
+
+const normalizeResolvedArtifactGroups = (
+  manifestStory: ManifestStory | null,
+  stateStory: StateStory | null,
+): ResolvedArtifactGroup[] => {
+  const fromArray =
+    (Array.isArray(manifestStory?.artifactGroups)
+      ? manifestStory?.artifactGroups
+      : Array.isArray(stateStory?.lastRun?.artifactGroups)
+        ? stateStory?.lastRun?.artifactGroups
+        : []) ?? []
+
+  const normalized = fromArray
+    .map((artifact, index) => {
+      const fallbackId =
+        typeof artifact?.testCase === 'string' && artifact.testCase.trim().length > 0
+          ? artifact.testCase.trim()
+          : `case-${index + 1}`
+
+      return {
+        id:
+          typeof artifact?.id === 'string' && artifact.id.trim().length > 0
+            ? artifact.id.trim()
+            : fallbackId,
+        testCase:
+          typeof artifact?.testCase === 'string' && artifact.testCase.trim().length > 0
+            ? artifact.testCase.trim()
+            : fallbackId,
+        screenshotName: normalizeArtifactValue(artifact?.screenshotName),
+        capturedAt: normalizeArtifactValue(artifact?.capturedAt),
+        baselinePath: normalizeArtifactValue(artifact?.baselinePath),
+        actualPath: normalizeArtifactValue(artifact?.actualPath),
+        diffPath: normalizeArtifactValue(artifact?.diffPath),
+        diffPixels: typeof artifact?.diffPixels === 'number' ? artifact.diffPixels : null,
+        diffRatio: typeof artifact?.diffRatio === 'number' ? artifact.diffRatio : null,
+      } satisfies ResolvedArtifactGroup
+    })
+    .filter(artifact => artifact.baselinePath || artifact.actualPath || artifact.diffPath)
+
+  if (normalized.length > 0) {
+    return normalized
+  }
+
+  const fallbackBaselinePath = normalizeArtifactValue(manifestStory?.baselinePath ?? stateStory?.baselinePath)
+  const fallbackActualPath = normalizeArtifactValue(
+    manifestStory?.actualPath ?? stateStory?.lastRun?.actualPath,
+  )
+  const fallbackDiffPath = normalizeArtifactValue(manifestStory?.diffPath ?? stateStory?.lastRun?.diffPath)
+
+  if (!fallbackBaselinePath && !fallbackActualPath && !fallbackDiffPath) {
+    return []
+  }
+
+  return [
+    {
+      id: 'default',
+      testCase:
+        normalizeArtifactValue(manifestStory?.testCase) ??
+        normalizeArtifactValue(manifestStory?.name) ??
+        'default',
+      screenshotName: normalizeArtifactValue(manifestStory?.screenshotName),
+      capturedAt: normalizeArtifactValue(manifestStory?.capturedAt),
+      baselinePath: fallbackBaselinePath,
+      actualPath: fallbackActualPath,
+      diffPath: fallbackDiffPath,
+      diffPixels: typeof manifestStory?.diffPixels === 'number' ? manifestStory.diffPixels : null,
+      diffRatio: typeof manifestStory?.diffRatio === 'number' ? manifestStory.diffRatio : null,
+    },
+  ]
 }
 
 const renderImageCard = (
@@ -307,44 +415,65 @@ export const VisualReviewPanel = () => {
       ? stories[currentStoryIndex + 1]?.storyId
       : null
 
-  const baselinePath =
-    currentStory?.manifest?.baselinePath ?? currentStory?.state?.baselinePath ?? null
-  const actualPath =
-    currentStory?.manifest?.actualPath ?? currentStory?.state?.lastRun?.actualPath ?? null
-  const diffPath = currentStory?.manifest?.diffPath ?? currentStory?.state?.lastRun?.diffPath ?? null
-  const refreshToken = runState.finishedAt ?? runState.startedAt ?? currentStory?.manifest?.capturedAt ?? null
-  const baselineSrc =
-    toVisualArtifactUrl(storyId, 'b', refreshToken) ?? toVisualFileUrl(baselinePath, refreshToken)
-  const actualSrc =
-    toVisualArtifactUrl(storyId, 'a', refreshToken) ?? toVisualFileUrl(actualPath, refreshToken)
-  const diffSrc = toVisualArtifactUrl(storyId, 'd', refreshToken) ?? toVisualFileUrl(diffPath, refreshToken)
-
+  const artifactGroups = React.useMemo(
+    () => normalizeResolvedArtifactGroups(currentStory?.manifest ?? null, currentStory?.state ?? null),
+    [currentStory?.manifest, currentStory?.state],
+  )
+  const primaryArtifactGroup = artifactGroups[0] ?? null
+  const refreshToken =
+    runState.finishedAt ??
+    runState.startedAt ??
+    primaryArtifactGroup?.capturedAt ??
+    currentStory?.manifest?.capturedAt ??
+    null
+  const artifactViewItems = React.useMemo(
+    () =>
+      artifactGroups.map(group => {
+        const artifactId = group.id
+        return {
+          ...group,
+          baselineSrc:
+            toVisualArtifactUrl(storyId, 'b', artifactId, refreshToken) ??
+            toVisualFileUrl(group.baselinePath, refreshToken),
+          actualSrc:
+            toVisualArtifactUrl(storyId, 'a', artifactId, refreshToken) ??
+            toVisualFileUrl(group.actualPath, refreshToken),
+          diffSrc:
+            toVisualArtifactUrl(storyId, 'd', artifactId, refreshToken) ??
+            toVisualFileUrl(group.diffPath, refreshToken),
+        }
+      }),
+    [artifactGroups, refreshToken, storyId],
+  )
   React.useEffect(() => {
     setImageErrorByKey({})
-  }, [storyId, refreshToken, baselinePath, actualPath, diffPath])
+  }, [storyId, refreshToken, artifactViewItems])
 
   React.useEffect(() => {
-    const sources = [
-      ['baseline', baselineSrc],
-      ['actual', actualSrc],
-      ['diff', diffSrc],
-    ] as const
+    artifactViewItems.forEach(item => {
+      const sources = [
+        ['baseline', item.baselineSrc],
+        ['actual', item.actualSrc],
+        ['diff', item.diffSrc],
+      ] as const
 
-    sources.forEach(([key, src]) => {
-      if (!src) {
-        return
-      }
+      sources.forEach(([kind, src]) => {
+        if (!src) {
+          return
+        }
 
-      const image = new Image()
-      image.onload = () => {
-        setImageErrorByKey(previous => ({ ...previous, [key]: false }))
-      }
-      image.onerror = () => {
-        setImageErrorByKey(previous => ({ ...previous, [key]: true }))
-      }
-      image.src = src
+        const key = `${item.id}:${kind}`
+        const image = new Image()
+        image.onload = () => {
+          setImageErrorByKey(previous => ({ ...previous, [key]: false }))
+        }
+        image.onerror = () => {
+          setImageErrorByKey(previous => ({ ...previous, [key]: true }))
+        }
+        image.src = src
+      })
     })
-  }, [baselineSrc, actualSrc, diffSrc])
+  }, [artifactViewItems])
 
   const withAction = async (action: () => Promise<void>) => {
     setIsActionPending(true)
@@ -441,6 +570,16 @@ export const VisualReviewPanel = () => {
   const isRunBusy = runState.status === 'running'
   const disableActions = isActionPending || isRunBusy
   const manifestStatus = currentStory?.manifest?.status ?? currentStory?.state?.lastRun?.status ?? 'n/a'
+  const primaryDiffPixels =
+    primaryArtifactGroup?.diffPixels ??
+    currentStory?.manifest?.diffPixels ??
+    currentStory?.state?.lastRun?.diffPixels ??
+    null
+  const primaryDiffRatio =
+    primaryArtifactGroup?.diffRatio ??
+    currentStory?.manifest?.diffRatio ??
+    currentStory?.state?.lastRun?.diffRatio ??
+    null
 
   return (
     <div style={{ padding: PANEL_PADDING, fontFamily: 'Inter, system-ui, sans-serif', overflow: 'auto' }}>
@@ -506,9 +645,11 @@ export const VisualReviewPanel = () => {
           Approved: <strong>{String(currentStory?.state?.approved ?? false)}</strong>
         </div>
         <div style={{ ...valueStyle, marginTop: 4 }}>
-          Diff pixels: {currentStory?.manifest?.diffPixels ?? currentStory?.state?.lastRun?.diffPixels ?? 'n/a'}
+          Diff pixels: {primaryDiffPixels ?? 'n/a'}
           {' | '}
-          Diff ratio: {currentStory?.manifest?.diffRatio ?? currentStory?.state?.lastRun?.diffRatio ?? 'n/a'}
+          Diff ratio: {primaryDiffRatio ?? 'n/a'}
+          {' | '}
+          Artifact groups: {artifactViewItems.length}
         </div>
         <div style={buttonRowStyle}>
           <button
@@ -589,29 +730,88 @@ export const VisualReviewPanel = () => {
 
       <div style={sectionStyle}>
         <div style={labelStyle}>Screenshots</div>
-        <div style={imageGridStyle}>
-          {renderImageCard(
-            'Baseline (previous)',
-            baselineSrc,
-            baselinePath,
-            'No baseline',
-            imageErrorByKey.baseline === true,
-          )}
-          {renderImageCard(
-            'Actual (current)',
-            actualSrc,
-            actualPath,
-            'No actual screenshot',
-            imageErrorByKey.actual === true,
-          )}
-          {renderImageCard(
-            'Diff (delta)',
-            diffSrc,
-            diffPath,
-            'No diff image',
-            imageErrorByKey.diff === true,
-          )}
-        </div>
+        {artifactViewItems.length > 0 ? (
+          <>
+            <div style={{ ...sectionStyle, marginTop: 10, marginBottom: 0, padding: 10 }}>
+              <div style={labelStyle}>Gallery (Actual by Step)</div>
+              <Slider2
+                slidesPerView={1}
+                spaceBetween={12}
+                isLoopEnabled={artifactViewItems.length > 1}
+                isPaginationVisible={true}
+                isNavigationEnabled={true}
+                isArrowsVisible={true}
+                isMousewheelEnabled={false}
+                isKeyboardEnabled={true}
+                isGrabCursorVisible={true}
+                isFreeScrollEnabled={false}
+              >
+                {artifactViewItems.map(item => (
+                  <div key={`gallery-${item.id}`} style={{ padding: 4 }}>
+                    <div style={{ ...labelStyle, marginBottom: 8 }}>
+                      {item.testCase}
+                      {item.screenshotName ? ` | ${item.screenshotName}` : ''}
+                    </div>
+                    {item.actualSrc ? (
+                      <img src={item.actualSrc} alt={`Actual ${item.testCase}`} style={imageStyle} />
+                    ) : (
+                      <div style={{ ...valueStyle, opacity: 0.72 }}>No actual screenshot</div>
+                    )}
+                  </div>
+                ))}
+              </Slider2>
+            </div>
+
+            {artifactViewItems.map(item => (
+              <div
+                key={item.id}
+                style={{
+                  ...sectionStyle,
+                  marginTop: 10,
+                  marginBottom: 0,
+                  padding: 10,
+                }}
+              >
+                <div style={labelStyle}>
+                  Case: {item.testCase}
+                  {item.screenshotName ? ` | File: ${item.screenshotName}` : ''}
+                </div>
+                <div style={{ ...valueStyle, marginBottom: 8 }}>
+                  Diff pixels: {item.diffPixels ?? 'n/a'}
+                  {' | '}
+                  Diff ratio: {item.diffRatio ?? 'n/a'}
+                  {' | '}
+                  Captured: {formatDateTime(item.capturedAt)}
+                </div>
+                <div style={imageGridStyle}>
+                  {renderImageCard(
+                    'Baseline (previous)',
+                    item.baselineSrc,
+                    item.baselinePath,
+                    'No baseline',
+                    imageErrorByKey[`${item.id}:baseline`] === true,
+                  )}
+                  {renderImageCard(
+                    'Actual (current)',
+                    item.actualSrc,
+                    item.actualPath,
+                    'No actual screenshot',
+                    imageErrorByKey[`${item.id}:actual`] === true,
+                  )}
+                  {renderImageCard(
+                    'Diff (delta)',
+                    item.diffSrc,
+                    item.diffPath,
+                    'No diff image',
+                    imageErrorByKey[`${item.id}:diff`] === true,
+                  )}
+                </div>
+              </div>
+            ))}
+          </>
+        ) : (
+          <div style={{ ...valueStyle, opacity: 0.72 }}>No screenshot artifacts for current story</div>
+        )}
       </div>
 
       <div style={sectionStyle}>
