@@ -105,12 +105,16 @@ export const Slider2 = ({
         allowTouchMove
         grabCursor={isGrabCursorVisible}
         simulateTouch
+        touchEventsTarget="container"
+        touchStartPreventDefault={false}
+        touchMoveStopPropagation={false}
         className={cn(
           'w-full min-w-0 max-w-full [--swiper-theme-color:var(--chart-1)]',
           '[&_.swiper-pagination-bullet]:bg-(--chart-1)',
           '[&_.swiper-pagination-bullet]:opacity-45',
           '[&_.swiper-pagination-bullet-active]:bg-(--chart-1)',
           '[&_.swiper-pagination-bullet-active]:opacity-100',
+          isGrabCursorVisible && 'cursor-grab active:cursor-grabbing',
         )}
         onSwiper={swiper => {
           swiperReference.current = swiper

@@ -2,7 +2,7 @@ import crypto from 'node:crypto'
 import fs from 'node:fs'
 import path from 'node:path'
 import { fileURLToPath } from 'node:url'
-import { spawnSync } from 'node:child_process'
+import { spawn, spawnSync } from 'node:child_process'
 
 import express from 'express'
 
@@ -26,6 +26,27 @@ app.use((request, response, next) => {
   next()
 })
 app.use(express.json({ limit: '1mb' }))
+
+const MAX_RUN_LOG_LENGTH = 120_000
+let latestRun = null
+
+const trimLog = value =>
+  value.length > MAX_RUN_LOG_LENGTH ? value.slice(value.length - MAX_RUN_LOG_LENGTH) : value
+
+const appendRunLog = (field, chunk) => {
+  if (!latestRun || typeof chunk !== 'string' || chunk.length === 0) {
+    return
+  }
+
+  latestRun[field] = trimLog(`${latestRun[field]}${chunk}`)
+}
+
+const escapeRegExp = value => value.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
+
+const getRunSnapshot = () =>
+  latestRun ?? {
+    status: 'idle',
+  }
 
 const ensureStateFile = () => {
   if (fs.existsSync(statePath)) {
@@ -107,6 +128,19 @@ const loadState = () => {
   return state
 }
 
+const resolveStoryArtifacts = storyId => {
+  const manifest = loadManifest()
+  const state = loadState()
+  const manifestStory = manifest.stories?.[storyId] ?? null
+  const stateStory = state.stories?.[storyId] ?? null
+
+  return {
+    baselinePath: manifestStory?.baselinePath ?? stateStory?.baselinePath ?? null,
+    actualPath: manifestStory?.actualPath ?? stateStory?.lastRun?.actualPath ?? null,
+    diffPath: manifestStory?.diffPath ?? stateStory?.lastRun?.diffPath ?? null,
+  }
+}
+
 app.get('/api/visual/health', (_request, response) => {
   response.json({ status: 'ok' })
 })
@@ -117,6 +151,10 @@ app.get('/api/visual/manifest', (_request, response) => {
 
 app.get('/api/visual/state', (_request, response) => {
   response.json(loadState())
+})
+
+app.get('/api/visual/run', (_request, response) => {
+  response.json(getRunSnapshot())
 })
 
 app.get('/api/visual/stories', (_request, response) => {
@@ -163,6 +201,45 @@ app.get('/api/visual/file', (request, response) => {
   }
 })
 
+app.get('/api/visual/artifact', (request, response) => {
+  const storyId = typeof request.query.storyId === 'string' ? request.query.storyId : ''
+  const kind = typeof request.query.kind === 'string' ? request.query.kind : ''
+
+  if (!storyId) {
+    response.status(400).json({ error: 'Query parameter "storyId" is required' })
+    return
+  }
+
+  if (!['b', 'a', 'd'].includes(kind)) {
+    response.status(400).json({ error: 'Query parameter "kind" must be one of: b, a, d' })
+    return
+  }
+
+  const artifacts = resolveStoryArtifacts(storyId)
+  const relativePath =
+    kind === 'b' ? artifacts.baselinePath : kind === 'a' ? artifacts.actualPath : artifacts.diffPath
+
+  if (!relativePath) {
+    response.status(404).json({ error: `No artifact path found for story "${storyId}"` })
+    return
+  }
+
+  try {
+    const absolutePath = resolveSafePath(relativePath)
+
+    if (!fs.existsSync(absolutePath)) {
+      response.status(404).json({ error: 'File not found' })
+      return
+    }
+
+    response.sendFile(absolutePath)
+  } catch (error) {
+    response.status(400).json({
+      error: error instanceof Error ? error.message : 'Invalid artifact path',
+    })
+  }
+})
+
 app.post('/api/visual/rebuild', (_request, response) => {
   const result = spawnSync(process.execPath, ['./scripts/visual/build-manifest.mjs'], {
     cwd: packageRoot,
@@ -182,6 +259,90 @@ app.post('/api/visual/rebuild', (_request, response) => {
     ok: true,
     stdout: result.stdout,
     stderr: result.stderr,
+  })
+})
+
+app.post('/api/visual/run', (request, response) => {
+  if (latestRun?.status === 'running') {
+    response.status(409).json({
+      error: 'Visual tests are already running',
+      run: getRunSnapshot(),
+    })
+    return
+  }
+
+  const rawStoryId = request.body?.storyId
+  const storyId =
+    typeof rawStoryId === 'string' && rawStoryId.trim().length > 0 ? rawStoryId.trim() : null
+
+  if (rawStoryId != null && storyId == null) {
+    response.status(400).json({ error: 'storyId must be a non-empty string when provided' })
+    return
+  }
+
+  const scriptArgs = ['./scripts/visual/run-visual-tests.mjs']
+  if (storyId) {
+    // Use a loose regex for current-story runs: Playwright grep can include
+    // additional title-path segments depending on context.
+    scriptArgs.push('--grep', escapeRegExp(storyId))
+  }
+
+  latestRun = {
+    id:
+      typeof crypto.randomUUID === 'function'
+        ? crypto.randomUUID()
+        : `${Date.now()}-${Math.random().toString(16).slice(2)}`,
+    status: 'running',
+    storyId,
+    startedAt: new Date().toISOString(),
+    finishedAt: null,
+    exitCode: null,
+    pid: null,
+    stdout: '',
+    stderr: '',
+    command: `${process.execPath} ${scriptArgs.join(' ')}`,
+  }
+
+  const child = spawn(process.execPath, scriptArgs, {
+    cwd: packageRoot,
+    env: process.env,
+  })
+
+  latestRun.pid = child.pid ?? null
+
+  child.stdout?.setEncoding('utf8')
+  child.stderr?.setEncoding('utf8')
+  child.stdout?.on('data', chunk => {
+    appendRunLog('stdout', chunk)
+  })
+  child.stderr?.on('data', chunk => {
+    appendRunLog('stderr', chunk)
+  })
+
+  child.on('error', error => {
+    if (!latestRun) {
+      return
+    }
+
+    latestRun.status = 'failed'
+    latestRun.exitCode = null
+    latestRun.finishedAt = new Date().toISOString()
+    appendRunLog('stderr', error instanceof Error ? `${error.message}\n` : 'Unknown run error\n')
+  })
+
+  child.on('close', code => {
+    if (!latestRun) {
+      return
+    }
+
+    latestRun.status = code === 0 ? 'passed' : 'failed'
+    latestRun.exitCode = typeof code === 'number' ? code : null
+    latestRun.finishedAt = new Date().toISOString()
+  })
+
+  response.status(202).json({
+    ok: true,
+    run: getRunSnapshot(),
   })
 })
 
@@ -312,5 +473,7 @@ app.post('/api/visual/reject', (request, response) => {
 const port = Number(process.env.VISUAL_SERVER_PORT ?? 6007)
 app.listen(port, () => {
   console.log(`[visual] server started: http://127.0.0.1:${port}`)
-  console.log('[visual] endpoints: /api/visual/state, /api/visual/manifest, /api/visual/stories')
+  console.log(
+    '[visual] endpoints: /api/visual/artifact, /api/visual/run, /api/visual/state, /api/visual/manifest, /api/visual/stories',
+  )
 })
