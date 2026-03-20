@@ -18,7 +18,7 @@ addons.register(ADDON_ID, () => {
           active,
           key,
         },
-        React.createElement(VisualReviewPanel),
+        React.createElement(VisualReviewPanel, { isActive: active }),
       ),
   })
 })

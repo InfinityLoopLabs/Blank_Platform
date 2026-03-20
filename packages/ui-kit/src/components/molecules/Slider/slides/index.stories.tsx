@@ -3,15 +3,15 @@ import { fn } from '@storybook/test'
 
 import { Slider } from '@/components/molecules/Slider'
 import {
-  bigHorizontalSlideWidthClassName,
+  bigHorizontalSlideWidthStyle,
   BigHorizontalSlide,
   buildSliderSlides,
   courseSlideData,
   getTagsByVariant,
   MediumHorizontalSlide,
   MediumVerticalSlide,
-  mediumHorizontalSlideWidthClassName,
-  mediumVerticalSlideWidthClassName,
+  mediumHorizontalSlideWidthStyle,
+  mediumVerticalSlideWidthStyle,
 } from '@/components/molecules/Slider/slides'
 
 type SlideStoryPropertyType = {
@@ -20,6 +20,8 @@ type SlideStoryPropertyType = {
   onTagClick: (id: string) => void
   onTagLabelChange: (id: string, value: string) => void
 }
+
+const sliderDocsContainerClassName = 'mx-auto w-[760px] max-w-full px-10'
 
 const meta: Meta<SlideStoryPropertyType> = {
   title: 'Molecules/Slider/Slides',
@@ -66,16 +68,18 @@ export const MediumVerticalExample: StoryType = {
 
     return (
       <div className="w-full p-4">
-        <div className={mediumVerticalSlideWidthClassName}>
-          <MediumVerticalSlide
-            {...slide}
-            tagText={tagText}
-            tags={tags}
-            isEditModeEnabled={isEditModeEnabled}
-            isEditModeDisabled={isEditModeDisabled}
-            onTagClick={onTagClick}
-            onTagLabelChange={onTagLabelChange}
-          />
+        <div className={sliderDocsContainerClassName}>
+          <div style={mediumVerticalSlideWidthStyle}>
+            <MediumVerticalSlide
+              {...slide}
+              tagText={tagText}
+              tags={tags}
+              isEditModeEnabled={isEditModeEnabled}
+              isEditModeDisabled={isEditModeDisabled}
+              onTagClick={onTagClick}
+              onTagLabelChange={onTagLabelChange}
+            />
+          </div>
         </div>
       </div>
     )
@@ -88,16 +92,18 @@ export const MediumHorizontalExample: StoryType = {
 
     return (
       <div className="w-full p-4">
-        <div className={mediumHorizontalSlideWidthClassName}>
-          <MediumHorizontalSlide
-            coverImageSrc={slide.coverImageSrc}
-            brandName={slide.brandName}
-            heading={slide.heading}
-            viewsText="661 просмотры"
-            tagText="NEW"
-            isEditModeEnabled={isEditModeEnabled}
-            isEditModeDisabled={isEditModeDisabled}
-          />
+        <div className={sliderDocsContainerClassName}>
+          <div style={mediumHorizontalSlideWidthStyle}>
+            <MediumHorizontalSlide
+              coverImageSrc={slide.coverImageSrc}
+              brandName={slide.brandName}
+              heading={slide.heading}
+              viewsText="661 просмотры"
+              tagText="NEW"
+              isEditModeEnabled={isEditModeEnabled}
+              isEditModeDisabled={isEditModeDisabled}
+            />
+          </div>
         </div>
       </div>
     )
@@ -120,19 +126,21 @@ export const BigHorizontalExample: StoryType = {
 
     return (
       <div className="w-full p-4">
-        <div className={bigHorizontalSlideWidthClassName}>
-          <BigHorizontalSlide
-            coverImageSrc={slide.coverImageSrc}
-            brandName={slide.brandName}
-            heading={slide.heading}
-            description={slide.description}
-            tagText={tagText}
-            tags={tags}
-            isEditModeEnabled={isEditModeEnabled}
-            isEditModeDisabled={isEditModeDisabled}
-            onTagClick={onTagClick}
-            onTagLabelChange={onTagLabelChange}
-          />
+        <div className={sliderDocsContainerClassName}>
+          <div style={bigHorizontalSlideWidthStyle}>
+            <BigHorizontalSlide
+              coverImageSrc={slide.coverImageSrc}
+              brandName={slide.brandName}
+              heading={slide.heading}
+              description={slide.description}
+              tagText={tagText}
+              tags={tags}
+              isEditModeEnabled={isEditModeEnabled}
+              isEditModeDisabled={isEditModeDisabled}
+              onTagClick={onTagClick}
+              onTagLabelChange={onTagLabelChange}
+            />
+          </div>
         </div>
       </div>
     )
@@ -156,19 +164,21 @@ export const MediumVerticalInSlider: StoryType = {
 
     return (
       <div className="w-full p-4">
-        <Slider
-          slides={slides}
-          slidesPerView="auto"
-          spaceBetween={16}
-          isLoopEnabled={false}
-          isPaginationVisible
-          isNavigationEnabled
-          isArrowsVisible
-          isMousewheelEnabled
-          isKeyboardEnabled
-          isGrabCursorVisible
-          isFreeScrollEnabled={false}
-        />
+        <div className={sliderDocsContainerClassName}>
+          <Slider
+            slides={slides}
+            slidesPerView="auto"
+            spaceBetween={16}
+            isLoopEnabled={false}
+            isPaginationVisible
+            isNavigationEnabled
+            isArrowsVisible
+            isMousewheelEnabled
+            isKeyboardEnabled
+            isGrabCursorVisible
+            isFreeScrollEnabled
+          />
+        </div>
       </div>
     )
   },
@@ -191,19 +201,21 @@ export const BigHorizontalInSlider: StoryType = {
 
     return (
       <div className="w-full p-4">
-        <Slider
-          slides={slides}
-          slidesPerView="auto"
-          spaceBetween={16}
-          isLoopEnabled={false}
-          isPaginationVisible
-          isNavigationEnabled
-          isArrowsVisible
-          isMousewheelEnabled
-          isKeyboardEnabled
-          isGrabCursorVisible
-          isFreeScrollEnabled={false}
-        />
+        <div className={sliderDocsContainerClassName}>
+          <Slider
+            slides={slides}
+            slidesPerView="auto"
+            spaceBetween={16}
+            isLoopEnabled={false}
+            isPaginationVisible
+            isNavigationEnabled
+            isArrowsVisible
+            isMousewheelEnabled
+            isKeyboardEnabled
+            isGrabCursorVisible
+            isFreeScrollEnabled
+          />
+        </div>
       </div>
     )
   },
@@ -226,19 +238,21 @@ export const MediumHorizontalInSlider: StoryType = {
 
     return (
       <div className="w-full p-4">
-        <Slider
-          slides={slides}
-          slidesPerView="auto"
-          spaceBetween={16}
-          isLoopEnabled={false}
-          isPaginationVisible
-          isNavigationEnabled
-          isArrowsVisible
-          isMousewheelEnabled
-          isKeyboardEnabled
-          isGrabCursorVisible
-          isFreeScrollEnabled={false}
-        />
+        <div className={sliderDocsContainerClassName}>
+          <Slider
+            slides={slides}
+            slidesPerView="auto"
+            spaceBetween={16}
+            isLoopEnabled={false}
+            isPaginationVisible
+            isNavigationEnabled
+            isArrowsVisible
+            isMousewheelEnabled
+            isKeyboardEnabled
+            isGrabCursorVisible
+            isFreeScrollEnabled
+          />
+        </div>
       </div>
     )
   },

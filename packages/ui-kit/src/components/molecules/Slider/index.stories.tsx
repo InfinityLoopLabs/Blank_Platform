@@ -37,7 +37,11 @@ const meta = {
       onTagLabelChange,
     })
 
-    return <Slider {...sliderProperty} slides={slides} />
+    return (
+      <div className="mx-auto w-[760px] max-w-full px-10">
+        <Slider {...sliderProperty} slides={slides} />
+      </div>
+    )
   },
   decorators: [
     Story => (
@@ -62,7 +66,7 @@ const meta = {
     isMousewheelEnabled: true,
     isKeyboardEnabled: true,
     isGrabCursorVisible: true,
-    isFreeScrollEnabled: false,
+    isFreeScrollEnabled: true,
     onSlideChange: fn(),
   },
   argTypes: {

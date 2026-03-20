@@ -1,6 +1,6 @@
 import React from 'react'
 import { useStorybookState } from '@storybook/manager-api'
-import { Slider2 } from '../src/components/molecules/Slider2'
+import { Slider } from '../src/components/molecules/Slider'
 
 type ArtifactGroup = {
   id?: string | null
@@ -86,7 +86,7 @@ const buildApiOrigin = () => {
 }
 
 const API_ORIGIN = buildApiOrigin()
-const PANEL_PADDING = 12
+const PANEL_PADDING = 8
 
 const requestJson = async <T,>(path: string, init?: RequestInit): Promise<T> => {
   const response = await fetch(`${API_ORIGIN}${path}`, {
@@ -146,27 +146,28 @@ const formatDateTime = (value: string | null | undefined) => {
 }
 
 const labelStyle: React.CSSProperties = {
-  fontSize: 12,
+  fontSize: 11,
   opacity: 0.78,
-  marginBottom: 4,
+  marginBottom: 2,
 }
 
 const valueStyle: React.CSSProperties = {
-  fontSize: 13,
+  fontSize: 12,
+  lineHeight: 1.35,
 }
 
 const sectionStyle: React.CSSProperties = {
   border: '1px solid rgba(128, 128, 128, 0.35)',
-  borderRadius: 8,
+  borderRadius: 6,
   padding: PANEL_PADDING,
-  marginBottom: 10,
+  marginBottom: 8,
 }
 
 const buttonRowStyle: React.CSSProperties = {
   display: 'flex',
-  gap: 8,
+  gap: 6,
   flexWrap: 'wrap',
-  marginTop: 10,
+  marginTop: 6,
 }
 
 const actionButtonStyle: React.CSSProperties = {
@@ -174,29 +175,15 @@ const actionButtonStyle: React.CSSProperties = {
   borderRadius: 6,
   background: 'transparent',
   color: 'inherit',
-  padding: '6px 10px',
+  padding: '4px 8px',
   cursor: 'pointer',
-  fontSize: 12,
+  fontSize: 11,
 }
 
 const disabledButtonStyle: React.CSSProperties = {
   ...actionButtonStyle,
   opacity: 0.45,
   cursor: 'not-allowed',
-}
-
-const imageGridStyle: React.CSSProperties = {
-  display: 'grid',
-  gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))',
-  gap: 10,
-  marginTop: 10,
-}
-
-const imageCardStyle: React.CSSProperties = {
-  border: '1px solid rgba(128, 128, 128, 0.35)',
-  borderRadius: 8,
-  padding: 8,
-  minHeight: 100,
 }
 
 const imageStyle: React.CSSProperties = {
@@ -233,6 +220,24 @@ type ResolvedArtifactGroup = {
   diffPath: string | null
   diffPixels: number | null
   diffRatio: number | null
+}
+
+type ArtifactKind = 'baseline' | 'actual' | 'diff'
+
+type GalleryFilters = Record<ArtifactKind, boolean>
+
+type GalleryItem = {
+  key: string
+  testCase: string
+  screenshotName: string | null
+  capturedAt: string | null
+  diffPixels: number | null
+  diffRatio: number | null
+  kind: ArtifactKind
+  kindLabel: string
+  src: string
+  relativePath: string | null
+  hasError: boolean
 }
 
 const normalizeArtifactValue = (value: string | null | undefined) =>
@@ -308,36 +313,11 @@ const normalizeResolvedArtifactGroups = (
   ]
 }
 
-const renderImageCard = (
-  title: string,
-  src: string | null | undefined,
-  relativePath: string | null | undefined,
-  fallbackMessage: string,
-  hasError: boolean,
-) => {
-  return (
-    <div style={imageCardStyle}>
-      <div style={{ ...labelStyle, marginBottom: 6 }}>{title}</div>
-      {src && !hasError ? (
-        <img src={src} alt={title} style={imageStyle} />
-      ) : (
-        <div style={{ ...valueStyle, opacity: 0.72 }}>
-          {hasError ? 'Failed to render image preview' : fallbackMessage}
-        </div>
-      )}
-      {src ? (
-        <a href={src} target="_blank" rel="noreferrer" style={{ ...valueStyle, display: 'inline-block', marginTop: 6 }}>
-          Open image
-        </a>
-      ) : null}
-      <div style={{ ...valueStyle, marginTop: 6, wordBreak: 'break-all', opacity: 0.7 }}>
-        {relativePath ?? 'n/a'}
-      </div>
-    </div>
-  )
+type VisualReviewPanelPropertyType = {
+  isActive?: boolean
 }
 
-export const VisualReviewPanel = () => {
+export const VisualReviewPanel = ({ isActive = false }: VisualReviewPanelPropertyType) => {
   const { storyId } = useStorybookState()
 
   const [stories, setStories] = React.useState<StoriesResponse['stories']>([])
@@ -347,6 +327,13 @@ export const VisualReviewPanel = () => {
   const [isActionPending, setIsActionPending] = React.useState(false)
   const [errorMessage, setErrorMessage] = React.useState<string | null>(null)
   const [imageErrorByKey, setImageErrorByKey] = React.useState<Record<string, boolean>>({})
+  const [activeGalleryIndex, setActiveGalleryIndex] = React.useState(0)
+  const [galleryRenderKey, setGalleryRenderKey] = React.useState(0)
+  const [galleryFilters, setGalleryFilters] = React.useState<GalleryFilters>({
+    baseline: true,
+    actual: true,
+    diff: true,
+  })
 
   const fetchData = React.useCallback(async (showLoader: boolean) => {
     if (showLoader) {
@@ -475,6 +462,120 @@ export const VisualReviewPanel = () => {
     })
   }, [artifactViewItems])
 
+  const availableImageCounts = React.useMemo(
+    () =>
+      artifactViewItems.reduce<Record<ArtifactKind, number>>(
+        (accumulator, item) => {
+          if (item.baselineSrc) {
+            accumulator.baseline += 1
+          }
+          if (item.actualSrc) {
+            accumulator.actual += 1
+          }
+          if (item.diffSrc) {
+            accumulator.diff += 1
+          }
+          return accumulator
+        },
+        { baseline: 0, actual: 0, diff: 0 },
+      ),
+    [artifactViewItems],
+  )
+
+  const galleryItems = React.useMemo<GalleryItem[]>(
+    () =>
+      artifactViewItems.flatMap(item => {
+        const variants = [
+          {
+            kind: 'baseline' as const,
+            kindLabel: 'Previous',
+            src: item.baselineSrc,
+            relativePath: item.baselinePath,
+          },
+          {
+            kind: 'actual' as const,
+            kindLabel: 'Current',
+            src: item.actualSrc,
+            relativePath: item.actualPath,
+          },
+          {
+            kind: 'diff' as const,
+            kindLabel: 'Delta',
+            src: item.diffSrc,
+            relativePath: item.diffPath,
+          },
+        ]
+
+        return variants
+          .filter(variant => galleryFilters[variant.kind] && Boolean(variant.src))
+          .map(variant => ({
+            key: `${item.id}:${variant.kind}`,
+            testCase: item.testCase,
+            screenshotName: item.screenshotName,
+            capturedAt: item.capturedAt,
+            diffPixels: item.diffPixels,
+            diffRatio: item.diffRatio,
+            kind: variant.kind,
+            kindLabel: variant.kindLabel,
+            src: variant.src as string,
+            relativePath: variant.relativePath,
+            hasError: imageErrorByKey[`${item.id}:${variant.kind}`] === true,
+          }))
+      }),
+    [artifactViewItems, galleryFilters, imageErrorByKey],
+  )
+  React.useEffect(() => {
+    if (galleryItems.length === 0) {
+      setActiveGalleryIndex(0)
+      return
+    }
+
+    if (activeGalleryIndex > galleryItems.length - 1) {
+      setActiveGalleryIndex(galleryItems.length - 1)
+    }
+  }, [activeGalleryIndex, galleryItems.length])
+  const activeGalleryItem = galleryItems[activeGalleryIndex] ?? null
+  React.useEffect(() => {
+    if (!isActive) {
+      return
+    }
+
+    setGalleryRenderKey(previous => previous + 1)
+    requestAnimationFrame(() => {
+      window.dispatchEvent(new Event('resize'))
+    })
+  }, [isActive, galleryItems.length])
+  React.useEffect(() => {
+    if (!isActive) {
+      return
+    }
+
+    const handleHorizontalWheel = (event: WheelEvent) => {
+      const horizontalDelta = Math.abs(event.deltaX)
+      const verticalDelta = Math.abs(event.deltaY)
+      const isHorizontalGesture =
+        horizontalDelta > 4 && horizontalDelta > verticalDelta * 1.1
+
+      if (!isHorizontalGesture) {
+        return
+      }
+
+      const target = event.target as HTMLElement | null
+      if (!target?.closest('[data-visual-artifacts-slider="true"]')) {
+        return
+      }
+
+      if (event.cancelable) {
+        event.preventDefault()
+      }
+    }
+
+    window.addEventListener('wheel', handleHorizontalWheel, { passive: false })
+    return () => {
+      window.removeEventListener('wheel', handleHorizontalWheel)
+    }
+  }, [isActive])
+
   const withAction = async (action: () => Promise<void>) => {
     setIsActionPending(true)
     setErrorMessage(null)
@@ -582,7 +683,22 @@ export const VisualReviewPanel = () => {
     null
 
   return (
-    <div style={{ padding: PANEL_PADDING, fontFamily: 'Inter, system-ui, sans-serif', overflow: 'auto' }}>
+    <div
+      style={{
+        padding: PANEL_PADDING,
+        fontFamily: 'Inter, system-ui, sans-serif',
+        overflow: 'auto',
+        overscrollBehaviorX: 'contain',
+        scrollBehavior: 'smooth',
+      }}
+    >
+      <style>
+        {`
+          [data-visual-artifacts-slider="true"] .swiper-slide {
+            width: auto !important;
+          }
+        `}
+      </style>
       <div style={sectionStyle}>
         <div style={labelStyle}>Server</div>
         <div style={valueStyle}>
@@ -729,85 +845,139 @@ export const VisualReviewPanel = () => {
       </div>
 
       <div style={sectionStyle}>
-        <div style={labelStyle}>Screenshots</div>
+        <div style={labelStyle}>Visual Artifacts</div>
         {artifactViewItems.length > 0 ? (
           <>
-            <div style={{ ...sectionStyle, marginTop: 10, marginBottom: 0, padding: 10 }}>
-              <div style={labelStyle}>Gallery (Actual by Step)</div>
-              <Slider2
-                slidesPerView={1}
-                spaceBetween={12}
-                isLoopEnabled={artifactViewItems.length > 1}
-                isPaginationVisible={true}
-                isNavigationEnabled={true}
-                isArrowsVisible={true}
-                isMousewheelEnabled={false}
-                isKeyboardEnabled={true}
-                isGrabCursorVisible={true}
-                isFreeScrollEnabled={false}
-              >
-                {artifactViewItems.map(item => (
-                  <div key={`gallery-${item.id}`} style={{ padding: 4 }}>
-                    <div style={{ ...labelStyle, marginBottom: 8 }}>
-                      {item.testCase}
-                      {item.screenshotName ? ` | ${item.screenshotName}` : ''}
-                    </div>
-                    {item.actualSrc ? (
-                      <img src={item.actualSrc} alt={`Actual ${item.testCase}`} style={imageStyle} />
-                    ) : (
-                      <div style={{ ...valueStyle, opacity: 0.72 }}>No actual screenshot</div>
-                    )}
-                  </div>
-                ))}
-              </Slider2>
+            <div style={{ ...buttonRowStyle, marginTop: 8 }}>
+              <label style={{ ...valueStyle, display: 'inline-flex', alignItems: 'center', gap: 6 }}>
+                <input
+                  type="checkbox"
+                  checked={galleryFilters.baseline}
+                  onChange={event =>
+                    setGalleryFilters(previous => ({ ...previous, baseline: event.target.checked }))
+                  }
+                />
+                Previous ({availableImageCounts.baseline})
+              </label>
+              <label style={{ ...valueStyle, display: 'inline-flex', alignItems: 'center', gap: 6 }}>
+                <input
+                  type="checkbox"
+                  checked={galleryFilters.actual}
+                  onChange={event =>
+                    setGalleryFilters(previous => ({ ...previous, actual: event.target.checked }))
+                  }
+                />
+                Current ({availableImageCounts.actual})
+              </label>
+              <label style={{ ...valueStyle, display: 'inline-flex', alignItems: 'center', gap: 6 }}>
+                <input
+                  type="checkbox"
+                  checked={galleryFilters.diff}
+                  onChange={event =>
+                    setGalleryFilters(previous => ({ ...previous, diff: event.target.checked }))
+                  }
+                />
+                Delta ({availableImageCounts.diff})
+              </label>
             </div>
 
-            {artifactViewItems.map(item => (
-              <div
-                key={item.id}
-                style={{
-                  ...sectionStyle,
-                  marginTop: 10,
-                  marginBottom: 0,
-                  padding: 10,
-                }}
-              >
-                <div style={labelStyle}>
-                  Case: {item.testCase}
-                  {item.screenshotName ? ` | File: ${item.screenshotName}` : ''}
-                </div>
-                <div style={{ ...valueStyle, marginBottom: 8 }}>
-                  Diff pixels: {item.diffPixels ?? 'n/a'}
-                  {' | '}
-                  Diff ratio: {item.diffRatio ?? 'n/a'}
-                  {' | '}
-                  Captured: {formatDateTime(item.capturedAt)}
-                </div>
-                <div style={imageGridStyle}>
-                  {renderImageCard(
-                    'Baseline (previous)',
-                    item.baselineSrc,
-                    item.baselinePath,
-                    'No baseline',
-                    imageErrorByKey[`${item.id}:baseline`] === true,
-                  )}
-                  {renderImageCard(
-                    'Actual (current)',
-                    item.actualSrc,
-                    item.actualPath,
-                    'No actual screenshot',
-                    imageErrorByKey[`${item.id}:actual`] === true,
-                  )}
-                  {renderImageCard(
-                    'Diff (delta)',
-                    item.diffSrc,
-                    item.diffPath,
-                    'No diff image',
-                    imageErrorByKey[`${item.id}:diff`] === true,
-                  )}
+            {galleryItems.length > 0 ? (
+              <div style={{ marginTop: 6 }}>
+                <div
+                  data-visual-artifacts-slider="true"
+                  style={{
+                    width: '100%',
+                    boxSizing: 'border-box',
+                    padding: '0 40px',
+                  }}
+                >
+                  <Slider
+                    key={`visual-gallery-${galleryRenderKey}`}
+                    slidesPerView={'auto'}
+                    spaceBetween={12}
+                    isLoopEnabled={galleryItems.length > 1}
+                    isPaginationVisible={true}
+                    isNavigationEnabled={true}
+                    isArrowsVisible={true}
+                    isMousewheelEnabled={true}
+                    isKeyboardEnabled={true}
+                    isGrabCursorVisible={true}
+                    isFreeScrollEnabled={true}
+                    onSlideChange={setActiveGalleryIndex}
+                  >
+                    {galleryItems.map(item => (
+                      <div
+                        key={item.key}
+                        style={{
+                          width: 'clamp(280px, 28vw, 460px)',
+                          maxWidth: 'calc(100vw - 160px)',
+                        }}
+                      >
+                        {item.hasError ? (
+                          <div style={{ ...valueStyle, opacity: 0.72, padding: 10 }}>
+                            Failed to render image preview
+                          </div>
+                        ) : (
+                          <img
+                            src={item.src}
+                            alt={`${item.kindLabel} ${item.testCase}`}
+                            style={{ ...imageStyle, border: 'none', borderRadius: 8 }}
+                          />
+                        )}
+                      </div>
+                    ))}
+                  </Slider>
                 </div>
               </div>
-            ))}
+            ) : (
+              <div style={{ ...valueStyle, opacity: 0.72, marginTop: 8 }}>
+                No screenshots for selected filters
+              </div>
+            )}
+
+            {activeGalleryItem ? (
+              <div style={{ marginTop: 6 }}>
+                <div
+                  style={{
+                    ...valueStyle,
+                    whiteSpace: 'nowrap',
+                    overflow: 'hidden',
+                    textOverflow: 'ellipsis',
+                  }}
+                  title={`${activeGalleryItem.kindLabel} | ${activeGalleryItem.testCase}${
+                    activeGalleryItem.screenshotName ? ` | ${activeGalleryItem.screenshotName}` : ''
+                  }`}
+                >
+                  <strong>{activeGalleryItem.kindLabel}</strong>
+                  {' | '}
+                  {activeGalleryItem.testCase}
+                  {activeGalleryItem.screenshotName ? ` | ${activeGalleryItem.screenshotName}` : ''}
+                </div>
+                <div style={{ ...valueStyle, marginTop: 2 }}>
+                  Diff pixels: {activeGalleryItem.diffPixels ?? 'n/a'}
+                  {' | '}
+                  Diff ratio: {activeGalleryItem.diffRatio ?? 'n/a'}
+                  {' | '}
+                  Captured: {formatDateTime(activeGalleryItem.capturedAt)}
+                  {' | '}
+                  Slide: {activeGalleryIndex + 1}/{galleryItems.length}
+                </div>
+                <a
+                  href={activeGalleryItem.src}
+                  target="_blank"
+                  rel="noreferrer"
+                  style={{ ...valueStyle, display: 'inline-block', marginTop: 4 }}
+                >
+                  Open image
+                </a>
+                <details style={{ marginTop: 4 }}>
+                  <summary style={{ cursor: 'pointer', fontSize: 11, opacity: 0.82 }}>Path</summary>
+                  <div style={{ ...valueStyle, marginTop: 4, wordBreak: 'break-all', opacity: 0.72 }}>
+                    {activeGalleryItem.relativePath ?? 'n/a'}
+                  </div>
+                </details>
+              </div>
+            ) : null}
           </>
         ) : (
           <div style={{ ...valueStyle, opacity: 0.72 }}>No screenshot artifacts for current story</div>

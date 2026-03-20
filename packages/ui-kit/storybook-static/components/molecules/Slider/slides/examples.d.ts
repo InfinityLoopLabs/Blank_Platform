@@ -13,9 +13,12 @@ export type SliderDemoSlideItemType = {
 export declare const courseSlideData: SliderDemoSlideItemType[];
 export declare const sliderSlideComponentTypeOptions: readonly ["MediumVerticalSlide", "MediumHorizontalSlide", "BigHorizontalSlide"];
 export type SliderSlideComponentType = (typeof sliderSlideComponentTypeOptions)[number];
-export declare const mediumVerticalSlideWidthClassName = "w-[460px] min-w-[460px]";
-export declare const mediumHorizontalSlideWidthClassName = "w-[520px] min-w-[520px]";
-export declare const bigHorizontalSlideWidthClassName = "w-[620px] min-w-[620px]";
+export declare const mediumVerticalSlideWidth = 460;
+export declare const mediumHorizontalSlideWidth = 520;
+export declare const bigHorizontalSlideWidth = 620;
+export declare const mediumVerticalSlideWidthStyle: React.CSSProperties;
+export declare const mediumHorizontalSlideWidthStyle: React.CSSProperties;
+export declare const bigHorizontalSlideWidthStyle: React.CSSProperties;
 type TagVariantType = 'no-tags' | 'one-tag' | 'two-tags' | 'two-other-tags';
 export declare const getTagsByVariant: (variant: TagVariantType, slideId: string, baseLabel: string) => {
     tags: StoreSlideTagItemType[];

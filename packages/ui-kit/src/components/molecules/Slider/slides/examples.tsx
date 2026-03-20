@@ -94,9 +94,23 @@ export const sliderSlideComponentTypeOptions = [
 export type SliderSlideComponentType =
   (typeof sliderSlideComponentTypeOptions)[number]
 
-export const mediumVerticalSlideWidthClassName = 'w-[460px] min-w-[460px]'
-export const mediumHorizontalSlideWidthClassName = 'w-[520px] min-w-[520px]'
-export const bigHorizontalSlideWidthClassName = 'w-[620px] min-w-[620px]'
+export const mediumVerticalSlideWidth = 460
+export const mediumHorizontalSlideWidth = 520
+export const bigHorizontalSlideWidth = 620
+
+const toFixedSlideWidthStyle = (width: number): React.CSSProperties => ({
+  width,
+  minWidth: width,
+})
+
+export const mediumVerticalSlideWidthStyle = toFixedSlideWidthStyle(
+  mediumVerticalSlideWidth,
+)
+export const mediumHorizontalSlideWidthStyle = toFixedSlideWidthStyle(
+  mediumHorizontalSlideWidth,
+)
+export const bigHorizontalSlideWidthStyle =
+  toFixedSlideWidthStyle(bigHorizontalSlideWidth)
 
 type TagVariantType = 'no-tags' | 'one-tag' | 'two-tags' | 'two-other-tags'
 
@@ -193,7 +207,7 @@ export const buildSliderSlides = ({
       )
 
       return (
-        <div key={slide.id} className={mediumVerticalSlideWidthClassName}>
+        <div key={slide.id} style={mediumVerticalSlideWidthStyle}>
           <MediumVerticalSlide
             {...slide}
             tagText={tagText}
@@ -225,7 +239,7 @@ export const buildSliderSlides = ({
       return (
         <div
           key={`big-${slide.id}`}
-          className={bigHorizontalSlideWidthClassName}>
+          style={bigHorizontalSlideWidthStyle}>
           <BigHorizontalSlide
             coverImageSrc={slide.coverImageSrc}
             brandName={slide.brandName}
@@ -246,7 +260,7 @@ export const buildSliderSlides = ({
   return courseSlideData.slice(0, 4).map(slide => (
     <div
       key={`preview-${slide.id}`}
-      className={mediumHorizontalSlideWidthClassName}>
+      style={mediumHorizontalSlideWidthStyle}>
       <MediumHorizontalSlide
         coverImageSrc={slide.coverImageSrc}
         brandName={slide.brandName}
