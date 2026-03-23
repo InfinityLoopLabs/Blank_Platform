@@ -109,3 +109,4 @@ folderStructure.txt
 /.yarn/
 /.yarn/**
 /.serena/
+/packages/ui-kit/storybook-static/
