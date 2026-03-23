@@ -1,12 +1,14 @@
 import { type ReactNode } from 'react'
 import {
+  analyticsEngine,
   appSize,
+  auth,
   notify,
   indexeddb,
   popup,
   router,
   theme,
-} from '@infinityloop.labs/fronted-core'
+} from '@infinityloop.labs/frontend-modules'
 import { Flex } from '@infinityloop.labs/ui-kit'
 import { ServiceInjector } from '@infinityloop.labs/utils'
 import {
@@ -17,8 +19,6 @@ import {
   Scripts,
   ScrollRestoration,
 } from 'react-router'
-import { analyticsEngine } from '@services/analyticsEngine'
-import { auth } from '@services/auth'
 import { Popup } from '@widgets/Popup'
 import {
   indexedDBInstance,

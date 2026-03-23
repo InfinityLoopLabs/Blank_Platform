@@ -1,4 +1,5 @@
 export * from './EditableTypography'
+export * from './Accordion'
 export * from './Slider'
 export * from './Slider/slides'
 export * from './SlideTemplates'

@@ -1,6 +1,6 @@
 import React from 'react'
 
-import type { ModalStateType } from '@infinityloop.labs/fronted-core'
+import type { ModalStateType } from '@infinityloop.labs/frontend-modules'
 import { Flex, Paper, Typography } from '@infinityloop.labs/ui-kit'
 import {
   ArrayRender,

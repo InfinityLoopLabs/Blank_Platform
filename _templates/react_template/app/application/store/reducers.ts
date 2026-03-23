@@ -1,24 +1,24 @@
 import {
+  analyticsEngineReducer,
   appSizeReducer,
+  authReducer,
   formsReducer,
   indexeddbReducer,
   notifyReducer,
   popupReducer,
+  rolesReducer,
   routerReducer,
   themeReducer,
-} from '@infinityloop.labs/fronted-core'
-import { Reducer as analyticsEngine } from '@services/analyticsEngine'
-import { Reducer as auth } from '@services/auth'
-import { Reducer as roles } from '@services/roles'
+} from '@infinityloop.labs/frontend-modules'
 
 import { generatedReducersList } from '@application/store/generated/reducers'
 
 export const reducersList = {
   // Services: Начало
-  roles,
-  analyticsEngine,
+  roles: rolesReducer,
+  analyticsEngine: analyticsEngineReducer,
   appSize: appSizeReducer,
-  auth,
+  auth: authReducer,
   forms: formsReducer,
   indexeddb: indexeddbReducer,
   notify: notifyReducer,

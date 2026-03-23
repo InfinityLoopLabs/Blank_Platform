@@ -1,6 +1,0 @@
-import{j as a}from"./jsx-runtime-9bc08dc0.js";import{P as i}from"./index-75ff7cb7.js";import{T as m}from"./index-b8494c71.js";import"./index.es-32ff2151.js";import"./index-0b625b07.js";import"./index-68fbcb4b.js";import"./utils-0998f52b.js";const x={title:"Atoms/Toggle",component:m,tags:["autodocs"],decorators:[d=>a.jsx(i,{type:"dark",className:"w-[520px] p-6",children:a.jsx(d,{})})],args:{leftLabel:"Off",rightLabel:"On",defaultChecked:!1,disabled:!1},argTypes:{leftLabel:{control:"text"},rightLabel:{control:"text"},defaultChecked:{control:"boolean"},disabled:{control:"boolean"},onChange:{action:"change"}}},e={},o={args:{leftLabel:void 0,rightLabel:void 0}};var r,t,s;e.parameters={...e.parameters,docs:{...(r=e.parameters)==null?void 0:r.docs,source:{originalSource:"{}",...(s=(t=e.parameters)==null?void 0:t.docs)==null?void 0:s.source}}};var l,n,c;o.parameters={...o.parameters,docs:{...(l=o.parameters)==null?void 0:l.docs,source:{originalSource:`{
-  args: {
-    leftLabel: undefined,
-    rightLabel: undefined
-  }
-}`,...(c=(n=o.parameters)==null?void 0:n.docs)==null?void 0:c.source}}};const j=["Playground","WithoutLabels"];export{e as Playground,o as WithoutLabels,j as __namedExportsOrder,x as default};

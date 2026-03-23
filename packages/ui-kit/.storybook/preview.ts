@@ -1,7 +1,7 @@
 import type { Preview } from "@storybook/react"
 import React from "react"
 import { Moon, Sun } from "lucide-react"
-import { useGlobals } from "@storybook/preview-api"
+import { useGlobals } from "storybook/preview-api"
 import type { Root } from "react-dom/client"
 import { createRoot } from "react-dom/client"
 

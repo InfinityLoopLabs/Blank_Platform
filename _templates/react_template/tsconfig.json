@@ -70,11 +70,11 @@
       "@infinityloop.labs/event-bus": [
         "../../../packages/event-bus/src/index.ts"
       ],
-      "@infinityloop.labs/fronted-core": [
-        "../../../packages/fronted-core/src/index.ts"
+      "@infinityloop.labs/frontend-modules": [
+        "../../../packages/frontend-modules/src/index.ts"
       ],
       "@services/*": [
-        "features/services/*"
+        "../../../packages/frontend-modules/src/features/services/*"
       ],
       "@widgets/*": [
         "features/widgets/*"

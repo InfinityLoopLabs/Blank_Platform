@@ -2,17 +2,17 @@ import { useMemo } from 'react'
 import {
   useAppSizeActions,
   useFormsActions,
+  analyticsEngineActions,
+  authActions,
+  rolesActions,
   useIndexeddbActions,
   useNotifyActions,
   usePopupActions,
   useRouterActions,
   useThemeActions,
-} from '@infinityloop.labs/fronted-core'
+} from '@infinityloop.labs/frontend-modules'
 import { useDispatch } from 'react-redux'
 import { type ActionCreatorsMapObject, bindActionCreators } from 'redux'
-import { Actions as analyticsEngineActions } from '@services/analyticsEngine/'
-import { Actions as authActions } from '@services/auth/'
-import { Actions as rolesActions } from '@services/roles/'
 
 import type { AppDispatchType } from '@application/store/store'
 

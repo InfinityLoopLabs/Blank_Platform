@@ -8,7 +8,7 @@ import {
 } from '@constants/local'
 import { useAppActions } from '@hooks/useAppActions'
 import { useAppSelector } from '@hooks/useAppSelector'
-import type { RouterQueryParamsType } from '@services/router/lib/types'
+import type { RouterQueryParamsType } from '@infinityloop.labs/frontend-modules'
 import {
   useGetDraftQuery,
   usePatchDraftMutation,

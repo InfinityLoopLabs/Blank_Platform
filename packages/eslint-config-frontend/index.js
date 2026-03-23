@@ -112,6 +112,11 @@ const frontendSpecific = [
               position: 'before',
             },
             {
+              pattern: '@infinityloop.labs/frontend-modules',
+              group: 'internal',
+              position: 'before',
+            },
+            {
               pattern: '@styles/**',
               group: 'internal',
               position: 'before',

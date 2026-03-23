@@ -1264,9 +1264,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@infinityloop.labs/fronted-core@npm:*":
+"@infinityloop.labs/frontend-modules@npm:*":
   version: 0.0.1
-  resolution: "@infinityloop.labs/fronted-core@npm:0.0.1"
+  resolution: "@infinityloop.labs/frontend-modules@npm:0.0.1"
   dependencies:
     "@infinityloop.labs/event-bus": "npm:^1.0.2"
     "@reduxjs/toolkit": "npm:^2.10.1"
@@ -6287,7 +6287,7 @@ __metadata:
     "@infinityloop.labs/common": "npm:1.0.4"
     "@infinityloop.labs/eslint-config": "npm:^2.0.0"
     "@infinityloop.labs/event-bus": "npm:1.0.2"
-    "@infinityloop.labs/fronted-core": "npm:*"
+    "@infinityloop.labs/frontend-modules": "npm:*"
     "@infinityloop.labs/routing": "npm:^1.0.0"
     "@infinityloop.labs/tailwind-config": "npm:^1.0.17"
     "@infinityloop.labs/types": "npm:^1.0.2"

@@ -1,5 +1,5 @@
 import React from 'react'
-import { useStorybookState } from '@storybook/manager-api'
+import { useStorybookState } from 'storybook/manager-api'
 import { Slider } from '../src/components/molecules/Slider'
 
 type ArtifactGroup = {
