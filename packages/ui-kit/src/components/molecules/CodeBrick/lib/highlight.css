@@ -1,44 +1,170 @@
-.codebrick-highlight .hljs {
-  color: var(--muted-foreground);
-  background: transparent;
-}
-
-.codebrick-highlight .hljs-keyword,
-.codebrick-highlight .hljs-selector-tag,
-.codebrick-highlight .hljs-section,
-.codebrick-highlight .hljs-literal {
-  color: var(--foreground);
-}
-
-.codebrick-highlight .hljs-string,
-.codebrick-highlight .hljs-attr,
-.codebrick-highlight .hljs-attribute,
-.codebrick-highlight .hljs-meta-string {
-  color: var(--constructive);
-}
-
-.codebrick-highlight .hljs-number,
-.codebrick-highlight .hljs-symbol,
-.codebrick-highlight .hljs-bullet,
-.codebrick-highlight .hljs-template-variable {
-  color: var(--cautionary);
-}
-
-.codebrick-highlight .hljs-title,
-.codebrick-highlight .hljs-function,
-.codebrick-highlight .hljs-class .hljs-title {
-  color: var(--chart-1);
-  opacity: 0.9;
+.codebrick-highlight.hljs {
+  color: #383a42;
+  background: #fafafa;
 }
 
 .codebrick-highlight .hljs-comment,
 .codebrick-highlight .hljs-quote {
-  color: var(--muted-foreground);
-  opacity: 0.8;
+  color: #a0a1a7;
+  font-style: italic;
 }
 
-.codebrick-highlight .hljs-variable,
+.codebrick-highlight .hljs-doctag,
+.codebrick-highlight .hljs-keyword,
+.codebrick-highlight .hljs-formula {
+  color: #a626a4;
+}
+
+.codebrick-highlight .hljs-section,
 .codebrick-highlight .hljs-name,
-.codebrick-highlight .hljs-operator {
-  color: var(--foreground);
+.codebrick-highlight .hljs-selector-tag,
+.codebrick-highlight .hljs-deletion,
+.codebrick-highlight .hljs-subst {
+  color: #e45649;
+}
+
+.codebrick-highlight .hljs-literal {
+  color: #0184bb;
+}
+
+.codebrick-highlight .hljs-string,
+.codebrick-highlight .hljs-regexp,
+.codebrick-highlight .hljs-addition,
+.codebrick-highlight .hljs-attribute,
+.codebrick-highlight .hljs-meta .hljs-string {
+  color: #50a14f;
+}
+
+.codebrick-highlight .hljs-attr,
+.codebrick-highlight .hljs-variable,
+.codebrick-highlight .hljs-template-variable,
+.codebrick-highlight .hljs-type,
+.codebrick-highlight .hljs-selector-class,
+.codebrick-highlight .hljs-selector-attr,
+.codebrick-highlight .hljs-selector-pseudo,
+.codebrick-highlight .hljs-number {
+  color: #986801;
+}
+
+.codebrick-highlight .hljs-symbol,
+.codebrick-highlight .hljs-bullet,
+.codebrick-highlight .hljs-link,
+.codebrick-highlight .hljs-meta,
+.codebrick-highlight .hljs-selector-id,
+.codebrick-highlight .hljs-title {
+  color: #4078f2;
+}
+
+.codebrick-highlight .hljs-built_in,
+.codebrick-highlight .hljs-title.class_,
+.codebrick-highlight .hljs-class .hljs-title {
+  color: #c18401;
+}
+
+.codebrick-highlight .hljs-emphasis {
+  font-style: italic;
+}
+
+.codebrick-highlight .hljs-strong {
+  font-weight: 700;
+}
+
+.codebrick-highlight .hljs-link {
+  text-decoration: underline;
+}
+
+.dark .codebrick-highlight.hljs,
+[data-theme='dark'] .codebrick-highlight.hljs {
+  color: #abb2bf;
+  background: #282c34;
+}
+
+.dark .codebrick-highlight .hljs-comment,
+.dark .codebrick-highlight .hljs-quote,
+[data-theme='dark'] .codebrick-highlight .hljs-comment,
+[data-theme='dark'] .codebrick-highlight .hljs-quote {
+  color: #5c6370;
+}
+
+.dark .codebrick-highlight .hljs-doctag,
+.dark .codebrick-highlight .hljs-keyword,
+.dark .codebrick-highlight .hljs-formula,
+[data-theme='dark'] .codebrick-highlight .hljs-doctag,
+[data-theme='dark'] .codebrick-highlight .hljs-keyword,
+[data-theme='dark'] .codebrick-highlight .hljs-formula {
+  color: #c678dd;
+}
+
+.dark .codebrick-highlight .hljs-section,
+.dark .codebrick-highlight .hljs-name,
+.dark .codebrick-highlight .hljs-selector-tag,
+.dark .codebrick-highlight .hljs-deletion,
+.dark .codebrick-highlight .hljs-subst,
+[data-theme='dark'] .codebrick-highlight .hljs-section,
+[data-theme='dark'] .codebrick-highlight .hljs-name,
+[data-theme='dark'] .codebrick-highlight .hljs-selector-tag,
+[data-theme='dark'] .codebrick-highlight .hljs-deletion,
+[data-theme='dark'] .codebrick-highlight .hljs-subst {
+  color: #e06c75;
+}
+
+.dark .codebrick-highlight .hljs-literal,
+[data-theme='dark'] .codebrick-highlight .hljs-literal {
+  color: #56b6c2;
+}
+
+.dark .codebrick-highlight .hljs-string,
+.dark .codebrick-highlight .hljs-regexp,
+.dark .codebrick-highlight .hljs-addition,
+.dark .codebrick-highlight .hljs-attribute,
+.dark .codebrick-highlight .hljs-meta .hljs-string,
+[data-theme='dark'] .codebrick-highlight .hljs-string,
+[data-theme='dark'] .codebrick-highlight .hljs-regexp,
+[data-theme='dark'] .codebrick-highlight .hljs-addition,
+[data-theme='dark'] .codebrick-highlight .hljs-attribute,
+[data-theme='dark'] .codebrick-highlight .hljs-meta .hljs-string {
+  color: #98c379;
+}
+
+.dark .codebrick-highlight .hljs-attr,
+.dark .codebrick-highlight .hljs-variable,
+.dark .codebrick-highlight .hljs-template-variable,
+.dark .codebrick-highlight .hljs-type,
+.dark .codebrick-highlight .hljs-selector-class,
+.dark .codebrick-highlight .hljs-selector-attr,
+.dark .codebrick-highlight .hljs-selector-pseudo,
+.dark .codebrick-highlight .hljs-number,
+[data-theme='dark'] .codebrick-highlight .hljs-attr,
+[data-theme='dark'] .codebrick-highlight .hljs-variable,
+[data-theme='dark'] .codebrick-highlight .hljs-template-variable,
+[data-theme='dark'] .codebrick-highlight .hljs-type,
+[data-theme='dark'] .codebrick-highlight .hljs-selector-class,
+[data-theme='dark'] .codebrick-highlight .hljs-selector-attr,
+[data-theme='dark'] .codebrick-highlight .hljs-selector-pseudo,
+[data-theme='dark'] .codebrick-highlight .hljs-number {
+  color: #d19a66;
+}
+
+.dark .codebrick-highlight .hljs-symbol,
+.dark .codebrick-highlight .hljs-bullet,
+.dark .codebrick-highlight .hljs-link,
+.dark .codebrick-highlight .hljs-meta,
+.dark .codebrick-highlight .hljs-selector-id,
+.dark .codebrick-highlight .hljs-title,
+[data-theme='dark'] .codebrick-highlight .hljs-symbol,
+[data-theme='dark'] .codebrick-highlight .hljs-bullet,
+[data-theme='dark'] .codebrick-highlight .hljs-link,
+[data-theme='dark'] .codebrick-highlight .hljs-meta,
+[data-theme='dark'] .codebrick-highlight .hljs-selector-id,
+[data-theme='dark'] .codebrick-highlight .hljs-title {
+  color: #61aeee;
+}
+
+.dark .codebrick-highlight .hljs-built_in,
+.dark .codebrick-highlight .hljs-title.class_,
+.dark .codebrick-highlight .hljs-class .hljs-title,
+[data-theme='dark'] .codebrick-highlight .hljs-built_in,
+[data-theme='dark'] .codebrick-highlight .hljs-title.class_,
+[data-theme='dark'] .codebrick-highlight .hljs-class .hljs-title {
+  color: #e6c07b;
 }

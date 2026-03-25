@@ -12,7 +12,27 @@ const initialPrincipleSummary = {
   d: 'Dependency Inversion: бизнес-логика зависит от абстракций, а не от деталей.',
 } as const
 
-const chessRookPatternIcon = `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="black" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M6 22h12"/><path d="M7 18h10"/><path d="M8 18v-6h8v6"/><path d="M7 12h10"/><path d="M8 6h2v2H8z"/><path d="M11 6h2v2h-2z"/><path d="M14 6h2v2h-2z"/><path d="M8 6V4h8v2"/></svg>`
+const ChessRookPatternIcon = (property: React.SVGProps<SVGSVGElement>) => (
+  <svg
+    xmlns="http://www.w3.org/2000/svg"
+    width="24"
+    height="24"
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    strokeWidth="2"
+    strokeLinecap="round"
+    strokeLinejoin="round"
+    {...property}>
+    <path d="M5 20a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2v1a1 1 0 0 1-1 1H6a1 1 0 0 1-1-1z" />
+    <path d="M10 2v2" />
+    <path d="M14 2v2" />
+    <path d="m17 18-1-9" />
+    <path d="M6 2v5a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2V2" />
+    <path d="M6 4h12" />
+    <path d="m7 18 1-9" />
+  </svg>
+)
 
 type PrincipleIdType = keyof typeof initialPrincipleSummary
 
@@ -214,10 +234,11 @@ export const SolidLongread = ({
       isBorderDisabled
       isRoundedCornersDisabled
       className="min-h-screen px-4 py-6 md:px-8 md:py-8"
-      patternIcon={chessRookPatternIcon}
+      patternIconComponent={ChessRookPatternIcon}
       patternColor="chart-1"
-      patternAngle={25}
+      patternAngle={45}
       patternSize={34}
+      patternGap={14}
       patternOpacity={0.12}>
       <div className="mx-auto grid w-full max-w-[980px] gap-4">
         <Paper

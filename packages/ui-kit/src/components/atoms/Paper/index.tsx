@@ -3,9 +3,11 @@ import type {
   ComponentPropsWithoutRef,
   ElementType,
   PropsWithChildren,
+  ReactElement,
 } from 'react'
-
+import { createElement, isValidElement } from 'react'
 import { clsx } from '@infinityloop.labs/utils'
+import { renderToStaticMarkup } from 'react-dom/server'
 
 import { GLASS_CLASS } from '@/constants'
 
@@ -63,10 +65,12 @@ export type PaperBasePropertyType<T extends ElementType> = {
   radiusClassName?: PaperRadiusClassType
   isRoundedCornersDisabled?: boolean
   isLoading?: boolean
-  patternIcon?: string
+  patternIconComponent?: ElementType | ReactElement
+  patternIconFile?: string
   patternColor?: PaperPatternColorType
   patternAngle?: number
   patternSize?: number | string
+  patternGap?: number
   patternOpacity?: number
 }
 
@@ -81,23 +85,74 @@ export type PaperPropertyType<T extends ElementType = 'div'> =
 
 const defaultElement = 'div'
 const defaultPatternSize = 28
+const defaultPatternGap = 0
 const defaultPatternOpacity = 0.14
 
-const resolvePatternImage = (patternIcon: string): string => {
-  const trimmedPatternIcon = patternIcon.trim()
-  if (!trimmedPatternIcon) {
+const resolvePatternImageFromFile = (patternIconFile: string): string => {
+  const trimmedPatternIconFile = patternIconFile.trim()
+  if (!trimmedPatternIconFile) {
     return ''
   }
 
-  if (trimmedPatternIcon.startsWith('url(')) {
-    return trimmedPatternIcon
+  if (trimmedPatternIconFile.startsWith('url(')) {
+    return trimmedPatternIconFile
   }
 
-  if (trimmedPatternIcon.startsWith('<svg')) {
-    return `url("data:image/svg+xml,${encodeURIComponent(trimmedPatternIcon)}")`
+  return `url("${trimmedPatternIconFile}")`
+}
+
+const resolvePatternIconFromComponent = (
+  patternIconComponent?: ElementType | ReactElement,
+  patternAngle = 0,
+  patternGap = defaultPatternGap,
+): string => {
+  if (!patternIconComponent) {
+    return ''
   }
 
-  return `url("${trimmedPatternIcon}")`
+  const iconElement = isValidElement(patternIconComponent)
+    ? patternIconComponent
+    : createElement(patternIconComponent, {
+        width: 24,
+        height: 24,
+        strokeWidth: 2,
+      })
+
+  const renderedSvg = renderToStaticMarkup(iconElement).trim()
+  if (!renderedSvg) {
+    return ''
+  }
+
+  const viewBoxMatch = renderedSvg.match(/viewBox="([^"]+)"/)
+  const viewBoxParts =
+    viewBoxMatch?.[1]?.split(/\s+/).map(Number).filter(Number.isFinite) || []
+  const [, , viewBoxWidth = 24, viewBoxHeight = 24] = viewBoxParts
+  const rootTagMatch = renderedSvg.match(/^<svg([^>]*)>/)
+  const rootAttributes = rootTagMatch?.[1] || ''
+  const sanitizedRootAttributes = rootAttributes.replace(
+    /\s(?:xmlns|width|height|viewBox|class)="[^"]*"/g,
+    '',
+  )
+  const innerMarkup = renderedSvg
+    .replace(/^<svg[^>]*>/, '')
+    .replace(/<\/svg>$/, '')
+  const normalizedPatternGap = Number.isFinite(patternGap)
+    ? Math.max(0, patternGap)
+    : 0
+  const wrapperWidth = viewBoxWidth + normalizedPatternGap
+  const wrapperHeight = viewBoxHeight + normalizedPatternGap
+  const offset = normalizedPatternGap / 2
+  const transformParts = [`translate(${offset} ${offset})`]
+
+  if (patternAngle) {
+    transformParts.push(
+      `rotate(${patternAngle} ${viewBoxWidth / 2} ${viewBoxHeight / 2})`,
+    )
+  }
+
+  const wrappedSvg = `<svg xmlns="http://www.w3.org/2000/svg" width="${wrapperWidth}" height="${wrapperHeight}" viewBox="0 0 ${wrapperWidth} ${wrapperHeight}"${sanitizedRootAttributes}><g transform="${transformParts.join(' ')}">${innerMarkup}</g></svg>`
+
+  return `url("data:image/svg+xml,${encodeURIComponent(wrappedSvg)}")`
 }
 
 const resolvePatternSize = (patternSize: number | string): string =>
@@ -116,23 +171,31 @@ export const Paper = <T extends ElementType = typeof defaultElement>({
   radiusClassName = 'rounded-(--radius)',
   isRoundedCornersDisabled = false,
   isLoading = false,
-  patternIcon,
+  patternIconComponent,
+  patternIconFile = '',
   patternColor,
   patternAngle = 0,
   patternSize = defaultPatternSize,
+  patternGap = defaultPatternGap,
   patternOpacity = defaultPatternOpacity,
   ...property
 }: PaperPropertyType<T>) => {
   const Component = (as || defaultElement) as ElementType
-  const isPatternEnabled = Boolean(patternIcon?.trim())
-  const hasPatternRotation = Boolean(patternAngle)
+  const resolvedPatternImage = patternIconComponent
+    ? resolvePatternIconFromComponent(
+        patternIconComponent,
+        patternAngle,
+        patternGap,
+      )
+    : resolvePatternImageFromFile(patternIconFile)
+  const isPatternEnabled = Boolean(resolvedPatternImage)
+  const hasPatternRotation = Boolean(patternAngle && !patternIconComponent)
   const resolvedPatternColor = patternColor
     ? patternColorValueDictionary[patternColor]
     : undefined
   const isMaskPatternEnabled = Boolean(resolvedPatternColor)
   const clampedPatternOpacity = Math.min(Math.max(patternOpacity, 0), 1)
   const resolvedPatternSize = resolvePatternSize(patternSize)
-  const resolvedPatternImage = resolvePatternImage(patternIcon || '')
   const patternLayerStyle: CSSProperties | undefined = isPatternEnabled
     ? {
         ...(isMaskPatternEnabled

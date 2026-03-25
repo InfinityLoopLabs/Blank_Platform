@@ -1,4 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/react-vite'
+import { Asterisk, Castle, Sparkles } from 'lucide-react'
 
 import {
   Paper,
@@ -6,10 +7,6 @@ import {
   PAPER_RADIUS_CLASS_OPTIONS,
 } from '@/components/atoms/Paper'
 import { Typography } from '@/components/atoms/Typography'
-
-const defaultPatternIcon = `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"><path d="M12 4L20 12L12 20L4 12L12 4Z" fill="currentColor"/></svg>`
-const lucideAsteriskPatternIcon = `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="black" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M12 4v16"/><path d="m8 6 8 12"/><path d="m16 6-8 12"/><path d="M4 12h16"/></svg>`
-const lucideSparklePatternIcon = `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="black"><path d="M12 3l1.95 5.05L19 10l-5.05 1.95L12 17l-1.95-5.05L5 10l5.05-1.95L12 3z"/></svg>`
 
 const meta = {
   title: 'Atoms/Paper',
@@ -51,10 +48,12 @@ const meta = {
     radiusClassName: 'rounded-(--radius)',
     isRoundedCornersDisabled: false,
     isLoading: false,
-    patternIcon: defaultPatternIcon,
+    patternIconComponent: Castle,
+    patternIconFile: '',
     patternColor: 'chart-1',
     patternAngle: 24,
     patternSize: 34,
+    patternGap: 0,
     patternOpacity: 0.1,
   },
   argTypes: {
@@ -84,7 +83,7 @@ const meta = {
     isLoading: {
       control: 'boolean',
     },
-    patternIcon: {
+    patternIconFile: {
       control: 'text',
     },
     patternAngle: {
@@ -95,6 +94,9 @@ const meta = {
       options: PAPER_PATTERN_COLOR_OPTIONS,
     },
     patternSize: {
+      control: 'number',
+    },
+    patternGap: {
       control: 'number',
     },
     patternOpacity: {
@@ -115,7 +117,7 @@ export const Playground: StoryType = {}
 
 export const LucideAsteriskPattern: StoryType = {
   args: {
-    patternIcon: lucideAsteriskPatternIcon,
+    patternIconComponent: Asterisk,
     patternColor: 'chart-2',
     patternAngle: 28,
     patternSize: 32,
@@ -125,7 +127,7 @@ export const LucideAsteriskPattern: StoryType = {
 
 export const LucideSparklePattern: StoryType = {
   args: {
-    patternIcon: lucideSparklePatternIcon,
+    patternIconComponent: Sparkles,
     patternColor: 'chart-4',
     patternAngle: 18,
     patternSize: 30,
@@ -137,6 +139,7 @@ export const TransparentNoPadding: StoryType = {
   args: {
     type: 'transparent',
     isPaddingDisabled: true,
-    patternIcon: '',
+    patternIconComponent: undefined,
+    patternIconFile: '',
   },
 }

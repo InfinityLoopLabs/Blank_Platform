@@ -10,8 +10,8 @@ import {
   highlightCodeToHtml,
   resolveHighlightLanguage,
 } from '@/components/molecules/CodeBrick/lib/highlight'
-import { EditableTypography } from '@/components/molecules/EditableTypography'
 import '@/components/molecules/CodeBrick/lib/highlight.css'
+import { EditableTypography } from '@/components/molecules/EditableTypography'
 
 type CodeBrickBadSmellType = {
   pattern: string
@@ -720,7 +720,7 @@ export const Code: FC<CodeBrickPropertyType> = properties => {
               />
             ) : (
               <pre
-                className="codebrick-highlight w-full overflow-hidden p-4 pl-14 font-mono text-sm leading-6 text-(--muted-foreground)"
+                className="codebrick-highlight hljs w-full overflow-hidden p-4 pl-14 font-mono text-sm leading-6"
                 style={{ height: codeAreaHeightPx }}>
                 <code
                   className={clsx(

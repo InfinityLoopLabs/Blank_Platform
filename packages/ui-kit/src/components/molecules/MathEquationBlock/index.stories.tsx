@@ -40,10 +40,11 @@ const meta = {
     isGradientEnabled: false,
     isColored: true,
     isRoundedCornersDisabled: false,
-    patternIcon: '',
+    patternIconFile: '',
     patternColor: 'chart-1',
     patternAngle: 0,
     patternSize: 28,
+    patternGap: 0,
     patternOpacity: 0.14,
   },
   argTypes: {
@@ -78,7 +79,7 @@ const meta = {
     isRoundedCornersDisabled: {
       control: 'boolean',
     },
-    patternIcon: {
+    patternIconFile: {
       control: 'text',
     },
     patternColor: {
@@ -89,6 +90,9 @@ const meta = {
       control: 'number',
     },
     patternSize: {
+      control: 'number',
+    },
+    patternGap: {
       control: 'number',
     },
     patternOpacity: {
