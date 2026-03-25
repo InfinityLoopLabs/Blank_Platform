@@ -73,6 +73,7 @@
     "@radix-ui/react-slot": "^1.2.4",
     "@tailwindcss/postcss": "^4.1.13",
     "@tanstack/react-table": "^8.21.3",
+    "better-react-mathjax": "^2.4.0-beta-1",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
     "color": "^5.0.3",

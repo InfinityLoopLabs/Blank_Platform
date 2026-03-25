@@ -203,7 +203,7 @@ const preview: Preview = {
       storySort: {
         order: [
           "Showcase",
-          ["Form Example", "Offer Countdown"],
+          ["Form Example", "Offer Countdown", "SOLID Article"],
           "Design",
           ["Color Palette", "Typography", "Custom CSS"],
           "Atoms",
