@@ -1,5 +1,4 @@
 import { type FC, useEffect, useMemo, useRef, useState } from 'react'
-import 'highlight.js/styles/monokai.css'
 
 import { clsx } from '@infinityloop.labs/utils'
 
@@ -12,6 +11,7 @@ import {
   resolveHighlightLanguage,
 } from '@/components/molecules/CodeBrick/lib/highlight'
 import { EditableTypography } from '@/components/molecules/EditableTypography'
+import '@/components/molecules/CodeBrick/lib/highlight.css'
 
 type CodeBrickBadSmellType = {
   pattern: string
@@ -544,8 +544,8 @@ export const Code: FC<CodeBrickPropertyType> = properties => {
       isLoading={isLoading}
       className={clsx('w-full !p-0', className)}>
       <Flex column className="w-full">
-        <div className="overflow-hidden rounded-[inherit] border border-(--chart-1)/35 bg-(--chart-1)/10">
-          <div className="flex flex-wrap items-center justify-between gap-4 border-b border-(--chart-1)/30 bg-black px-4 py-3">
+        <div className="overflow-hidden rounded-[inherit] border border-(--chart-1)/35 bg-(--background)">
+          <div className="flex flex-wrap items-center justify-between gap-4 border-b border-(--chart-1)/30 bg-(--muted)/40 px-4 py-3">
             <div className="flex items-center gap-3">
               <div className="flex flex-wrap items-center gap-1.5">
                 {draftProperties ? (
@@ -692,7 +692,7 @@ export const Code: FC<CodeBrickPropertyType> = properties => {
           </div>
 
           <div className="relative">
-            <div className="absolute bottom-0 left-0 top-0 flex w-12 flex-col items-end border-r border-(--chart-1)/30 bg-black/50 pr-2 pt-4 text-xs font-mono text-(--chart-1)/30">
+            <div className="absolute bottom-0 left-0 top-0 flex w-12 flex-col items-end border-r border-(--chart-1)/30 bg-(--muted)/40 pr-2 pt-4 text-xs font-mono text-(--chart-1)/30">
               {codeValue.split('\n').map((_, index) => (
                 <div key={`line-${index + 1}`} className="leading-6">
                   {index + 1}
@@ -720,7 +720,7 @@ export const Code: FC<CodeBrickPropertyType> = properties => {
               />
             ) : (
               <pre
-                className="hljs w-full overflow-auto p-4 pl-14 font-mono text-sm leading-6"
+                className="codebrick-highlight w-full overflow-hidden p-4 pl-14 font-mono text-sm leading-6 text-(--muted-foreground)"
                 style={{ height: codeAreaHeightPx }}>
                 <code
                   className={clsx(
@@ -736,15 +736,15 @@ export const Code: FC<CodeBrickPropertyType> = properties => {
           </div>
 
           {detectedSmells.length > 0 ? (
-            <div className="border-t border-red-500/30 bg-red-500/10 px-4 py-2">
-              <div className="flex items-center gap-2 text-xs font-mono text-red-400">
+            <div className="border-t border-(--destructive)/30 bg-(--destructive)/10 px-4 py-2">
+              <div className="flex items-center gap-2 text-xs font-mono text-(--destructive)">
                 <span>⚠</span>
                 <span>CODE SMELL DETECTED:</span>
               </div>
               {detectedSmells.map((smell, index) => (
                 <div
                   key={`${smell.pattern}-${index}`}
-                  className="mt-1 pl-5 text-xs font-mono text-red-400/80">
+                  className="mt-1 pl-5 text-xs font-mono text-(--destructive)/80">
                   → {smell.message}
                 </div>
               ))}
@@ -849,7 +849,7 @@ export const Code: FC<CodeBrickPropertyType> = properties => {
                   ) : null}
                   {activeHint ? (
                     <div
-                      className="border-l-2 bg-black/15 p-3 font-mono text-sm"
+                      className="border-l-2 bg-(--muted)/30 p-3 font-mono text-sm"
                       style={{
                         borderColor: `var(--${activeHintColor})`,
                         color: `var(--${activeHintColor})`,
@@ -873,7 +873,7 @@ export const Code: FC<CodeBrickPropertyType> = properties => {
           ) : null}
 
           <div className="border-t border-(--chart-1)/30">
-            <div className="flex items-center justify-between bg-black/50 px-4 py-2">
+            <div className="flex items-center justify-between bg-(--muted)/40 px-4 py-2">
               <EditableTypography
                 typography="Caption"
                 color="chart-1"
@@ -896,10 +896,10 @@ export const Code: FC<CodeBrickPropertyType> = properties => {
                 className={clsx(
                   'px-4 py-1.5 font-mono text-sm transition-all',
                   copyStatus === 'copied'
-                    ? 'bg-green-500/20 text-green-300'
+                    ? 'bg-(--constructive)/20 text-(--constructive)'
                     : copyStatus === 'error'
-                      ? 'bg-red-500/20 text-red-300'
-                      : 'bg-(--chart-1) text-black hover:brightness-110',
+                      ? 'bg-(--destructive)/20 text-(--destructive)'
+                      : 'bg-(--chart-1) text-(--background) hover:brightness-110',
                 )}>
                 {copyStatus === 'copied'
                   ? 'COPIED'

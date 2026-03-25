@@ -1,0 +1,44 @@
+.codebrick-highlight .hljs {
+  color: var(--muted-foreground);
+  background: transparent;
+}
+
+.codebrick-highlight .hljs-keyword,
+.codebrick-highlight .hljs-selector-tag,
+.codebrick-highlight .hljs-section,
+.codebrick-highlight .hljs-literal {
+  color: var(--foreground);
+}
+
+.codebrick-highlight .hljs-string,
+.codebrick-highlight .hljs-attr,
+.codebrick-highlight .hljs-attribute,
+.codebrick-highlight .hljs-meta-string {
+  color: var(--constructive);
+}
+
+.codebrick-highlight .hljs-number,
+.codebrick-highlight .hljs-symbol,
+.codebrick-highlight .hljs-bullet,
+.codebrick-highlight .hljs-template-variable {
+  color: var(--cautionary);
+}
+
+.codebrick-highlight .hljs-title,
+.codebrick-highlight .hljs-function,
+.codebrick-highlight .hljs-class .hljs-title {
+  color: var(--chart-1);
+  opacity: 0.9;
+}
+
+.codebrick-highlight .hljs-comment,
+.codebrick-highlight .hljs-quote {
+  color: var(--muted-foreground);
+  opacity: 0.8;
+}
+
+.codebrick-highlight .hljs-variable,
+.codebrick-highlight .hljs-name,
+.codebrick-highlight .hljs-operator {
+  color: var(--foreground);
+}

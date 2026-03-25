@@ -214,18 +214,21 @@ export const SolidLongread = ({
     <div
       className={clsx('min-h-screen px-4 py-6 md:px-8 md:py-8', className)}
       style={{
-        background:
-          'radial-gradient(130% 120% at 0% 0%, color-mix(in oklab, var(--chart-1) 14%, transparent), transparent 52%), radial-gradient(120% 120% at 100% 0%, color-mix(in oklab, var(--chart-2) 10%, transparent), transparent 58%), var(--background)',
+        background: 'var(--background)',
         color: 'var(--foreground)',
       }}
       {...property}>
       <div className="mx-auto grid w-full max-w-[980px] gap-4">
         <Paper
-          type="gradient"
+          type="glass"
           isPaddingDisabled
-          className="space-y-5"
+          className="space-y-4"
           isLoading={isLoading}>
-          <div className="space-y-5 px-6 py-5 md:px-7 md:py-6">
+          <Paper
+            type="transparent"
+            isPaddingDisabled
+            className="space-y-5 p-4"
+            isLoading={isLoading}>
             <Typography
               typography="Caption"
               color="muted-foreground"
@@ -269,13 +272,18 @@ export const SolidLongread = ({
               <code>isEditModeOn</code> и <code>isEditModeDisabled</code>{' '}
               позволяют проверять поведение контента в разных состояниях.
             </Typography>
-          </div>
+          </Paper>
 
-          <div className="grid gap-4">
+          <Paper
+            type="dark"
+            isBorderDisabled
+            isPaddingDisabled
+            className="space-y-4"
+            isLoading={isLoading}>
             {solidPrinciples.map(principle => (
               <section
                 key={principle.id}
-                className="space-y-3 rounded-(--radius) border border-(--border) bg-(--card) p-4 md:p-5">
+                className="space-y-3 rounded-none border-0 bg-(--card) p-4">
                 <div className="flex items-center gap-3">
                   <div
                     className="inline-flex size-9 items-center justify-center rounded-md text-sm font-semibold"
@@ -314,7 +322,7 @@ export const SolidLongread = ({
                 </Typography>
 
                 <div className="grid gap-3 md:grid-cols-2">
-                  <div className="space-y-2 rounded-(--radius) border border-(--border) bg-(--background) p-3">
+                  <div className="space-y-2 rounded-(--radius) bg-(--background) p-3">
                     <Typography
                       typography="CompactCaption"
                       color="cautionary"
@@ -325,7 +333,7 @@ export const SolidLongread = ({
                       {principle.issue}
                     </Typography>
                   </div>
-                  <div className="space-y-2 rounded-(--radius) border border-(--border) bg-(--background) p-3">
+                  <div className="space-y-2 rounded-(--radius) bg-(--background) p-3">
                     <Typography
                       typography="CompactCaption"
                       color="constructive"
@@ -372,7 +380,7 @@ export const SolidLongread = ({
                 />
               </section>
             ))}
-          </div>
+          </Paper>
         </Paper>
       </div>
     </div>

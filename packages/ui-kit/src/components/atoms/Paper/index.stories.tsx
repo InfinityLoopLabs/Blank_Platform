@@ -59,7 +59,7 @@ const meta = {
   argTypes: {
     type: {
       control: 'select',
-      options: ['dark', 'light', 'gradient', 'transparent'],
+      options: ['dark', 'light', 'glass', 'gradient', 'transparent'],
     },
     isColored: {
       control: 'boolean',

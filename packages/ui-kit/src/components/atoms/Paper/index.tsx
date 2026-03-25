@@ -7,9 +7,12 @@ import type {
 
 import { clsx } from '@infinityloop.labs/utils'
 
+import { GLASS_CLASS } from '@/constants'
+
 const paperStyleDictionary = {
   light: 'bg-(--card)',
   dark: 'bg-(--background)',
+  glass: `${GLASS_CLASS} bg-(--card)/70`,
   gradient:
     'bg-[radial-gradient(120%_120%_at_0%_0%,color-mix(in_oklab,var(--chart-1)_10%,transparent),transparent_55%),linear-gradient(180deg,color-mix(in_oklab,var(--card)_93%,black_7%),var(--card))]',
   transparent: 'bg-transparent',
