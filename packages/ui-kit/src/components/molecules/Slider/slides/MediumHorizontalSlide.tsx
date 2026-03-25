@@ -86,7 +86,8 @@ export const MediumHorizontalSlide = ({
 
   return (
     <Paper
-      type="gradient"
+      type="light"
+      isGradientEnabled
       isRoundedCornersDisabled
       className="relative flex h-[360px] w-full flex-col gap-3 border-0 p-2">
       <div className="relative h-[220px] w-full overflow-hidden rounded-lg">

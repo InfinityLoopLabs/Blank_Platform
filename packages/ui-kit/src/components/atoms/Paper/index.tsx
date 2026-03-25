@@ -12,13 +12,14 @@ import { GLASS_CLASS } from '@/constants'
 const paperStyleDictionary = {
   light: 'bg-(--card)',
   dark: 'bg-(--background)',
-  glass: `${GLASS_CLASS} bg-(--card)/70`,
-  gradient:
-    'bg-[radial-gradient(120%_120%_at_0%_0%,color-mix(in_oklab,var(--chart-1)_10%,transparent),transparent_55%),linear-gradient(180deg,color-mix(in_oklab,var(--card)_93%,black_7%),var(--card))]',
+  glass: `${GLASS_CLASS} bg-transparent`,
   transparent: 'bg-transparent',
 } as const
 
 export type PaperType = keyof typeof paperStyleDictionary
+
+const paperGradientClassName =
+  'bg-[radial-gradient(120%_120%_at_0%_0%,color-mix(in_oklab,var(--chart-1)_10%,transparent),transparent_55%),linear-gradient(180deg,color-mix(in_oklab,var(--card)_93%,black_7%),var(--card))]'
 
 export const PAPER_RADIUS_CLASS_OPTIONS = [
   'rounded-none',
@@ -56,6 +57,7 @@ export type PaperBasePropertyType<T extends ElementType> = {
   className?: string
   style?: CSSProperties
   isColored?: boolean
+  isGradientEnabled?: boolean
   isBorderDisabled?: boolean
   isPaddingDisabled?: boolean
   radiusClassName?: PaperRadiusClassType
@@ -108,6 +110,7 @@ export const Paper = <T extends ElementType = typeof defaultElement>({
   style,
   children,
   isColored,
+  isGradientEnabled = false,
   isBorderDisabled = false,
   isPaddingDisabled = false,
   radiusClassName = 'rounded-(--radius)',
@@ -137,8 +140,8 @@ export const Paper = <T extends ElementType = typeof defaultElement>({
               backgroundColor: resolvedPatternColor,
               WebkitMaskImage: resolvedPatternImage,
               maskImage: resolvedPatternImage,
-              WebkitMaskPosition: 'center',
-              maskPosition: 'center',
+              WebkitMaskPosition: '0 0',
+              maskPosition: '0 0',
               WebkitMaskRepeat: 'repeat',
               maskRepeat: 'repeat',
               WebkitMaskSize: `${resolvedPatternSize} ${resolvedPatternSize}`,
@@ -146,7 +149,7 @@ export const Paper = <T extends ElementType = typeof defaultElement>({
             }
           : {
               backgroundImage: resolvedPatternImage,
-              backgroundPosition: 'center',
+              backgroundPosition: '0 0',
               backgroundRepeat: 'repeat',
               backgroundSize: `${resolvedPatternSize} ${resolvedPatternSize}`,
             }),
@@ -192,6 +195,7 @@ export const Paper = <T extends ElementType = typeof defaultElement>({
         (isLoading || (isPatternEnabled && hasPatternRotation)) &&
           'overflow-hidden',
         resolvedBackgroundClass,
+        isGradientEnabled && paperGradientClassName,
         className,
       )}
       style={style}

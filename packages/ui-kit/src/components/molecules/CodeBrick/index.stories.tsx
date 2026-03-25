@@ -140,7 +140,10 @@ const meta = {
     },
     type: {
       control: 'select',
-      options: ['dark', 'light', 'gradient'],
+      options: ['dark', 'light', 'glass', 'transparent'],
+    },
+    isGradientEnabled: {
+      control: 'boolean',
     },
     isColored: {
       control: 'boolean',

@@ -327,7 +327,8 @@ export const StoreSlide = ({
 
       <Paper
         as="section"
-        type="gradient"
+        type="light"
+        isGradientEnabled
         isRoundedCornersDisabled
         className={cn('relative flex flex-1 flex-col gap-3 border-0 p-6')}>
         <div className="inline-flex items-center gap-2 uppercase">

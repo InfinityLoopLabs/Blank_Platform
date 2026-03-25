@@ -1,7 +1,4 @@
 import * as React from 'react'
-import type { HTMLAttributes } from 'react'
-
-import { clsx } from '@infinityloop.labs/utils'
 
 import { Paper, Typography } from '@/components/atoms'
 import { Code } from '@/components/molecules/CodeBrick'
@@ -14,6 +11,8 @@ const initialPrincipleSummary = {
   i: 'Interface Segregation: узкие контракты лучше перегруженных интерфейсов.',
   d: 'Dependency Inversion: бизнес-логика зависит от абстракций, а не от деталей.',
 } as const
+
+const chessRookPatternIcon = `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="black" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M6 22h12"/><path d="M7 18h10"/><path d="M8 18v-6h8v6"/><path d="M7 12h10"/><path d="M8 6h2v2H8z"/><path d="M11 6h2v2h-2z"/><path d="M14 6h2v2h-2z"/><path d="M8 6V4h8v2"/></svg>`
 
 type PrincipleIdType = keyof typeof initialPrincipleSummary
 
@@ -187,18 +186,16 @@ class CompleteOrder {
   },
 ]
 
-type SolidLongreadPropertyType = HTMLAttributes<HTMLDivElement> & {
+type SolidLongreadPropertyType = {
   isLoading?: boolean
   isEditModeOn?: boolean
   isEditModeDisabled?: boolean
 }
 
 export const SolidLongread = ({
-  className,
   isLoading = false,
   isEditModeOn = false,
   isEditModeDisabled = false,
-  ...property
 }: SolidLongreadPropertyType) => {
   const [title, setTitle] = React.useState(
     'SOLID в разработке: принципы устойчивого кода при росте продукта',
@@ -211,13 +208,17 @@ export const SolidLongread = ({
   >(() => ({ ...initialPrincipleSummary }))
 
   return (
-    <div
-      className={clsx('min-h-screen px-4 py-6 md:px-8 md:py-8', className)}
-      style={{
-        background: 'var(--background)',
-        color: 'var(--foreground)',
-      }}
-      {...property}>
+    <Paper
+      type="dark"
+      isPaddingDisabled
+      isBorderDisabled
+      isRoundedCornersDisabled
+      className="min-h-screen px-4 py-6 md:px-8 md:py-8"
+      patternIcon={chessRookPatternIcon}
+      patternColor="chart-1"
+      patternAngle={25}
+      patternSize={34}
+      patternOpacity={0.12}>
       <div className="mx-auto grid w-full max-w-[980px] gap-4">
         <Paper
           type="glass"
@@ -277,6 +278,7 @@ export const SolidLongread = ({
           <Paper
             type="dark"
             isBorderDisabled
+            isRoundedCornersDisabled
             isPaddingDisabled
             className="space-y-4"
             isLoading={isLoading}>
@@ -383,6 +385,6 @@ export const SolidLongread = ({
           </Paper>
         </Paper>
       </div>
-    </div>
+    </Paper>
   )
 }

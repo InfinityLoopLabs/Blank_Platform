@@ -121,7 +121,8 @@ export const BigHorizontalSlide = ({
 
   return (
     <Paper
-      type="gradient"
+      type="light"
+      isGradientEnabled
       isRoundedCornersDisabled
       className="relative flex h-[520px] w-full flex-col overflow-hidden border-0 p-0">
       <div className="relative h-[340px] w-full overflow-hidden">

@@ -19,7 +19,7 @@ const meta = {
     docs: {
       description: {
         component:
-          'TypeScript: `PaperPropertyType` включает `isBorderDisabled?: boolean`, `isPaddingDisabled?: boolean`, `radiusClassName?: PaperRadiusClassType`.',
+          'TypeScript: `PaperPropertyType` включает `isGradientEnabled?: boolean`, `isBorderDisabled?: boolean`, `isPaddingDisabled?: boolean`, `radiusClassName?: PaperRadiusClassType`.',
       },
     },
   },
@@ -45,6 +45,7 @@ const meta = {
     className: 'w-[600px]',
     type: 'dark',
     isColored: false,
+    isGradientEnabled: false,
     isBorderDisabled: false,
     isPaddingDisabled: false,
     radiusClassName: 'rounded-(--radius)',
@@ -59,9 +60,12 @@ const meta = {
   argTypes: {
     type: {
       control: 'select',
-      options: ['dark', 'light', 'glass', 'gradient', 'transparent'],
+      options: ['dark', 'light', 'glass', 'transparent'],
     },
     isColored: {
+      control: 'boolean',
+    },
+    isGradientEnabled: {
       control: 'boolean',
     },
     isBorderDisabled: {

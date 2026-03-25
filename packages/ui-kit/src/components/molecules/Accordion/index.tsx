@@ -13,7 +13,8 @@ import { EditableTypography } from '@/components/molecules/EditableTypography'
 export const ACCORDION_PAPER_TYPE_OPTIONS = [
   'dark',
   'light',
-  'gradient',
+  'glass',
+  'transparent',
 ] as const
 export type AccordionPaperType = (typeof ACCORDION_PAPER_TYPE_OPTIONS)[number]
 
