@@ -778,6 +778,7 @@
     "@radix-ui/react-slot" "^1.2.4"
     "@tailwindcss/postcss" "^4.1.13"
     "@tanstack/react-table" "^8.21.3"
+    better-react-mathjax "^2.4.0-beta-1"
     class-variance-authority "^0.7.1"
     clsx "^2.1.1"
     color "^5.0.3"
@@ -6124,6 +6125,11 @@ he@^1.2.0:
   version "1.2.0"
   resolved "https://registry.npmjs.org/he/-/he-1.2.0.tgz"
   integrity sha512-F/1DnUGPopORZi0ni+CvrCgHQ5FyEAHRLSApuYWMmrbSwoN2Mn/7k+Gl38gJnR7yyDZk6WLXwiGod1JOWNDKGw==
+
+highlight.js@^11.11.1:
+  version "11.11.1"
+  resolved "https://registry.npmjs.org/highlight.js/-/highlight.js-11.11.1.tgz"
+  integrity sha512-Xwwo44whKBVCYoliBQwaPvtd/2tYFkRQtXDWj1nackaV2JPXx3L0+Jvd8/qCJ2p+ML0/XVkJ2q+Mr+UVdpJK5w==
 
 html-encoding-sniffer@^3.0.0:
   version "3.0.0"

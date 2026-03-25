@@ -1,4 +1,5 @@
-import { type FC, useEffect, useRef, useState } from 'react'
+import { type FC, useEffect, useMemo, useRef, useState } from 'react'
+import 'highlight.js/styles/monokai.css'
 
 import { clsx } from '@infinityloop.labs/utils'
 
@@ -6,6 +7,10 @@ import { Dropdown, type DropdownOptionType } from '@/components/atoms/Dropdown'
 import { Flex } from '@/components/atoms/Flex'
 import { Paper, type PaperPropertyType } from '@/components/atoms/Paper'
 import { type TypographyColorType } from '@/components/atoms/Typography'
+import {
+  highlightCodeToHtml,
+  resolveHighlightLanguage,
+} from '@/components/molecules/CodeBrick/lib/highlight'
 import { EditableTypography } from '@/components/molecules/EditableTypography'
 
 type CodeBrickBadSmellType = {
@@ -521,6 +526,15 @@ export const Code: FC<CodeBrickPropertyType> = properties => {
   )
   const codeLineCount = Math.max(codeValue.split('\n').length, 1)
   const codeAreaHeightPx = Math.max(200, codeLineCount * 24 + 32)
+  const hasBufferHelperText = editableBufferHelperText.trim().length > 0
+  const resolvedHighlightLanguage = useMemo(
+    () => resolveHighlightLanguage(languageValue),
+    [languageValue],
+  )
+  const highlightedCodeMarkup = useMemo(
+    () => highlightCodeToHtml(codeValue, languageValue),
+    [codeValue, languageValue],
+  )
 
   return (
     <Paper
@@ -685,24 +699,40 @@ export const Code: FC<CodeBrickPropertyType> = properties => {
                 </div>
               ))}
             </div>
-            <textarea
-              value={codeValue}
-              onChange={event => onTextareaChangeHandler(event.target.value)}
-              className={clsx(
-                'w-full resize-none overflow-hidden bg-transparent p-4 pl-14 font-mono text-sm leading-6 text-(--muted-foreground) focus:outline-none',
-                isTextareaDisabled && 'pointer-events-none opacity-60',
-              )}
-              placeholder={
-                draftProperties?.snippetPlaceholder || 'Paste code snippet'
-              }
-              spellCheck={false}
-              style={{
-                tabSize: 2,
-                height: codeAreaHeightPx,
-              }}
-              disabled={isTextareaDisabled}
-              onBlur={onAutoSubmit}
-            />
+            {isEditModeActive ? (
+              <textarea
+                value={codeValue}
+                onChange={event => onTextareaChangeHandler(event.target.value)}
+                className={clsx(
+                  'w-full resize-none overflow-hidden bg-transparent p-4 pl-14 font-mono text-sm leading-6 text-(--muted-foreground) focus:outline-none',
+                  isTextareaDisabled && 'pointer-events-none opacity-60',
+                )}
+                placeholder={
+                  draftProperties?.snippetPlaceholder || 'Paste code snippet'
+                }
+                spellCheck={false}
+                style={{
+                  tabSize: 2,
+                  height: codeAreaHeightPx,
+                }}
+                disabled={isTextareaDisabled}
+                onBlur={onAutoSubmit}
+              />
+            ) : (
+              <pre
+                className="hljs w-full overflow-auto p-4 pl-14 font-mono text-sm leading-6"
+                style={{ height: codeAreaHeightPx }}>
+                <code
+                  className={clsx(
+                    resolvedHighlightLanguage &&
+                      `language-${resolvedHighlightLanguage}`,
+                  )}
+                  dangerouslySetInnerHTML={{
+                    __html: highlightedCodeMarkup || '&nbsp;',
+                  }}
+                />
+              </pre>
+            )}
           </div>
 
           {detectedSmells.length > 0 ? (
@@ -878,22 +908,24 @@ export const Code: FC<CodeBrickPropertyType> = properties => {
                     : 'COPY'}
               </button>
             </div>
-            <div className="min-h-[80px] p-4 font-mono text-sm">
-              <EditableTypography
-                typography="BodySmall"
-                color="chart-1"
-                value={editableBufferHelperText}
-                onValueChange={value => {
-                  setEditableBufferHelperText(value)
-                  onBufferHelperTextChange?.(value)
-                }}
-                className="!h-auto"
-                contentClassName="font-mono text-(--chart-1)/30"
-                isLoading={isUiLocked}
-                isEditModeOn={isTextEditModeEnabled ? undefined : false}
-                isEditModeDisabled={isTextEditModeDisabled}
-              />
-            </div>
+            {hasBufferHelperText ? (
+              <div className="min-h-[80px] p-4 font-mono text-sm">
+                <EditableTypography
+                  typography="BodySmall"
+                  color="chart-1"
+                  value={editableBufferHelperText}
+                  onValueChange={value => {
+                    setEditableBufferHelperText(value)
+                    onBufferHelperTextChange?.(value)
+                  }}
+                  className="!h-auto"
+                  contentClassName="font-mono text-(--chart-1)/30"
+                  isLoading={isUiLocked}
+                  isEditModeOn={isTextEditModeEnabled ? undefined : false}
+                  isEditModeDisabled={isTextEditModeDisabled}
+                />
+              </div>
+            ) : null}
           </div>
         </div>
       </Flex>

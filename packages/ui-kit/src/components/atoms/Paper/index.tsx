@@ -12,9 +12,23 @@ const paperStyleDictionary = {
   dark: 'bg-(--background)',
   gradient:
     'bg-[radial-gradient(120%_120%_at_0%_0%,color-mix(in_oklab,var(--chart-1)_10%,transparent),transparent_55%),linear-gradient(180deg,color-mix(in_oklab,var(--card)_93%,black_7%),var(--card))]',
+  transparent: 'bg-transparent',
 } as const
 
 export type PaperType = keyof typeof paperStyleDictionary
+
+export const PAPER_RADIUS_CLASS_OPTIONS = [
+  'rounded-none',
+  'rounded-sm',
+  'rounded-md',
+  'rounded-lg',
+  'rounded-xl',
+  'rounded-2xl',
+  'rounded-3xl',
+  'rounded-full',
+  'rounded-(--radius)',
+] as const
+export type PaperRadiusClassType = (typeof PAPER_RADIUS_CLASS_OPTIONS)[number]
 
 export const PAPER_PATTERN_COLOR_OPTIONS = [
   'chart-1',
@@ -39,6 +53,9 @@ export type PaperBasePropertyType<T extends ElementType> = {
   className?: string
   style?: CSSProperties
   isColored?: boolean
+  isBorderDisabled?: boolean
+  isPaddingDisabled?: boolean
+  radiusClassName?: PaperRadiusClassType
   isRoundedCornersDisabled?: boolean
   isLoading?: boolean
   patternIcon?: string
@@ -88,6 +105,9 @@ export const Paper = <T extends ElementType = typeof defaultElement>({
   style,
   children,
   isColored,
+  isBorderDisabled = false,
+  isPaddingDisabled = false,
+  radiusClassName = 'rounded-(--radius)',
   isRoundedCornersDisabled = false,
   isLoading = false,
   patternIcon,
@@ -144,18 +164,26 @@ export const Paper = <T extends ElementType = typeof defaultElement>({
     : undefined
   const roundedClassName = isRoundedCornersDisabled
     ? 'rounded-none'
-    : 'rounded-(--radius)'
-  const coloredClassName =
-    'paper--colored border border-(--chart-1) bg-(--card) transition-colors'
+    : radiusClassName
+  const isTransparentPaper = type === 'transparent' && !isColored
+  const paddingClassName = isPaddingDisabled ? 'p-0' : 'px-6 py-4'
   const resolvedBackgroundClass = isColored
-    ? clsx(coloredClassName, roundedClassName)
-    : clsx('border-(--border)', paperStyleDictionary[type])
+    ? 'paper--colored bg-(--card) transition-colors'
+    : paperStyleDictionary[type]
+  const borderColorClassName = isColored
+    ? 'border-(--chart-1)'
+    : 'border-(--border)'
+  const borderClassName =
+    isBorderDisabled || isTransparentPaper
+      ? 'border-0'
+      : clsx('border', borderColorClassName)
 
   return (
     <Component
       aria-busy={isLoading || undefined}
       className={clsx(
-        'border px-6 py-4',
+        borderClassName,
+        paddingClassName,
         roundedClassName,
         (isLoading || isPatternEnabled) && 'relative',
         (isLoading || (isPatternEnabled && hasPatternRotation)) &&

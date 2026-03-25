@@ -222,51 +222,54 @@ export const SolidLongread = ({
       <div className="mx-auto grid w-full max-w-[980px] gap-4">
         <Paper
           type="gradient"
-          className="space-y-5 p-6 md:p-7"
+          isPaddingDisabled
+          className="space-y-5"
           isLoading={isLoading}>
-          <Typography
-            typography="Caption"
-            color="muted-foreground"
-            isLoading={isLoading}>
-            инженерная практика
-          </Typography>
+          <div className="space-y-5 px-6 py-5 md:px-7 md:py-6">
+            <Typography
+              typography="Caption"
+              color="muted-foreground"
+              isLoading={isLoading}>
+              инженерная практика
+            </Typography>
 
-          <EditableTypography
-            typography="Heading"
-            element="h1"
-            value={title}
-            onValueChange={setTitle}
-            isLoading={isLoading}
-            isEditModeOn={isEditModeOn}
-            isEditModeDisabled={isEditModeDisabled}
-            className="h-auto min-h-9"
-          />
+            <EditableTypography
+              typography="Heading"
+              element="h1"
+              value={title}
+              onValueChange={setTitle}
+              isLoading={isLoading}
+              isEditModeOn={isEditModeOn}
+              isEditModeDisabled={isEditModeDisabled}
+              className="h-auto min-h-9"
+            />
 
-          <EditableTypography
-            typography="Subheader"
-            element="p"
-            value={subtitle}
-            onValueChange={setSubtitle}
-            isLoading={isLoading}
-            isEditModeOn={isEditModeOn}
-            isEditModeDisabled={isEditModeDisabled}
-            className="h-auto min-h-9"
-            contentClassName="text-(--muted-foreground)"
-          />
+            <EditableTypography
+              typography="Subheader"
+              element="p"
+              value={subtitle}
+              onValueChange={setSubtitle}
+              isLoading={isLoading}
+              isEditModeOn={isEditModeOn}
+              isEditModeDisabled={isEditModeDisabled}
+              className="h-auto min-h-9"
+              contentClassName="text-(--muted-foreground)"
+            />
 
-          <Typography typography="SectionHeader" isLoading={isLoading}>
-            SOLID: практическое руководство
-          </Typography>
+            <Typography typography="SectionHeader" isLoading={isLoading}>
+              SOLID: практическое руководство
+            </Typography>
 
-          <Typography
-            typography="Body"
-            color="muted-foreground"
-            isLoading={isLoading}>
-            Ниже пять принципов в формате «сигнал проблемы → безопасный
-            рефакторинг → чеклист ревью». Режимы <code>isLoading</code>,{' '}
-            <code>isEditModeOn</code> и <code>isEditModeDisabled</code>{' '}
-            позволяют проверять поведение контента в разных состояниях.
-          </Typography>
+            <Typography
+              typography="Body"
+              color="muted-foreground"
+              isLoading={isLoading}>
+              Ниже пять принципов в формате «сигнал проблемы → безопасный
+              рефакторинг → чеклист ревью». Режимы <code>isLoading</code>,{' '}
+              <code>isEditModeOn</code> и <code>isEditModeDisabled</code>{' '}
+              позволяют проверять поведение контента в разных состояниях.
+            </Typography>
+          </div>
 
           <div className="grid gap-4">
             {solidPrinciples.map(principle => (
@@ -361,6 +364,8 @@ export const SolidLongread = ({
                   subtitle={principle.title}
                   initialCode={principle.code}
                   language="typescript"
+                  type="transparent"
+                  isPaddingDisabled
                   isEditMode={isEditModeOn}
                   isEditModeDisabled={isEditModeDisabled}
                   isLoading={isLoading}

@@ -1,6 +1,10 @@
 import type { Meta, StoryObj } from '@storybook/react-vite'
 
-import { Paper, PAPER_PATTERN_COLOR_OPTIONS } from '@/components/atoms/Paper'
+import {
+  Paper,
+  PAPER_PATTERN_COLOR_OPTIONS,
+  PAPER_RADIUS_CLASS_OPTIONS,
+} from '@/components/atoms/Paper'
 import { Typography } from '@/components/atoms/Typography'
 
 const defaultPatternIcon = `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"><path d="M12 4L20 12L12 20L4 12L12 4Z" fill="currentColor"/></svg>`
@@ -11,6 +15,14 @@ const meta = {
   title: 'Atoms/Paper',
   component: Paper,
   tags: ['autodocs'],
+  parameters: {
+    docs: {
+      description: {
+        component:
+          'TypeScript: `PaperPropertyType` включает `isBorderDisabled?: boolean`, `isPaddingDisabled?: boolean`, `radiusClassName?: PaperRadiusClassType`.',
+      },
+    },
+  },
   render: args => (
     <Paper {...args}>
       <div className="space-y-2">
@@ -33,6 +45,9 @@ const meta = {
     className: 'w-[600px]',
     type: 'dark',
     isColored: false,
+    isBorderDisabled: false,
+    isPaddingDisabled: false,
+    radiusClassName: 'rounded-(--radius)',
     isRoundedCornersDisabled: false,
     isLoading: false,
     patternIcon: defaultPatternIcon,
@@ -44,10 +59,20 @@ const meta = {
   argTypes: {
     type: {
       control: 'select',
-      options: ['dark', 'light', 'gradient'],
+      options: ['dark', 'light', 'gradient', 'transparent'],
     },
     isColored: {
       control: 'boolean',
+    },
+    isBorderDisabled: {
+      control: 'boolean',
+    },
+    isPaddingDisabled: {
+      control: 'boolean',
+    },
+    radiusClassName: {
+      control: 'select',
+      options: PAPER_RADIUS_CLASS_OPTIONS,
     },
     isRoundedCornersDisabled: {
       control: 'boolean',
@@ -101,5 +126,13 @@ export const LucideSparklePattern: StoryType = {
     patternAngle: 18,
     patternSize: 30,
     patternOpacity: 0.18,
+  },
+}
+
+export const TransparentNoPadding: StoryType = {
+  args: {
+    type: 'transparent',
+    isPaddingDisabled: true,
+    patternIcon: '',
   },
 }
