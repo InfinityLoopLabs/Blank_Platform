@@ -238,8 +238,9 @@ export const SolidLongread = ({
       patternColor="chart-1"
       patternAngle={45}
       patternSize={34}
-      patternGap={14}
-      patternOpacity={0.12}>
+      patternGap={26}
+      patternOpacity={0.12}
+      isPatternFixed>
       <div className="mx-auto grid w-full max-w-[980px] gap-4">
         <Paper
           type="glass"

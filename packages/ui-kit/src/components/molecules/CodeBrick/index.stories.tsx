@@ -193,7 +193,7 @@ export const Debug = {
     const [hintsValue, setHintsValue] = useState<CodeBrickHintType[]>(
       normalizeStoryHints(args.hints, initialDraftHints),
     )
-    const nextIdRef = useRef(3)
+    const nextIdRef = useRef(initialDraftSnippets.length + 1)
 
     useEffect(() => {
       setTitleValue(String(args.title ?? ''))

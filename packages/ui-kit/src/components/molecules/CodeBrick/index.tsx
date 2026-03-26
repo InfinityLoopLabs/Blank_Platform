@@ -549,11 +549,13 @@ export const Code: FC<CodeBrickPropertyType> = properties => {
             <div className="flex items-center gap-3">
               <div className="flex flex-wrap items-center gap-1.5">
                 {draftProperties ? (
-                  draftCodeSnippets.map(snippet => {
+                  draftCodeSnippets.map((snippet, index) => {
                     const isActive = snippet.id === draftActiveSnippetId
 
                     return (
-                      <div key={snippet.id} className="flex items-center gap-1">
+                      <div
+                        key={`snippet-dot-${snippet.id}-${index}`}
+                        className="flex items-center gap-1">
                         <button
                           type="button"
                           onClick={() => onSelectSnippetHandler(snippet.id)}
@@ -591,20 +593,10 @@ export const Code: FC<CodeBrickPropertyType> = properties => {
                     )
                   })
                 ) : (
-                  <>
-                    <div
-                      aria-hidden="true"
-                      className="h-3 w-3 rounded-full bg-(--chart-1)/80"
-                    />
-                    <div
-                      aria-hidden="true"
-                      className="h-3 w-3 rounded-full bg-(--chart-1)/40"
-                    />
-                    <div
-                      aria-hidden="true"
-                      className="h-3 w-3 rounded-full bg-(--chart-1)/20"
-                    />
-                  </>
+                  <div
+                    aria-hidden="true"
+                    className="h-3 w-3 rounded-full bg-(--chart-1)/80"
+                  />
                 )}
                 {draftProperties && isEditModeActive ? (
                   <button

@@ -72,6 +72,7 @@ export type PaperBasePropertyType<T extends ElementType> = {
   patternSize?: number | string
   patternGap?: number
   patternOpacity?: number
+  isPatternFixed?: boolean
 }
 
 export type PaperPropertyType<T extends ElementType = 'div'> =
@@ -178,6 +179,7 @@ export const Paper = <T extends ElementType = typeof defaultElement>({
   patternSize = defaultPatternSize,
   patternGap = defaultPatternGap,
   patternOpacity = defaultPatternOpacity,
+  isPatternFixed = false,
   ...property
 }: PaperPropertyType<T>) => {
   const Component = (as || defaultElement) as ElementType
@@ -207,6 +209,8 @@ export const Paper = <T extends ElementType = typeof defaultElement>({
               maskPosition: '0 0',
               WebkitMaskRepeat: 'repeat',
               maskRepeat: 'repeat',
+              WebkitMaskAttachment: isPatternFixed ? 'fixed' : undefined,
+              maskAttachment: isPatternFixed ? 'fixed' : undefined,
               WebkitMaskSize: `${resolvedPatternSize} ${resolvedPatternSize}`,
               maskSize: `${resolvedPatternSize} ${resolvedPatternSize}`,
             }
@@ -214,6 +218,7 @@ export const Paper = <T extends ElementType = typeof defaultElement>({
               backgroundImage: resolvedPatternImage,
               backgroundPosition: '0 0',
               backgroundRepeat: 'repeat',
+              backgroundAttachment: isPatternFixed ? 'fixed' : undefined,
               backgroundSize: `${resolvedPatternSize} ${resolvedPatternSize}`,
             }),
         borderRadius: 'inherit',
@@ -266,7 +271,10 @@ export const Paper = <T extends ElementType = typeof defaultElement>({
       {isPatternEnabled ? (
         <div
           aria-hidden="true"
-          className="pointer-events-none absolute"
+          className={clsx(
+            'pointer-events-none',
+            isPatternFixed ? 'fixed inset-0' : 'absolute',
+          )}
           style={patternLayerStyle}
         />
       ) : null}
