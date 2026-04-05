@@ -5,34 +5,12 @@ import { Code } from '@/components/molecules/CodeBrick'
 import { EditableTypography } from '@/components/molecules/EditableTypography'
 
 const initialPrincipleSummary = {
-  s: 'Single Responsibility: один класс, одна причина для изменений.',
-  o: 'Open/Closed: расширяем поведение, не ломая стабильный код.',
-  l: 'Liskov Substitution: потомок должен быть честной заменой родителя.',
-  i: 'Interface Segregation: узкие контракты лучше перегруженных интерфейсов.',
-  d: 'Dependency Inversion: бизнес-логика зависит от абстракций, а не от деталей.',
+  s: 'Одна часть кода решает одну задачу.',
+  o: 'Новый сценарий добавляется новым модулем.',
+  l: 'Одну реализацию можно заменить другой без сюрпризов.',
+  i: 'Каждая зависимость даёт только нужные методы.',
+  d: 'Важная логика зависит от интерфейса, а не от инструмента.',
 } as const
-
-const ChessRookPatternIcon = (property: React.SVGProps<SVGSVGElement>) => (
-  <svg
-    xmlns="http://www.w3.org/2000/svg"
-    width="24"
-    height="24"
-    viewBox="0 0 24 24"
-    fill="none"
-    stroke="currentColor"
-    strokeWidth="2"
-    strokeLinecap="round"
-    strokeLinejoin="round"
-    {...property}>
-    <path d="M5 20a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2v1a1 1 0 0 1-1 1H6a1 1 0 0 1-1-1z" />
-    <path d="M10 2v2" />
-    <path d="M14 2v2" />
-    <path d="m17 18-1-9" />
-    <path d="M6 2v5a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2V2" />
-    <path d="M6 4h12" />
-    <path d="m7 18 1-9" />
-  </svg>
-)
 
 type PrincipleIdType = keyof typeof initialPrincipleSummary
 
@@ -45,6 +23,7 @@ type SolidPrincipleType = {
   issue: string
   refactor: string
   checklist: string[]
+  miniProject: string
   code: string
 }
 
@@ -52,19 +31,21 @@ const solidPrinciples: SolidPrincipleType[] = [
   {
     id: 's',
     letter: 'S',
-    title: 'Single Responsibility Principle',
+    title: 'S — одна задача',
     colorToken: '--chart-1',
     statement:
-      'Разделяйте ответственность по потокам изменений: в одном модуле не должны смешиваться правила домена, форматирование ответа и работа с инфраструктурой.',
+      'Один класс, сервис или компонент решает одну задачу. Такой код проще читать, менять и тестировать.',
     issue:
-      'Когда один класс и пишет в базу, и валидирует, и шлёт email, любой новый сценарий вынуждает трогать критический код и поднимать регрессию.',
+      'Один класс считает данные, сохраняет их и отправляет уведомления. Любая правка затрагивает сразу несколько зон.',
     refactor:
-      'Вынесите отдельные слои: policy/service для правил, repository для хранения и notifier для внешних эффектов.',
+      'Раздели роли. Расчёт отдельно. Сохранение отдельно. Уведомления отдельно.',
     checklist: [
-      'Изменение формата API не должно требовать правки бизнес-правил.',
-      'Логирование и уведомления выносятся в отдельные адаптеры.',
-      'Тесты модуля должны проверять один класс поведения.',
+      'По названию файла сразу понятно, что именно он делает.',
+      'Изменение письма не требует менять расчёт.',
+      'Один тест проверяет одну задачу, а не весь процесс сразу.',
     ],
+    miniProject:
+      'Сделай выдачу счёта: расчёт налога, сохранение и уведомление оформи как три отдельные части.',
     code: `class InvoiceService {
   constructor(
     private readonly calculator: TaxCalculator,
@@ -83,19 +64,21 @@ const solidPrinciples: SolidPrincipleType[] = [
   {
     id: 'o',
     letter: 'O',
-    title: 'Open/Closed Principle',
+    title: 'O — добавляй новое рядом',
     colorToken: '--chart-2',
     statement:
-      'Новая функциональность добавляется через расширение: стратегии, плагины и таблицы правил, а не через рост if/else в центре системы.',
+      'Новый сценарий лучше добавлять отдельным модулем. Рабочий код остаётся стабильным и предсказуемым.',
     issue:
-      'Монолитный switch по типам платежей ломается каждый спринт, потому что под новый тип редактируется уже отлаженная ветка.',
+      'Все варианты живут в одном большом switch по типам платежей. Он быстро растёт и становится хрупким.',
     refactor:
-      'Перейдите на реестр обработчиков: добавляйте новый класс-стратегию без изменений ядра.',
+      'Сделай отдельный обработчик для каждого сценария и подключай его в общий список.',
     checklist: [
-      'Новый кейс подключается регистрацией, а не модификацией shared-кода.',
-      'Feature-флаг активирует модуль как отдельное расширение.',
-      'Публичный контракт use-case остаётся неизменным.',
+      'Новый сценарий добавляется новым модулем.',
+      'Старый рабочий код почти не меняется.',
+      'Основной способ вызова остаётся тем же.',
     ],
+    miniProject:
+      'Собери модуль оплаты, где новый способ оплаты добавляется новым обработчиком, а не правкой большого switch.',
     code: `interface PaymentHandler {
   type: PaymentType
   pay(command: PayCommand): Promise<PayResult>
@@ -114,19 +97,21 @@ class PaymentGateway {
   {
     id: 'l',
     letter: 'L',
-    title: 'Liskov Substitution Principle',
+    title: 'L — замена без сюрпризов',
     colorToken: '--chart-3',
     statement:
-      'Наследование допустимо только когда поведение подтипа совпадает с ожиданиями базового контракта: те же предусловия, те же гарантии.',
+      'Если у двух реализаций один интерфейс, они должны вести себя одинаково для вызывающего кода. Замена не должна ломать сценарий.',
     issue:
-      'Если потомок бросает исключение там, где родитель обещает результат, слой выше перестаёт быть предсказуемым и тесты становятся хрупкими.',
+      'Одна реализация возвращает результат, а другая в том же месте неожиданно падает с ошибкой. Для вызывающего кода это сюрприз.',
     refactor:
-      'Либо исправьте контракт подтипа, либо замените наследование на композицию и отдельный интерфейс.',
+      'Сделай единые правила для всех реализаций. Если это не получается, раздели их на разные интерфейсы.',
     checklist: [
-      'Подтип не усиливает предусловия и не ослабляет постусловия.',
-      'Методы базового типа ведут себя одинаково для всех реализаций.',
-      'Контракт описан тестами на уровне абстракции.',
+      'Одинаковые методы ведут себя предсказуемо во всех реализациях.',
+      'Клиентскому коду не нужны особые проверки под каждый тип.',
+      'Общие ожидания закреплены тестами.',
     ],
+    miniProject:
+      'Сделай два экспорта отчёта, PDF и CSV, чтобы оба работали через один и тот же метод export.',
     code: `interface ReportExporter {
   export(report: Report): Promise<Uint8Array>
 }
@@ -146,19 +131,21 @@ class CsvExporter implements ReportExporter {
   {
     id: 'i',
     letter: 'I',
-    title: 'Interface Segregation Principle',
+    title: 'I — не тащи лишние методы',
     colorToken: '--chart-4',
     statement:
-      'Интерфейсы проектируются по сценариям использования: каждый клиент знает только те методы, которые реально нужны.',
+      'Интерфейс должен содержать только нужные методы. Его проще понять, реализовать и подменить в тестах.',
     issue:
-      'Толстый интерфейс из десяти методов приводит к заглушкам, `throw new Error("Not supported")` и сложному мокингу в тестах.',
+      'Интерфейс слишком большой. Часть методов не нужна, а в тестах приходится писать лишние заглушки.',
     refactor:
-      'Разбейте контракт на узкие capability-интерфейсы и внедряйте только нужные зависимости.',
+      'Разбей один большой интерфейс на несколько маленьких по ролям.',
     checklist: [
-      'Компонент не обязан реализовывать неиспользуемые методы.',
-      'Моки в тестах содержат только 1-2 обязательных метода.',
-      'API пакета читается как набор ролей, а не как монолит.',
+      'Класс получает только те методы, которые реально использует.',
+      'В тестах минимум лишнего кода.',
+      'Интерфейс легко понять с первого чтения.',
     ],
+    miniProject:
+      'Раздели работу с пользователем на чтение и запись: один интерфейс для поиска, другой для сохранения.',
     code: `interface UserReader {
   byId(id: string): Promise<User | null>
 }
@@ -178,19 +165,21 @@ class UserProfileService {
   {
     id: 'd',
     letter: 'D',
-    title: 'Dependency Inversion Principle',
+    title: 'D — важный код отдельно от деталей',
     colorToken: '--chart-5',
     statement:
-      'Слой домена общается с интерфейсами, а конкретные клиенты (Postgres, Redis, HTTP SDK) подключаются на краю приложения.',
+      'Бизнес-логика работает через простой интерфейс. База, очередь и внешний сервис подключаются отдельно.',
     issue:
-      'Когда use-case напрямую импортирует ORM-модель, вы теряете изоляцию, скорость тестов и возможность заменить инфраструктуру.',
+      'Главный сценарий напрямую зависит от ORM, то есть библиотеки для базы, или от клиента внешнего сервиса. Такой код трудно тестировать и трудно заменить.',
     refactor:
-      'Опишите порты (абстракции) в домене и внедряйте адаптеры через composition root.',
+      'Опиши интерфейс рядом с бизнес-логикой, а конкретную реализацию подключай при запуске приложения.',
     checklist: [
-      'Доменные модули не импортируют инфраструктурные библиотеки.',
-      'Интеграционные зависимости собираются в bootstrap-слое.',
-      'Юнит-тесты проходят без запуска БД и очередей.',
+      'Важная логика не импортирует базу, HTTP-клиент или очередь напрямую.',
+      'Инфраструктуру можно заменить без переписывания главного сценария.',
+      'Юнит-тесты работают без настоящих внешних сервисов.',
     ],
+    miniProject:
+      'Сделай завершение заказа так, чтобы главный сценарий знал только про EventBus, а не про конкретную очередь.',
     code: `interface EventBus {
   publish(event: DomainEvent): Promise<void>
 }
@@ -218,10 +207,10 @@ export const SolidLongread = ({
   isEditModeDisabled = false,
 }: SolidLongreadPropertyType) => {
   const [title, setTitle] = React.useState(
-    'SOLID в разработке: принципы устойчивого кода при росте продукта',
+    'SOLID простым языком',
   )
   const [subtitle, setSubtitle] = React.useState(
-    'Материал собран как рабочая шпаргалка: можно читать подряд и быстро проверять архитектурные решения перед merge.',
+    'Пять принципов для кода, который проще читать, менять и развивать.',
   )
   const [principleSummary, setPrincipleSummary] = React.useState<
     Record<PrincipleIdType, string>
@@ -233,18 +222,12 @@ export const SolidLongread = ({
       isPaddingDisabled
       isBorderDisabled
       isRoundedCornersDisabled
-      className="min-h-screen px-4 py-6 md:px-8 md:py-8"
-      patternIconComponent={ChessRookPatternIcon}
-      patternColor="chart-1"
-      patternAngle={45}
-      patternSize={34}
-      patternGap={26}
-      patternOpacity={0.12}
-      isPatternFixed>
+      className="min-h-screen px-4 py-6 md:px-8 md:py-8">
       <div className="mx-auto grid w-full max-w-[980px] gap-4">
         <Paper
           type="glass"
           isPaddingDisabled
+          isBorderDisabled
           className="space-y-4"
           isLoading={isLoading}>
           <Paper
@@ -256,7 +239,7 @@ export const SolidLongread = ({
               typography="Caption"
               color="muted-foreground"
               isLoading={isLoading}>
-              инженерная практика
+              SOLID
             </Typography>
 
             <EditableTypography
@@ -273,27 +256,24 @@ export const SolidLongread = ({
             <EditableTypography
               typography="Subheader"
               element="p"
+              color="muted-foreground"
               value={subtitle}
               onValueChange={setSubtitle}
               isLoading={isLoading}
               isEditModeOn={isEditModeOn}
               isEditModeDisabled={isEditModeDisabled}
               className="h-auto min-h-9"
-              contentClassName="text-(--muted-foreground)"
             />
 
             <Typography typography="SectionHeader" isLoading={isLoading}>
-              SOLID: практическое руководство
+              Пять принципов
             </Typography>
 
             <Typography
               typography="Body"
               color="muted-foreground"
               isLoading={isLoading}>
-              Ниже пять принципов в формате «сигнал проблемы → безопасный
-              рефакторинг → чеклист ревью». Режимы <code>isLoading</code>,{' '}
-              <code>isEditModeOn</code> и <code>isEditModeDisabled</code>{' '}
-              позволяют проверять поведение контента в разных состояниях.
+              Каждый блок показывает правило, проблему, решение и практику.
             </Typography>
           </Paper>
 
@@ -310,12 +290,18 @@ export const SolidLongread = ({
                 className="space-y-3 rounded-none border-0 bg-(--card) p-4">
                 <div className="flex items-center gap-3">
                   <div
-                    className="inline-flex size-9 items-center justify-center rounded-md text-sm font-semibold"
+                    className="inline-flex size-9 items-center justify-center rounded-md"
                     style={{
                       backgroundColor: `var(${principle.colorToken})`,
                       color: 'var(--background)',
                     }}>
-                    {principle.letter}
+                    <Typography
+                      typography="Action"
+                      element="span"
+                      color="background"
+                      isLoading={isLoading}>
+                      {principle.letter}
+                    </Typography>
                   </div>
                   <Typography typography="CompactHeader" isLoading={isLoading}>
                     {principle.title}
@@ -351,7 +337,7 @@ export const SolidLongread = ({
                       typography="CompactCaption"
                       color="cautionary"
                       isLoading={isLoading}>
-                      Сигнал проблемы
+                      Проблема
                     </Typography>
                     <Typography typography="BodySmall" isLoading={isLoading}>
                       {principle.issue}
@@ -362,7 +348,7 @@ export const SolidLongread = ({
                       typography="CompactCaption"
                       color="constructive"
                       isLoading={isLoading}>
-                      Безопасный рефакторинг
+                      Решение
                     </Typography>
                     <Typography typography="BodySmall" isLoading={isLoading}>
                       {principle.refactor}
@@ -375,9 +361,9 @@ export const SolidLongread = ({
                     typography="CompactCaption"
                     color="muted-foreground"
                     isLoading={isLoading}>
-                    Чеклист ревью
+                    Что проверить
                   </Typography>
-                  <ul className="list-disc space-y-1 pl-5 text-sm text-(--muted-foreground)">
+                  <ul className="list-disc space-y-1 pl-5">
                     {principle.checklist.map(item => (
                       <li key={item}>
                         <Typography
@@ -389,6 +375,18 @@ export const SolidLongread = ({
                       </li>
                     ))}
                   </ul>
+                </div>
+
+                <div className="space-y-2 rounded-(--radius) bg-(--background) p-3">
+                  <Typography
+                    typography="CompactCaption"
+                    color="chart-1"
+                    isLoading={isLoading}>
+                    Практика
+                  </Typography>
+                  <Typography typography="BodySmall" isLoading={isLoading}>
+                    {principle.miniProject}
+                  </Typography>
                 </div>
 
                 <Code
@@ -404,6 +402,24 @@ export const SolidLongread = ({
                 />
               </section>
             ))}
+
+            <Paper
+              type="transparent"
+              isBorderDisabled
+              isPaddingDisabled
+              className="space-y-2 bg-(--card) p-4"
+              isLoading={isLoading}>
+              <Typography
+                typography="CompactCaption"
+                color="muted-foreground"
+                isLoading={isLoading}>
+                Итог
+              </Typography>
+              <Typography typography="Body" isLoading={isLoading}>
+                Код проще поддерживать, когда у каждой части есть понятная роль
+                и предсказуемое поведение.
+              </Typography>
+            </Paper>
           </Paper>
         </Paper>
       </div>

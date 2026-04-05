@@ -5,6 +5,9 @@ export type CliOptions = {
   configPath?: string;
   commandKey?: string;
   name?: string;
+  repo?: string;
+  ref?: string;
+  force?: boolean;
 };
 
 export type CommandStepRaw = {

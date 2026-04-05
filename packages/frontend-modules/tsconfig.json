@@ -38,7 +38,8 @@
     "noFallthroughCasesInSwitch": true
   },
   "include": [
-    "src"
+    "src",
+    "types"
   ],
   "references": [
     {

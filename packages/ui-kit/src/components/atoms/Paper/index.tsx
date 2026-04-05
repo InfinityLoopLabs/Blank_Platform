@@ -14,7 +14,7 @@ import { GLASS_CLASS } from '@/constants'
 const paperStyleDictionary = {
   light: 'bg-(--card)',
   dark: 'bg-(--background)',
-  glass: `${GLASS_CLASS} bg-transparent`,
+  glass: `${GLASS_CLASS} bg-(--background)/5`,
   transparent: 'bg-transparent',
 } as const
 

@@ -6,7 +6,7 @@ Config-driven CLI runner.
 
 - Core: load config -> find command key -> execute steps in order.
 - Plugin contract: each plugin has `type`, `parse(rawStep, context)`, `execute(payload, context)`.
-- Built-in plugins (4 folders): `add`, `insert`, `remove-line`, `remove`.
+- Built-in plugins (5 folders): `add`, `download`, `insert`, `remove-line`, `remove`.
 
 ## Usage
 
@@ -18,6 +18,12 @@ Also supported:
 
 ```bash
 ill <commandKey> --name MyFeature --config ./infinityloop.config.js --cwd .
+```
+
+Initialize config in current folder from built-in template:
+
+```bash
+ill init --repo owner/template-repo --ref main
 ```
 
 ## Config
@@ -60,9 +66,38 @@ module.exports = {
 ## Step Types
 
 - `add`: copy file/folder from `from` to `to` with optional `replace`.
+- `download`: clone template repository via `git clone` and copy into current `cwd` with git artifacts removed (`.git`, `.github`, and names starting with `.git`).
 - `insert`: insert `line` after `placeholder` in `file`.
 - `remove-line`: remove a line from `file` by text match.
 - `remove`: delete file/folder at `target`.
+
+`init` command creates `infinityloop.config.js` in current `cwd`:
+
+```bash
+ill init --repo owner/template-repo --ref main
+```
+
+Options:
+- `--repo`: template repo (`owner/repo`, URL, or local git path).
+- `--ref`: branch/tag/commit-ish for clone.
+- `--force`: overwrite existing `infinityloop.config.js`.
+
+`download` example:
+
+```js
+module.exports = {
+  commands: {
+    bootstrap: [
+      {
+        type: "download",
+        repo: "owner/template-repo", // or full URL/path
+        ref: "main", // optional
+        allowNonEmpty: false, // optional, default false
+      },
+    ],
+  },
+};
+```
 
 ## Example With Placeholder
 
