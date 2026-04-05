@@ -6,3 +6,6 @@
 	path = packages/cli
 	url = https://github.com/InfinityLoopLabs/CLI.git
 	branch = main
+[submodule "packages/tailwind-config"]
+	path = packages/tailwind-config
+	url = https://github.com/InfinityLoopLabs/tailwind-config.git
