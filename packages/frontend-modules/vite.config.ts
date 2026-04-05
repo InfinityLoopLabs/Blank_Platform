@@ -15,6 +15,7 @@ export default defineConfig({
     port: 4010,
   },
   build: {
+    sourcemap: true,
     lib: {
       entry: path.resolve(__dirname, 'src/index.ts'),
       name: '@infinityloop.labs/frontend-modules',

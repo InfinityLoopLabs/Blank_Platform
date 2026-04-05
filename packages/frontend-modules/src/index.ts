@@ -102,10 +102,3 @@ export {
   type AuthServiceConfig,
   type AuthMappers,
 } from './features/services/auth'
-export {
-  createReduxStore,
-  type CreateReduxStoreOptionsType,
-  type CreateReduxStoreResultType,
-} from './application/store/store'
-export { createUseAppSelector } from './utils/hooks/useAppSelector'
-export { createAxiosBaseQuery } from './application/api/axios/baseQuery'
