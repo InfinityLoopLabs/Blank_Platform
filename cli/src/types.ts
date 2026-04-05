@@ -6,6 +6,7 @@ export type CliOptions = {
   commandKey?: string;
   name?: string;
   repo?: string;
+  targetRepo?: string;
   ref?: string;
   force?: boolean;
 };

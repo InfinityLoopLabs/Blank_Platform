@@ -12,7 +12,7 @@
     "cli"
   ],
   "scripts": {
-    "build:libs": "turbo run build --filter=@infinityloop.labs/constants-frontend && turbo run build --filter=@infinityloop.labs/event-bus && turbo run build --filter=@infinityloop.labs/common-frontend && turbo run build --filter=@infinityloop.labs/utils && turbo run build --filter=@infinityloop.labs/ui-kit && turbo run build --filter=@infinityloop.labs/mf-connect && turbo run build --filter=@infinityloop.labs/locale-downloader",
+    "build:libs": "turbo run build --filter=@infinityloop.labs/common --filter=@infinityloop.labs/event-bus --filter=@infinityloop.labs/utils --filter=@infinityloop.labs/ui-kit --filter=@infinityloop.labs/frontend-modules --filter=@infinityloop.labs/routing --filter=@infinityloop.labs/nest-connectors",
     "build": "turbo run build",
     "storybook:ui-kit": "npm --workspace @infinityloop.labs/ui-kit run storybook:dev",
     "prestart": "yarn build:libs",

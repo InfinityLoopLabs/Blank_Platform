@@ -12,14 +12,18 @@ test("init creates infinityloop config file with repo and ref", async () => {
     const result = await createInitConfigFile({
       cwd: root,
       repo: "acme/template",
+      targetRepo: "acme/product",
       ref: "develop",
     });
 
     assert.equal(result.configPath, path.join(root, "infinityloop.config.js"));
     const content = await readFile(result.configPath, "utf8");
     assert.match(content, /type: "download"/);
-    assert.match(content, /repo: "acme\/template"/);
-    assert.match(content, /ref: "develop"/);
+    assert.match(content, /const templateRepo = "acme\/template"/);
+    assert.match(content, /const targetRepo = "acme\/product"/);
+    assert.match(content, /const templateRef = "develop"/);
+    assert.match(content, /repo: templateRepo/);
+    assert.match(content, /ref: templateRef/);
   } finally {
     await rm(root, { recursive: true, force: true });
   }
@@ -54,12 +58,14 @@ test("init overwrites existing file with --force", async () => {
       cwd: root,
       force: true,
       repo: "owner/repo",
+      targetRepo: "owner/product",
       ref: "main",
     });
 
     const content = await readFile(configPath, "utf8");
     assert.match(content, /bootstrap/);
-    assert.match(content, /repo: "owner\/repo"/);
+    assert.match(content, /const templateRepo = "owner\/repo"/);
+    assert.match(content, /const targetRepo = "owner\/product"/);
   } finally {
     await rm(root, { recursive: true, force: true });
   }

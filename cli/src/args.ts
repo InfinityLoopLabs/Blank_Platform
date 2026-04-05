@@ -56,6 +56,17 @@ export function parseArgs(args: string[]): CliOptions {
       continue;
     }
 
+    if (arg.startsWith("--target-repo=")) {
+      options.targetRepo = arg.slice("--target-repo=".length);
+      continue;
+    }
+
+    if (arg === "--target-repo" && nextArg) {
+      options.targetRepo = nextArg;
+      i += 1;
+      continue;
+    }
+
     if (arg.startsWith("--ref=")) {
       options.ref = arg.slice("--ref=".length);
       continue;
