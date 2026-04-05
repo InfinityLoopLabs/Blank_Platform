@@ -2,3 +2,7 @@
 	path = _templates/react_template
 	url = https://github.com/InfinityLoopLabs/react-template.git
 	branch = main
+[submodule "packages/cli"]
+	path = packages/cli
+	url = https://github.com/InfinityLoopLabs/CLI.git
+	branch = main
