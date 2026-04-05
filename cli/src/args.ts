@@ -45,6 +45,33 @@ export function parseArgs(args: string[]): CliOptions {
       continue;
     }
 
+    if (arg.startsWith("--repo=")) {
+      options.repo = arg.slice("--repo=".length);
+      continue;
+    }
+
+    if (arg === "--repo" && nextArg) {
+      options.repo = nextArg;
+      i += 1;
+      continue;
+    }
+
+    if (arg.startsWith("--ref=")) {
+      options.ref = arg.slice("--ref=".length);
+      continue;
+    }
+
+    if (arg === "--ref" && nextArg) {
+      options.ref = nextArg;
+      i += 1;
+      continue;
+    }
+
+    if (arg === "--force" || arg === "-f") {
+      options.force = true;
+      continue;
+    }
+
     if (!arg.startsWith("-")) {
       positional.push(arg);
     }
