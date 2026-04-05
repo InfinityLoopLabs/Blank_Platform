@@ -742,8 +742,8 @@
   dependencies:
     tslib "^2.8.1"
 
-"@infinityloop.labs/frontend-modules@*", "@infinityloop.labs/frontend-modules@file:/Users/m1max/IdeaProjects/infinitylooplabs/Platform/packages/frontend-modules":
-  version "0.0.2"
+"@infinityloop.labs/frontend-modules@0.0.3", "@infinityloop.labs/frontend-modules@file:/Users/m1max/IdeaProjects/infinitylooplabs/Platform/packages/frontend-modules":
+  version "0.0.3"
   resolved "file:packages/frontend-modules"
   dependencies:
     "@infinityloop.labs/event-bus" "^1.0.2"
@@ -6076,7 +6076,7 @@ indent-string@^4.0.0:
     "@hookform/resolvers" "^5.2.2"
     "@infinityloop.labs/common" "1.0.4"
     "@infinityloop.labs/event-bus" "1.0.2"
-    "@infinityloop.labs/frontend-modules" "*"
+    "@infinityloop.labs/frontend-modules" "0.0.3"
     "@infinityloop.labs/routing" "^1.0.0"
     "@infinityloop.labs/tailwind-config" "^1.0.17"
     "@infinityloop.labs/ui-kit" "^0.0.10"
@@ -6087,7 +6087,6 @@ indent-string@^4.0.0:
     async-mutex "^0.5.0"
     axios "^1.13.2"
     clsx "^2.1.1"
-    isbot "^5"
     lucide-react "^0.561.0"
     react "^19.2.4"
     react-dom "^19.2.4"
@@ -6413,11 +6412,6 @@ isarray@~1.0.0:
   version "1.0.0"
   resolved "https://registry.npmjs.org/isarray/-/isarray-1.0.0.tgz"
   integrity sha512-VLghIWNM6ELQzo7zwmcg0NmTVyWKYjvIeM83yjp0wRDTmUnrM678fQbcKBo6n2CJEF0szoG//ytg+TKla89ALQ==
-
-isbot@^5:
-  version "5.1.35"
-  resolved "https://registry.npmjs.org/isbot/-/isbot-5.1.35.tgz"
-  integrity sha512-waFfC72ZNfwLLuJ2iLaoVaqcNo+CAaLR7xCpAn0Y5WfGzkNHv7ZN39Vbi1y+kb+Zs46XHOX3tZNExroFUPX+Kg==
 
 isexe@^2.0.0:
   version "2.0.0"
