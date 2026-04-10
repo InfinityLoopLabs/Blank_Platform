@@ -110,3 +110,4 @@ folderStructure.txt
 /.yarn/**
 /.serena/
 /packages/ui-kit/storybook-static/
+/claude-kit/
