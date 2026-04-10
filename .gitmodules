@@ -9,3 +9,7 @@
 [submodule "packages/tailwind-config"]
 	path = packages/tailwind-config
 	url = https://github.com/InfinityLoopLabs/tailwind-config.git
+[submodule "_templates/frontend-vite-lib-template"]
+	path = _templates/frontend-vite-lib-template
+	url = https://github.com/InfinityLoopLabs/frontend-vite-lib-template.git
+	branch = main
