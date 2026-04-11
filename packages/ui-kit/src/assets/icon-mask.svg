@@ -1,9 +1,0 @@
-<svg width="48" height="48" xmlns="http://www.w3.org/2000/svg">
-    <defs>
-        <mask id="icon-mask">
-            <rect width="100%" height="100%" fill="white"/>
-            <path d="M24 0 Q36 0 42 6 Q48 12 48 24 Q48 36 42 42 Q36 48 24 48 Q12 48 6 42 Q0 36 0 24 Q0 12 6 6 Q12 0 24 0" fill="black" />
-        </mask>
-    </defs>
-    <rect width="100%" height="100%" fill="tomato" mask="url(#icon-mask)"/>
-</svg>
