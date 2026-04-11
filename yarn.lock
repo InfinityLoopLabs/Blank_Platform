@@ -845,7 +845,7 @@
     three "^0.183.2"
 
 "@infinityloop.labs/utils@^1.0.0", "@infinityloop.labs/utils@file:/Users/m1max/IdeaProjects/infinitylooplabs/Platform/packages/utils":
-  version "1.0.0"
+  version "1.0.1"
   resolved "file:packages/utils"
   dependencies:
     clsx "^2.1.1"
@@ -8632,6 +8632,7 @@ safe-regex-test@^1.1.0:
     async-mutex "^0.5.0"
     axios "^1.13.2"
     clsx "^2.1.1"
+    isbot "^5"
     lucide-react "^0.561.0"
     react "^19.2.4"
     react-dom "^19.2.4"
