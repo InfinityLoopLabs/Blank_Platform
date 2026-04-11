@@ -13,8 +13,4 @@
 	path = _templates/frontend-vite-lib-template
 	url = https://github.com/InfinityLoopLabs/frontend-vite-lib-template.git
 	branch = main
-[submodule "packages/ui-kit"]
-	path = packages/ui-kit
-	url = https://github.com/InfinityLoopLabs/ui-kit.git
-	branch = main
 
